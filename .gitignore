@@ -1,0 +1,17 @@
+# Java
+*.class
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# VS Code
+.vscode/
+
+# Build
+target/
+build/
+
+# Logs
+*.log
