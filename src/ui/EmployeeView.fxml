@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.EmployeeController">
+
+    <center>
+
+        <TableView fx:id="employeeTable">
+
+            <columns>
+
+                <TableColumn fx:id="idColumn"
+                             text="ID"/>
+
+                <TableColumn fx:id="nameColumn"
+                             text="Name"/>
+
+                <TableColumn fx:id="phoneColumn"
+                             text="Phone"/>
+
+                <TableColumn fx:id="positionColumn"
+                             text="Position"/>
+
+                <TableColumn fx:id="salaryColumn"
+                             text="Salary"/>
+
+                <TableColumn fx:id="userIdColumn"
+                             text="User ID"/>
+
+            </columns>
+
+        </TableView>
+
+    </center>
+
+    <right>
+
+        <VBox spacing="10">
+
+            <TextField fx:id="nameField"
+                       promptText="Name"/>
+
+            <TextField fx:id="phoneField"
+                       promptText="Phone"/>
+
+            <TextField fx:id="positionField"
+                       promptText="Position"/>
+
+            <TextField fx:id="salaryField"
+                       promptText="Salary"/>
+
+            <TextField fx:id="userIdField"
+                       promptText="User ID"/>
+
+            <Button text="Add"
+                    onAction="#addEmployee"/>
+
+            <Button text="Update"
+                    onAction="#updateEmployee"/>
+
+            <Button text="Delete"
+                    onAction="#deleteEmployee"/>
+            <Button text="Back" onAction="#backToDashboard"/>
+
+        </VBox>
+
+    </right>
+
+</BorderPane>

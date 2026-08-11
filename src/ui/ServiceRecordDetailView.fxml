@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.ServiceRecordDetailController">
+
+    <top>
+        <VBox spacing="10">
+
+            <TextField fx:id="idField"
+                       promptText="ID"/>
+
+            <TextField fx:id="serviceRecordIdField"
+                       promptText="Service Record ID"/>
+
+            <TextField fx:id="serviceIdField"
+                       promptText="Service ID"/>
+
+            <TextField fx:id="quantityField"
+                       promptText="Quantity"/>
+
+            <TextField fx:id="priceField"
+                       promptText="Price"/>
+
+            <HBox spacing="10">
+
+                <Button text="Add"
+                        onAction="#addDetail"/>
+
+                <Button text="Update"
+                        onAction="#updateDetail"/>
+
+                <Button text="Delete"
+                        onAction="#deleteDetail"/>
+
+                <Button text="Back"
+                        onAction="#backToDashboard"/>
+
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <center>
+
+        <TableView fx:id="table">
+
+            <columns>
+
+                <TableColumn fx:id="idColumn"
+                             text="ID"/>
+
+                <TableColumn fx:id="recordColumn"
+                             text="Record ID"/>
+
+                <TableColumn fx:id="serviceColumn"
+                             text="Service ID"/>
+
+                <TableColumn fx:id="quantityColumn"
+                             text="Quantity"/>
+
+                <TableColumn fx:id="priceColumn"
+                             text="Price"/>
+
+                <TableColumn fx:id="subtotalColumn"
+                             text="Subtotal"/>
+
+            </columns>
+
+        </TableView>
+
+    </center>
+
+</BorderPane>

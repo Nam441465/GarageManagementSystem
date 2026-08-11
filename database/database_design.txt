@@ -1,0 +1,73 @@
+Customer
+---------
+id              INT                 PK
+name            VARCHAR(100)
+phone           VARCHAR(20)
+address         VARCHAR(255)
+
+Users
+---------
+id              INT                 PK
+role            VARCHAR(50)
+username        VARCHAR(50)         UNIQUE
+password        VARCHAR(100)
+created_date    DATETIME
+status          ENUM('ACTIVE','INACTIVE')
+
+Employee
+---------
+id              INT                 PK
+name            VARCHAR(100)
+phone           VARCHAR(20)
+position        VARCHAR(50)
+salary          DOUBLE
+user_id         INT                 FK Users.id UNIQUE
+
+Vehicle
+---------
+id              INT                 PK
+customer_id     INT                 FK Customer.id
+brand           VARCHAR(50)
+vehicle_type    VARCHAR(30)
+status          VARCHAR(30)
+license_plate   VARCHAR(20)         UNIQUE
+model           VARCHAR(50)
+
+Service
+---------
+id              INT                 PK
+service_name    VARCHAR(50)
+price           DOUBLE
+description     VARCHAR(250)
+
+ServiceRecord
+---------
+id              INT                 PK
+vehicle_id      INT                 FK Vehicle.id
+recordDate      DATE
+notes           VARCHAR(250)
+total_cost      DOUBLE
+created_by      INT                 FK Users.id
+
+ServiceRecordDetail
+---------
+id                  INT             PK
+service_record_id   INT             FK ServiceRecord.id
+service_id          INT             FK Service.id
+quantity            INT
+price               DOUBLE
+subtotal            DOUBLE
+
+Invoice
+---------
+id              INT                 PK
+record_id       INT                 FK ServiceRecord.id
+total_amount    DOUBLE
+issueDate       DATE
+
+EmployeeInvite
+---------
+id              INT                 PK
+invite_code     VARCHAR(50)         UNIQUE
+status          ENUM('UNUSED','USED')
+created_date    DATETIME
