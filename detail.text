@@ -1,0 +1,291 @@
+controller
+--------------------------------------
+AppointmentController.java          // Xử lý giao diện đặt lịch
+CustomerController.java             // Quản lý khách hàng
+CustomerSearchController.java       // Tìm kiếm khách hàng
+DashboardController.java            // Màn hình chính
+EmployeeController.java             // Quản lý nhân viên
+InventoryController.java            // Quản lý kho linh kiện
+InviteController.java               // Quản lý lời mời nhân viên
+InvoiceController.java              // Quản lý hóa đơn
+LoginController.java                // Đăng nhập
+Navigation.java                     // Chuyển đổi giữa các màn hình
+PriceController.java                // Hiển thị dịch vụ và giá theo loại xe
+RegisterController.java             // Đăng ký tài khoản
+ServiceController.java              // Quản lý dịch vụ
+ServiceRecordController.java        // Quản lý phiếu sửa chữa
+ServiceRecordDetailController.java  // Chi tiết từng dịch vụ trong phiếu sửa chữa
+StatisticsController.java           // Thống kê doanh thu, dịch vụ...
+VehicleController.java              // Quản lý xe
+WarrantyController.java             // Quản lý bảo hành
+
+
+dao 
+-------------------------------------
+BaseDAO.java                        // Interface CRUD tổng quát (Generic)
+
+AppointmentDAO.java                 // Truy cập dữ liệu lịch hẹn
+AppointmentServiceItemDAO.java      // Truy cập các dịch vụ trong lịch hẹn
+
+AuditLogDAO.java                    // Ghi/đọc lịch sử thao tác
+
+CustomerDAO.java                    // CRUD khách hàng
+EmployeeDAO.java                    // CRUD nhân viên
+EmployeeInviteDAO.java              // CRUD lời mời
+
+InvoiceDAO.java                     // CRUD hóa đơn
+
+PartDAO.java                        // CRUD linh kiện
+
+PriceListDAO.java                   // Giá dịch vụ theo loại xe
+
+ServiceDAO.java                     // CRUD dịch vụ
+
+ServiceRecordDAO.java               // CRUD phiếu sửa chữa
+
+ServiceRecordDetailDAO.java         // CRUD chi tiết phiếu sửa chữa
+
+UserDAO.java                        // CRUD tài khoản
+
+VehicleDAO.java                     // CRUD xe
+
+WarrantyDAO.java                    // CRUD bảo hành
+
+
+database
+--------------------------------------
+DatabaseConnection.java             // Kết nối MySQL
+DatabaseInitializer.java            // Khởi tạo database/sample data
+
+enums
+--------------------------------------
+AppointmentStatus.java              // Trạng thái lịch hẹn
+
+InviteStatus.java                   // Trạng thái lời mời
+
+InvoiceStatus.java                  // Trạng thái hóa đơn
+
+NotificationType.java               // Loại thông báo
+
+PaymentMethod.java                  // Tiền mặt, chuyển khoản...
+
+ServiceCategory.java                // Loại dịch vụ
+
+UserRole.java                       // OWNER / EMPLOYEE / CUSTOMER
+
+VehicleStatus.java                  // Trạng thái xe
+
+
+exception
+--------------------------------------------
+GarageException.java                // Exception gốc
+
+DatabaseException.java              // Lỗi CSDL
+
+VehicleNotFoundException.java       // Không tìm thấy xe
+
+DuplicateVehicleException.java      // Biển số trùng
+
+AppointmentException.java           // Lỗi lịch hẹn
+
+InviteExpiredException.java         // Link mời hết hạn
+
+InvoiceException.java               // Lỗi hóa đơn
+
+PermissionDeniedException.java      // Không đủ quyền
+
+factory
+--------------------------------------------------
+NotificationFactory.java            // Tạo Notification theo loại
+
+ServiceFactory.java                 // Tạo đúng Service subclass
+
+
+model
+-----------------------------------------------------------
+Appointment.java                    // Lịch hẹn
+
+AppointmentServiceItem.java         // Một dịch vụ trong lịch hẹn
+
+AuditLog.java                       // Nhật ký hệ thống
+
+Customer.java                       // Khách hàng
+
+Employee.java                       // Nhân viên
+
+EmployeeInvite.java                 // Lời mời nhân viên
+
+Invoice.java                        // Hóa đơn
+
+Notification.java                   // Thông báo
+
+Part.java                           // Linh kiện
+
+PriceList.java                      // Giá theo loại xe
+
+ServiceRecord.java                  // Phiếu sửa chữa
+
+ServiceRecordDetail.java            // Chi tiết từng dịch vụ
+
+Session.java                        // Người dùng hiện tại
+
+User.java                           // Tài khoản
+
+Vehicle.java                        // Xe
+
+Warranty.java                       // Phiếu bảo hành
+
+
+model/abstracts
+--------------------------------------------------
+Person.java                         // Lớp cha Customer/Employee
+
+Service.java                        // Lớp cha các loại dịch vụ
+
+
+observer
+-------------------------------------------------------------
+Observer.java                       // Interface Observer
+
+Subject.java                        // Interface Subject
+
+NotificationObserver.java           // Quan sát để gửi thông báo
+
+VehicleStatusObserver.java          // Quan sát trạng thái xe
+
+
+report
+-----------------------------------------------------------------
+ReportExporter.java                 // Interface xuất báo cáo
+
+PdfReportExporter.java              // Xuất PDF
+
+InvoiceReportGenerator.java         // Sinh hóa đơn PDF
+
+StatisticsReportGenerator.java      // Sinh báo cáo thống kê
+
+
+service
+----------------------------------------------------------
+AppointmentService.java             // Nghiệp vụ lịch hẹn
+
+AppointmentServiceItemService.java  // Nghiệp vụ dịch vụ trong lịch hẹn
+
+AuditService.java                   // Ghi log
+
+CustomerService.java                // Nghiệp vụ khách hàng
+
+EmployeeInviteService.java          // Nghiệp vụ lời mời
+
+EmployeeService.java                // Nghiệp vụ nhân viên
+
+InventoryService.java               // Nghiệp vụ kho
+
+InvoiceService.java                 // Nghiệp vụ hóa đơn
+
+NotificationService.java            // Gửi thông báo
+
+PdfService.java                     // Xuất PDF
+
+PriceListService.java               // Lấy bảng giá theo loại xe
+
+ServiceRecordDetailService.java     // Nghiệp vụ chi tiết sửa chữa
+
+ServiceRecordService.java           // Nghiệp vụ phiếu sửa chữa
+
+ServiceService.java                 // Nghiệp vụ dịch vụ
+
+UserService.java                    // Nghiệp vụ tài khoản
+
+VehicleService.java                 // Nghiệp vụ xe
+
+WarrantyService.java                // Nghiệp vụ bảo hành
+
+
+strategy
+-------------------------------------------------------------------
+PriceStrategy.java                  // Interface tính giá
+
+CleaningPriceStrategy.java          // Giá dịch vụ rửa xe
+
+MaintenancePriceStrategy.java       // Giá bảo dưỡng
+
+RepairPriceStrategy.java            // Giá sửa chữa
+
+ReplacementPriceStrategy.java       // Giá thay thế
+
+
+ui 
+---------------------------------------------------------------------
+AppointmentView.fxml                // Giao diện đặt lịch
+
+CustomerSearchView.fxml             // Giao diện tìm khách
+
+CustomerView.fxml                   // Giao diện khách hàng
+
+DashboardView.fxml                  // Trang chủ
+
+EmployeeRegisterView.fxml           // Đăng ký nhân viên
+
+EmployeeView.fxml                   // Quản lý nhân viên
+
+InventoryView.fxml                  // Quản lý kho
+
+InviteManagementView.fxml           // Quản lý lời mời
+
+InvoiceView.fxml                    // Quản lý hóa đơn
+
+LoginView.fxml                      // Đăng nhập
+
+PriceView.fxml                      // Hiển thị dịch vụ và giá
+
+ServiceRecordDetailView.fxml        // Chi tiết phiếu sửa
+
+ServiceRecordView.fxml              // Phiếu sửa
+
+ServiceView.fxml                    // Dịch vụ
+
+StatisticsView.fxml                 // Thống kê
+
+VehicleView.fxml                    // Xe
+
+WarrantyView.fxml                   // Bảo hành
+
+
+util
+--------------------------------------------------------------------
+AlertUtil.java                      // Hộp thoại thông báo
+
+DateUtil.java                       // Xử lý ngày giờ
+
+FileUtil.java                       // Đọc/ghi file
+
+MoneyUtil.java                      // Định dạng tiền
+
+PdfUtil.java                        // Hỗ trợ tạo PDF
+
+
+                JavaFX UI
+                     │
+                     ▼
+              Controller Layer
+                     │
+                     ▼
+               Service Layer
+      ┌─────────┬────────┬────────┬────────┐
+      │         │        │        │        │
+      ▼         ▼        ▼        ▼        ▼
+ Strategy   Factory  Observer  Report    Util
+      │         │        │        │
+      └─────────┴────────┴────────┘
+                     │
+                     ▼
+                 DAO Layer
+                     │
+                     ▼
+               Database Layer
+                     │
+                     ▼
+                    MySQL
+
+(Model, Enum, Exception là các thành phần dùng chung xuyên suốt tất cả các tầng.)

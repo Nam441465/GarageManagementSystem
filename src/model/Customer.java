@@ -1,61 +1,48 @@
 package model;
 
-public class Customer {
+import java.time.LocalDateTime;
+import model.abstracts.Person;
 
-    private int id;
-    private String name;
-    private String phone;
+public class Customer extends Person {
     private String address;
 
     public Customer(int id, String name, String phone, String address) {
-        this.name = name;
+        this(id, name, phone, address, null);
+    }
+
+    public Customer(int id, String name, String phone, String address, LocalDateTime createdAt) {
+        super(id, name, phone, createdAt);
         this.address = address;
-        this.phone = phone;
-        this.id = id;
     }
 
     public Customer() {
+    }
+
+    public Customer(String name, String phone, String address) {
+        super(name, phone, null);
+        this.address = address;
+    }
+
+    public Customer(String name, String phone, String address, LocalDateTime createdAt) {
+        super(name, phone, createdAt);
+        this.address = address;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     @Override
     public String toString() {
         return "Customer{" +
-                "id=" + id +
-                ", name=" + name + '\'' +
-                ", phone=" + phone + '\'' +
-                ", address=" + address + '\'' +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", phone='" + getPhone() + '\'' +
+                ", address='" + address + '\'' +
                 '}';
     }
 }

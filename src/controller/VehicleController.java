@@ -1,5 +1,6 @@
 package controller;
 
+import enums.UserRole;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -16,7 +17,6 @@ import model.Vehicle;
 import model.Session;
 
 import service.VehicleService;
-import service.impl.VehicleServiceImpl;
 
 public class VehicleController {
 
@@ -62,7 +62,7 @@ public class VehicleController {
         @FXML
         private TextField modelField;
 
-        private final VehicleService vehicleService = new VehicleServiceImpl();
+        private final VehicleService vehicleService = new VehicleService();
 
         private ObservableList<Vehicle> vehicleList;
 
@@ -202,9 +202,7 @@ public class VehicleController {
 
                 }
 
-                if (!Session.getCurrentUser()
-                                .getRole()
-                                .equalsIgnoreCase("Owner")) {
+                if (!(Session.getCurrentUser().getRole() == UserRole.OWNER)) {
 
                         System.out.println(
                                         "Employee cannot delete vehicle");
@@ -234,9 +232,7 @@ public class VehicleController {
 
                 return Session.getCurrentUser() != null
                                 &&
-                                Session.getCurrentUser()
-                                                .getRole()
-                                                .equalsIgnoreCase("Owner");
+                                Session.getCurrentUser().getRole() == UserRole.OWNER;
 
         }
 

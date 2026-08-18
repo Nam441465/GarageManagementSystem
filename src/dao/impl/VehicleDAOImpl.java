@@ -3,6 +3,8 @@ package dao.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +36,8 @@ public class VehicleDAOImpl implements VehicleDAO {
             ps.close();
             conn.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error adding vehicle", e);
         }
     }
 
@@ -62,8 +64,8 @@ public class VehicleDAOImpl implements VehicleDAO {
             ps.close();
             conn.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating vehicle", e);
         }
     }
 
@@ -84,8 +86,8 @@ public class VehicleDAOImpl implements VehicleDAO {
             ps.close();
             conn.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error deleting vehicle", e);
         }
     }
 
@@ -129,8 +131,8 @@ public class VehicleDAOImpl implements VehicleDAO {
             ps.close();
             conn.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding vehicle by ID", e);
         }
 
         return null;
@@ -173,8 +175,8 @@ public class VehicleDAOImpl implements VehicleDAO {
             ps.close();
             conn.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding all vehicles", e);
         }
 
         return list;
@@ -221,8 +223,8 @@ public class VehicleDAOImpl implements VehicleDAO {
             ps.close();
             conn.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding vehicle by license plate", e);
         }
 
         return null;
@@ -248,11 +250,9 @@ public class VehicleDAOImpl implements VehicleDAO {
 
             return exists;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking if vehicle exists by license plate", e);
         }
-
-        return false;
     }
 
     @Override
@@ -279,8 +279,8 @@ public class VehicleDAOImpl implements VehicleDAO {
             ps.close();
             conn.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error counting vehicles", e);
         }
 
         return 0;
@@ -306,10 +306,8 @@ public class VehicleDAOImpl implements VehicleDAO {
 
             return exists;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking if vehicle exists by ID", e);
         }
-
-        return false;
     }
 }

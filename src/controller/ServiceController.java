@@ -1,6 +1,7 @@
 package controller;
 
-import javafx.beans.property.SimpleDoubleProperty;
+import enums.ServiceCategory;
+import enums.UserRole;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -8,6 +9,8 @@ import javafx.collections.ObservableList;
 
 import javafx.fxml.FXML;
 
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -16,7 +19,6 @@ import model.Service;
 import model.Session;
 
 import service.ServiceService;
-import service.impl.ServiceServiceImpl;
 
 public class ServiceController {
 
@@ -30,21 +32,21 @@ public class ServiceController {
         private TableColumn<Service, String> serviceNameColumn;
 
         @FXML
-        private TableColumn<Service, Double> priceColumn;
-
-        @FXML
         private TableColumn<Service, String> descriptionColumn;
 
         @FXML
         private TextField serviceNameField;
 
         @FXML
-        private TextField priceField;
-
-        @FXML
         private TextField descriptionField;
 
-        private final ServiceService serviceService = new ServiceServiceImpl();
+        @FXML
+        private CheckBox isActiveCheckBox;
+
+        @FXML
+        private ComboBox<ServiceCategory> categoryComboBox;
+
+        private final ServiceService serviceService = new ServiceService();
 
         private ObservableList<Service> serviceList;
 
@@ -53,6 +55,9 @@ public class ServiceController {
 
                 serviceList = FXCollections.observableArrayList();
 
+                // Đưa dữ liệu vào ComboBox category
+                categoryComboBox.setItems(FXCollections.observableArrayList(ServiceCategory.values()));
+
                 idColumn.setCellValueFactory(
                                 data -> new SimpleIntegerProperty(
                                                 data.getValue().getId()).asObject());
@@ -60,10 +65,6 @@ public class ServiceController {
                 serviceNameColumn.setCellValueFactory(
                                 data -> new SimpleStringProperty(
                                                 data.getValue().getServiceName()));
-
-                priceColumn.setCellValueFactory(
-                                data -> new SimpleDoubleProperty(
-                                                data.getValue().getPrice()).asObject());
 
                 descriptionColumn.setCellValueFactory(
                                 data -> new SimpleStringProperty(
@@ -74,8 +75,9 @@ public class ServiceController {
                 serviceTable.getSelectionModel().selectedItemProperty().addListener((obs, old, service) -> {
                         if (service != null) {
                                 serviceNameField.setText(service.getServiceName());
-                                priceField.setText(String.valueOf(service.getPrice()));
                                 descriptionField.setText(service.getDescription());
+                                isActiveCheckBox.setSelected(service.isActive());
+                                categoryComboBox.setValue(service.getCategory());
                         }
                 });
 
@@ -106,12 +108,11 @@ public class ServiceController {
                 service.setServiceName(
                                 serviceNameField.getText());
 
-                service.setPrice(
-                                Double.parseDouble(
-                                                priceField.getText()));
-
                 service.setDescription(
                                 descriptionField.getText());
+
+                service.setActive(isActiveCheckBox.isSelected());
+                service.setCategory(categoryComboBox.getValue());
 
                 serviceService.addService(service);
 
@@ -143,12 +144,11 @@ public class ServiceController {
                 service.setServiceName(
                                 serviceNameField.getText());
 
-                service.setPrice(
-                                Double.parseDouble(
-                                                priceField.getText()));
-
                 service.setDescription(
                                 descriptionField.getText());
+
+                service.setActive(isActiveCheckBox.isSelected());
+                service.setCategory(categoryComboBox.getValue());
 
                 serviceService.updateService(service);
 
@@ -186,9 +186,7 @@ public class ServiceController {
 
                 return Session.getCurrentUser() != null
                                 &&
-                                Session.getCurrentUser()
-                                                .getRole()
-                                                .equalsIgnoreCase("Owner");
+                                Session.getCurrentUser().getRole() == UserRole.OWNER;
 
         }
 
@@ -196,9 +194,11 @@ public class ServiceController {
 
                 serviceNameField.clear();
 
-                priceField.clear();
-
                 descriptionField.clear();
+
+                isActiveCheckBox.setSelected(false);
+
+                categoryComboBox.setValue(null);
 
         }
 

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.InventoryController">
+
+    <top>
+        <Label text="Inventory Management" style="-fx-font-size: 20px; -fx-padding: 12;" />
+    </top>
+
+    <center>
+        <TableView fx:id="partTable">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="50" />
+                <TableColumn fx:id="nameColumn" text="Part name" prefWidth="160" />
+                <TableColumn fx:id="unitPriceColumn" text="Unit price" prefWidth="100" />
+                <TableColumn fx:id="stockColumn" text="In stock" prefWidth="80" />
+            </columns>
+        </TableView>
+    </center>
+
+    <right>
+        <VBox spacing="8" prefWidth="250" style="-fx-padding: 12;">
+            <TextField fx:id="nameField" promptText="Part name" />
+            <TextField fx:id="supplierField" promptText="Supplier" />
+            <TextField fx:id="unitPriceField" promptText="Unit price" />
+            <TextField fx:id="stockField" promptText="Stock quantity" />
+            <TextArea fx:id="descriptionArea" promptText="Description" prefRowCount="3" />
+
+            <HBox spacing="8">
+                <Button text="Add" onAction="#addPart" />
+                <Button text="Update" onAction="#updatePart" />
+            </HBox>
+
+            <HBox spacing="8">
+                <Button text="Delete" onAction="#deletePart" />
+            </HBox>
+
+            <HBox spacing="8">
+                <Button text="All parts" onAction="#refreshParts" />
+                <Button text="Clear" onAction="#clearForm" />
+            </HBox>
+
+            <Button text="Back" onAction="#backToDashboard" />
+        </VBox>
+    </right>
+</BorderPane>

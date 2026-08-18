@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="controller.WarrantyController">
+    <top><Label text="Warranty Management" style="-fx-font-size: 20px; -fx-padding: 12;"/></top>
+    <center><TableView fx:id="warrantyTable"><columns><TableColumn fx:id="idColumn" text="ID" prefWidth="50"/><TableColumn fx:id="recordColumn" text="Service record ID" prefWidth="120"/><TableColumn fx:id="codeColumn" text="Warranty code" prefWidth="130"/><TableColumn fx:id="startColumn" text="Start date" prefWidth="110"/><TableColumn fx:id="endColumn" text="End date" prefWidth="110"/><TableColumn fx:id="statusColumn" text="Status" prefWidth="90"/></columns></TableView></center>
+    <right><VBox spacing="8" prefWidth="250" style="-fx-padding: 12;"><TextField fx:id="recordIdField" promptText="Service Record ID"/><TextField fx:id="warrantyCodeField" promptText="Warranty code"/><DatePicker fx:id="startDatePicker" promptText="Start date"/><DatePicker fx:id="endDatePicker" promptText="End date"/><ComboBox fx:id="statusComboBox" promptText="Status"/><TextArea fx:id="coverageArea" promptText="Coverage" prefRowCount="4"/><HBox spacing="8"><Button text="Add" onAction="#addWarranty"/><Button text="Update" onAction="#updateWarranty"/></HBox><HBox spacing="8"><Button text="Delete" onAction="#deleteWarranty"/><Button text="Clear" onAction="#clearForm"/></HBox><Button text="Back" onAction="#backToDashboard"/></VBox></right>
+</BorderPane>

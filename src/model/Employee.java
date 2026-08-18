@@ -1,10 +1,9 @@
 package model;
 
-public class Employee {
+import java.time.LocalDateTime;
+import model.abstracts.Person;
 
-    private int id;
-    private String name;
-    private String phone;
+public class Employee extends Person {
     private String position;
     private double salary;
     private int userId;
@@ -18,25 +17,22 @@ public class Employee {
             String position,
             double salary,
             int userId) {
+        this(id, name, phone, position, salary, userId, null);
+    }
 
-        this.id = id;
-        this.name = name;
-        this.phone = phone;
+    public Employee(int id, String name, String phone, String position,
+            double salary, int userId, LocalDateTime createdAt) {
+        super(id, name, phone, createdAt);
         this.position = position;
         this.salary = salary;
         this.userId = userId;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
+    public Employee(String name, String phone, String position, double salary, int userId) {
+        super(name, phone, null);
+        this.position = position;
+        this.salary = salary;
+        this.userId = userId;
     }
 
     public String getPosition() {
@@ -49,18 +45,6 @@ public class Employee {
 
     public int getUserId() {
         return userId;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public void setPosition(String position) {
@@ -78,9 +62,9 @@ public class Employee {
     @Override
     public String toString() {
         return "Employee{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", phone='" + getPhone() + '\'' +
                 ", position='" + position + '\'' +
                 ", salary=" + salary +
                 ", userId=" + userId +

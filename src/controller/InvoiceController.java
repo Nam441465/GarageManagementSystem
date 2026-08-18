@@ -1,5 +1,6 @@
 package controller;
 
+import enums.UserRole;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -12,8 +13,9 @@ import javafx.scene.control.TextField;
 
 import model.Invoice;
 import model.Session;
+import report.InvoiceReportGenerator;
 import service.InvoiceService;
-import service.impl.InvoiceServiceImpl;
+import util.AlertUtil;
 
 public class InvoiceController {
 
@@ -38,12 +40,17 @@ public class InvoiceController {
     @FXML
     private TextField totalAmountField;
 
+    @FXML
+    private TextField outputDirectoryField;
+
     private InvoiceService invoiceService;
 
     private ObservableList<Invoice> invoiceList;
 
+    private final InvoiceReportGenerator invoiceReportGenerator = new InvoiceReportGenerator();
+
     public InvoiceController() {
-        invoiceService = new InvoiceServiceImpl();
+        invoiceService = new InvoiceService();
     }
 
     @FXML
@@ -57,11 +64,11 @@ public class InvoiceController {
 
         recordIdColumn.setCellValueFactory(
                 data -> new SimpleIntegerProperty(
-                        data.getValue().getrecordId()).asObject());
+                        data.getValue().getRecordId()).asObject());
 
         totalAmountColumn.setCellValueFactory(
                 data -> new SimpleDoubleProperty(
-                        data.getValue().gettotalAmount()).asObject());
+                        data.getValue().getTotalAmount()).asObject());
 
         issueDateColumn.setCellValueFactory(
                 data -> new SimpleObjectProperty<>(
@@ -91,11 +98,11 @@ public class InvoiceController {
 
         Invoice invoice = new Invoice();
 
-        invoice.setrecordId(
+        invoice.setRecordId(
                 Integer.parseInt(
                         recordIdField.getText()));
 
-        invoice.settotalAmount(
+        invoice.setTotalAmount(
                 Double.parseDouble(
                         totalAmountField.getText()));
 
@@ -116,11 +123,11 @@ public class InvoiceController {
             return;
         }
 
-        invoice.setrecordId(
+        invoice.setRecordId(
                 Integer.parseInt(
                         recordIdField.getText()));
 
-        invoice.settotalAmount(
+        invoice.setTotalAmount(
                 Double.parseDouble(
                         totalAmountField.getText()));
 
@@ -136,9 +143,7 @@ public class InvoiceController {
             return;
         }
 
-        if (!Session.getCurrentUser()
-                .getRole()
-                .equalsIgnoreCase("Owner")) {
+        if (!(Session.getCurrentUser().getRole() == UserRole.OWNER)) {
 
             System.out.println(
                     "Employee cannot delete invoice");
@@ -158,6 +163,26 @@ public class InvoiceController {
 
         loadInvoices();
 
+    }
+
+    @FXML
+    public void exportInvoicePdf() {
+        Invoice invoice = invoiceTable.getSelectionModel().getSelectedItem();
+        if (invoice == null) {
+            AlertUtil.showWarning("Export invoice", "Hãy chọn hóa đơn cần xuất.");
+            return;
+        }
+        try {
+            String outputDirectory = outputDirectoryField.getText().trim();
+            if (invoiceReportGenerator.generate(invoice.getId(), outputDirectory)) {
+                loadInvoices();
+                AlertUtil.showInfo("Export invoice", "Đã xuất PDF vào: " + outputDirectory);
+            } else {
+                AlertUtil.showError("Export invoice", "Không thể xuất PDF hóa đơn.");
+            }
+        } catch (Exception exception) {
+            AlertUtil.showError("Export invoice", exception.getMessage());
+        }
     }
 
     private void clearFields() {

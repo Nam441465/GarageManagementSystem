@@ -7,6 +7,9 @@ import model.Employee;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +33,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
                         if (rs.next()) {
 
-                                return new Employee(
-                                                rs.getInt("id"),
-                                                rs.getString("name"),
-                                                rs.getString("phone"),
-                                                rs.getString("position"),
-                                                rs.getDouble("salary"),
-                                                rs.getInt("user_id"));
+                                return mapEmployee(rs);
                         }
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error finding employee by user ID", e);
                 }
 
                 return null;
@@ -69,8 +66,8 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
                         ps.executeUpdate();
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error adding employee", e);
                 }
         }
 
@@ -102,8 +99,8 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
                         ps.executeUpdate();
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error updating employee", e);
                 }
         }
 
@@ -122,8 +119,8 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
                         ps.executeUpdate();
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error deleting employee", e);
                 }
         }
 
@@ -144,17 +141,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
                         if (rs.next()) {
 
-                                return new Employee(
-                                                rs.getInt("id"),
-                                                rs.getString("name"),
-                                                rs.getString("phone"),
-                                                rs.getString("position"),
-                                                rs.getDouble("salary"),
-                                                rs.getInt("user_id"));
+                                return mapEmployee(rs);
                         }
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error finding employee by ID", e);
                 }
 
                 return null;
@@ -177,19 +168,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
                         while (rs.next()) {
 
-                                Employee employee = new Employee(
-                                                rs.getInt("id"),
-                                                rs.getString("name"),
-                                                rs.getString("phone"),
-                                                rs.getString("position"),
-                                                rs.getDouble("salary"),
-                                                rs.getInt("user_id"));
-
-                                list.add(employee);
+                                list.add(mapEmployee(rs));
                         }
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error finding all employees", e);
                 }
 
                 return list;
@@ -212,10 +195,23 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                                 return rs.getInt(1);
                         }
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error counting employees", e);
                 }
 
                 return 0;
+        }
+
+        private Employee mapEmployee(ResultSet rs) throws SQLException {
+                Timestamp createdAtTimestamp = rs.getTimestamp("created_at");
+                LocalDateTime createdAt = createdAtTimestamp == null ? null : createdAtTimestamp.toLocalDateTime();
+                return new Employee(
+                                rs.getInt("id"),
+                                rs.getString("name"),
+                                rs.getString("phone"),
+                                rs.getString("position"),
+                                rs.getDouble("salary"),
+                                rs.getInt("user_id"),
+                                createdAt);
         }
 }

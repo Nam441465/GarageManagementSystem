@@ -3,6 +3,10 @@ package dao.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,17 +18,16 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public void addCustomer(Customer customer) {
 
-        String sql = "INSERT INTO Customer(id, name, phone, address) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO Customer(name, phone, address) VALUES(?,?,?)";
 
         try {
             Connection conn = DatabaseConnection.getConnection();
 
             PreparedStatement ps = conn.prepareStatement(sql);
 
-            ps.setInt(1, customer.getId());
-            ps.setString(2, customer.getName());
-            ps.setString(3, customer.getPhone());
-            ps.setString(4, customer.getAddress());
+            ps.setString(1, customer.getName());
+            ps.setString(2, customer.getPhone());
+            ps.setString(3, customer.getAddress());
 
             ps.executeUpdate();
 
@@ -33,8 +36,8 @@ public class CustomerDAOImpl implements CustomerDAO {
             ps.close();
             conn.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error adding customer", e);
         }
     }
 
@@ -42,8 +45,8 @@ public class CustomerDAOImpl implements CustomerDAO {
     public void updateCustomer(Customer customer) {
         String sql = "UPDATE Customer SET name = ?, phone = ?, address = ? WHERE id = ?";
         try {
-            Connection concc = DatabaseConnection.getConnection();
-            PreparedStatement ps = concc.prepareStatement(sql);
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, customer.getName());
             ps.setString(2, customer.getPhone());
             ps.setString(3, customer.getAddress());
@@ -54,9 +57,9 @@ public class CustomerDAOImpl implements CustomerDAO {
             System.out.println("Update successfully");
 
             ps.close();
-            concc.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            conn.close();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating customer", e);
         }
     }
 
@@ -64,8 +67,8 @@ public class CustomerDAOImpl implements CustomerDAO {
     public void deleteCustomer(int id) {
         String sql = "DELETE FROM Customer WHERE id = ?";
         try {
-            Connection concc = DatabaseConnection.getConnection();
-            PreparedStatement ps = concc.prepareStatement(sql);
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
 
             ps.executeUpdate();
@@ -73,9 +76,9 @@ public class CustomerDAOImpl implements CustomerDAO {
             System.out.println("Delete Customer successfully");
 
             ps.close();
-            concc.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            conn.close();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error deleting customer", e);
         }
     }
 
@@ -83,31 +86,27 @@ public class CustomerDAOImpl implements CustomerDAO {
     public Customer findById(int id) {
         String sql = "SELECT * FROM Customer WHERE id = ?";
         try {
-            Connection concc = DatabaseConnection.getConnection();
-            PreparedStatement ps = concc.prepareStatement(sql);
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
 
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                String name = rs.getString("name");
-                String phone = rs.getString("phone");
-                String address = rs.getString("address");
-
-                Customer customer = new Customer(id, name, phone, address);
+                Customer customer = mapCustomer(rs);
 
                 rs.close();
                 ps.close();
-                concc.close();
+                conn.close();
 
                 return customer;
             }
             rs.close();
             ps.close();
-            concc.close();
+            conn.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding customer by ID", e);
         }
         return null;
     }
@@ -117,22 +116,17 @@ public class CustomerDAOImpl implements CustomerDAO {
         List<Customer> list = new ArrayList<>();
         String sql = "SELECT * FROM Customer";
         try {
-            Connection concc = DatabaseConnection.getConnection();
-            PreparedStatement ps = concc.prepareStatement(sql);
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                String phone = rs.getString("phone");
-                String address = rs.getString("address");
-                Customer customer = new Customer(id, name, phone, address);
-                list.add(customer);
+                list.add(mapCustomer(rs));
             }
             rs.close();
             ps.close();
-            concc.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            conn.close();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding all customers", e);
         }
         return list;
     }
@@ -141,8 +135,8 @@ public class CustomerDAOImpl implements CustomerDAO {
     public boolean existsById(int id) {
         String sql = "SELECT * FROM Customer WHERE id = ?";
         try {
-            Connection concc = DatabaseConnection.getConnection();
-            PreparedStatement ps = concc.prepareStatement(sql);
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
 
             ps.setInt(1, id);
 
@@ -152,21 +146,20 @@ public class CustomerDAOImpl implements CustomerDAO {
 
             rs.close();
             ps.close();
-            concc.close();
+            conn.close();
 
             return exists;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking if customer exists by ID", e);
         }
-        return false;
     }
 
     @Override
     public boolean existsByPhone(String phone) {
         String sql = "SELECT * FROM Customer WHERE phone = ?";
         try {
-            Connection concc = DatabaseConnection.getConnection();
-            PreparedStatement ps = concc.prepareStatement(sql);
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
 
             ps.setString(1, phone);
             ResultSet rs = ps.executeQuery();
@@ -174,13 +167,12 @@ public class CustomerDAOImpl implements CustomerDAO {
 
             rs.close();
             ps.close();
-            concc.close();
+            conn.close();
 
             return exists;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking if customer exists by phone", e);
         }
-        return false;
     }
 
     @Override
@@ -194,14 +186,33 @@ public class CustomerDAOImpl implements CustomerDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                return rs.getInt(1);
+                int count = rs.getInt(1);
+                rs.close();
+                ps.close();
+                conn.close();
+                return count;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            rs.close();
+            ps.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error counting customers", e);
         }
 
         return 0;
+    }
+
+    private Customer mapCustomer(ResultSet rs) throws SQLException {
+        Timestamp createdAtTimestamp = rs.getTimestamp("created_at");
+        LocalDateTime createdAt = createdAtTimestamp == null ? null : createdAtTimestamp.toLocalDateTime();
+        return new Customer(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getString("phone"),
+                rs.getString("address"),
+                createdAt);
     }
 
 }

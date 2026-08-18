@@ -49,6 +49,9 @@
             <Button text="View Services"
                     onAction="#showServices"/>
 
+            <Button text="Đặt lịch bảo dưỡng"
+                    onAction="#bookAppointment"/>
+
             <Button text="Back To Login"
                     onAction="#goBack"/>
 

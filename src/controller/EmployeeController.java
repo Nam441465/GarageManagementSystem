@@ -1,5 +1,6 @@
 package controller;
 
+import enums.UserRole;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,7 +18,6 @@ import model.Employee;
 import model.Session;
 
 import service.EmployeeService;
-import service.impl.EmployeeServiceImpl;
 
 public class EmployeeController {
 
@@ -57,7 +57,7 @@ public class EmployeeController {
         @FXML
         private TextField userIdField;
 
-        private final EmployeeService employeeService = new EmployeeServiceImpl();
+        private final EmployeeService employeeService = new EmployeeService();
 
         private ObservableList<Employee> employeeList;
 
@@ -65,9 +65,7 @@ public class EmployeeController {
         public void initialize() {
 
                 if (Session.getCurrentUser() == null
-                                || !Session.getCurrentUser()
-                                                .getRole()
-                                                .equalsIgnoreCase("Owner")) {
+                                || !(Session.getCurrentUser().getRole() == UserRole.OWNER)) {
 
                         throw new RuntimeException(
                                         "Access denied");

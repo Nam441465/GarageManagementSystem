@@ -1,84 +1,76 @@
 package model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class User {
+import enums.UserRole;
+import model.abstracts.Person;
 
-    private int id;
-    private String role;
+public class User extends Person {
+
+    private UserRole role;
     private String username;
     private String password;
-    private LocalDateTime createdDate;
     private String status;
 
     public User() {
     }
 
-    public User(int id, String role, String username, String password, String status) {
-        this.id = id;
+    public User(int id, UserRole role, String username, String password, String status) {
+        setId(id);
         this.role = role;
         this.username = username;
         this.password = password;
         this.status = status;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getRole() {
+    public UserRole getRole() {
         return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     public void setStatus(String status) {
         this.status = status;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
+    public LocalDateTime getCreatedAt() {
+        return super.getCreatedAt();
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        super.setCreatedAt(createdAt);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", role = '" + role + '\'' +
-                ", user name = '" + username + '\'' +
-                ", created date = '" + createdDate + '\'' +
-                ", status = '" + status + '\'' +
+                "id=" + getId() +
+                ", role=" + role +
+                ", username='" + username + '\'' +
+                ", createdAt=" + getCreatedAt() +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

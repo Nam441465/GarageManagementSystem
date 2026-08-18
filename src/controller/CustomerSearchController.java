@@ -9,13 +9,14 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import model.Service;
+import model.Customer;
+import model.Session;
 import model.Vehicle;
 
 import service.ServiceService;
+import service.CustomerService;
 import service.VehicleService;
-
-import service.impl.ServiceServiceImpl;
-import service.impl.VehicleServiceImpl;
+import util.AlertUtil;
 
 import java.util.List;
 
@@ -28,10 +29,14 @@ public class CustomerSearchController {
     private TextArea resultArea;
 
     private final VehicleService vehicleService =
-            new VehicleServiceImpl();
+            new VehicleService();
 
     private final ServiceService serviceService =
-            new ServiceServiceImpl();
+            new ServiceService();
+
+    private final CustomerService customerService = new CustomerService();
+
+    private Vehicle selectedVehicle;
 
     @FXML
     public void initialize() {
@@ -72,6 +77,8 @@ WELCOME TO GARAGE CUSTOMER PORTAL
             return;
         }
 
+        selectedVehicle = vehicle;
+
         StringBuilder sb = new StringBuilder();
 
         sb.append("===== VEHICLE INFORMATION =====\n\n");
@@ -109,6 +116,40 @@ WELCOME TO GARAGE CUSTOMER PORTAL
     }
 
     @FXML
+    public void bookAppointment() {
+        try {
+            if (selectedVehicle == null) {
+                String licensePlate = licensePlateField.getText().trim();
+                if (licensePlate.isEmpty()) {
+                    throw new IllegalArgumentException("Hãy nhập biển số rồi bấm Search Vehicle trước.");
+                }
+                selectedVehicle = vehicleService.findByLicensePlate(licensePlate);
+            }
+            if (selectedVehicle == null) {
+                throw new IllegalArgumentException("Không tìm thấy xe với biển số đã nhập.");
+            }
+
+            // Appointment-specific handoff: the booking screen reads only Session.
+            Customer customer = customerService.findById(selectedVehicle.getCustomerId());
+            if (customer == null) {
+                throw new IllegalArgumentException("Không tìm thấy Customer của xe.");
+            }
+            Session.setCurrentCustomer(customer);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/ui/CustomerAppointmentView.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) resultArea.getScene().getWindow();
+            stage.setScene(new Scene(root, 900, 650));
+            stage.centerOnScreen();
+        } catch (Exception exception) {
+            AlertUtil.showError("Không thể mở đặt lịch", exception.getMessage() == null
+                    ? "Không thể mở màn hình đặt lịch." : exception.getMessage());
+        }
+    }
+
+    @FXML
     public void showServices() {
 
         List<Service> services =
@@ -122,10 +163,6 @@ WELCOME TO GARAGE CUSTOMER PORTAL
 
             sb.append("Service Name : ")
                     .append(service.getServiceName())
-                    .append("\n");
-
-            sb.append("Price        : ")
-                    .append(service.getPrice())
                     .append("\n");
 
             sb.append("Description  : ")

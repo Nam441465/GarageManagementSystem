@@ -1,21 +1,109 @@
 package service;
-import java.util.List;
+
+import dao.ServiceRecordDAO;
+import dao.impl.ServiceRecordDAOImpl;
 import model.ServiceRecord;
-public interface ServiceRecordService {
 
-    void addServiceRecord(ServiceRecord record);
+import java.util.List;
 
-    void updateServiceRecord(ServiceRecord record);
+public class ServiceRecordService {
 
-    void deleteServiceRecord(int id);
+    private final ServiceRecordDAO serviceRecordDao;
 
-    ServiceRecord findById(int id);
+    public ServiceRecordService() {
+        this(new ServiceRecordDAOImpl());
+    }
 
-    List<ServiceRecord> findAll();
+    public ServiceRecordService(ServiceRecordDAO serviceRecordDao) {
+        this.serviceRecordDao = java.util.Objects.requireNonNull(serviceRecordDao, "serviceRecordDao is required");
+    }
 
-    List<ServiceRecord> findByDate(String date);
+    private void validateServiceRecord(ServiceRecord record) {
 
-    boolean existsById(int id);
+        if (record == null) {
+            throw new IllegalArgumentException("Service record is null");
+        }
 
-    int countServiceRecords();
+        if (record.getVehicleId() <= 0) {
+            throw new IllegalArgumentException("Invalid vehicle id");
+        }
+
+        if (record.getCreatedBy() <= 0) {
+            throw new IllegalArgumentException("Invalid user id");
+        }
+
+        if (record.getRecordDate() == null) {
+            throw new IllegalArgumentException("Record date is required");
+        }
+
+        if (record.getTotalCost() < 0) {
+            throw new IllegalArgumentException("Invalid total cost");
+        }
+    }
+
+    public void addServiceRecord(ServiceRecord record) {
+
+        validateServiceRecord(record);
+
+        serviceRecordDao.addServiceRecord(record);
+    }
+
+    public void updateServiceRecord(ServiceRecord record) {
+
+        validateServiceRecord(record);
+
+        if (record.getId() <= 0) {
+            throw new IllegalArgumentException("Invalid service record id");
+        }
+
+        if (!serviceRecordDao.existsById(record.getId())) {
+            throw new IllegalArgumentException("Service record not found");
+        }
+
+        serviceRecordDao.updateServiceRecord(record);
+    }
+
+    public void deleteServiceRecord(int id) {
+
+        if (!serviceRecordDao.existsById(id)) {
+            throw new IllegalArgumentException("Service record not found");
+        }
+
+        serviceRecordDao.deleteServiceRecord(id);
+    }
+
+    public ServiceRecord findById(int id) {
+
+        if (id <= 0) {
+            throw new IllegalArgumentException("Invalid service record id");
+        }
+
+        return serviceRecordDao.findById(id);
+    }
+
+    public List<ServiceRecord> findAll() {
+        return serviceRecordDao.findAll();
+    }
+
+    public List<ServiceRecord> findByDate(String date) {
+
+        if (date == null || date.trim().isEmpty()) {
+            throw new IllegalArgumentException("Date can not be empty");
+        }
+
+        return serviceRecordDao.findByDate(date);
+    }
+
+    public boolean existsById(int id) {
+
+        if (id <= 0) {
+            throw new IllegalArgumentException("Invalid service record id");
+        }
+
+        return serviceRecordDao.existsById(id);
+    }
+
+    public int countServiceRecords() {
+        return serviceRecordDao.countServiceRecords();
+    }
 }

@@ -3,11 +3,15 @@ package dao.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import dao.UserDAO;
 import database.DatabaseConnection;
+import enums.UserRole;
+import exception.DatabaseException;
 import model.User;
 
 public class UserDAOImpl implements UserDAO {
@@ -16,21 +20,17 @@ public class UserDAOImpl implements UserDAO {
     public void addUser(User user) {
         String sql = "INSERT INTO Users(role, username, password) VALUES(?, ?, ?)";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, user.getRole());
+            ps.setString(1, user.getRole().name());
             ps.setString(2, user.getUsername());
             ps.setString(3, user.getPassword());
 
             ps.executeUpdate();
 
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not add user.", e);
         }
     }
 
@@ -38,22 +38,18 @@ public class UserDAOImpl implements UserDAO {
     public void updateUser(User user) {
         String sql = "UPDATE Users SET role=?, username=?, password=? WHERE id=?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, user.getRole());
+            ps.setString(1, user.getRole().name());
             ps.setString(2, user.getUsername());
             ps.setString(3, user.getPassword());
             ps.setInt(4, user.getId());
 
             ps.executeUpdate();
 
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not update user.", e);
         }
     }
 
@@ -61,19 +57,15 @@ public class UserDAOImpl implements UserDAO {
     public void deleteUser(int id) {
         String sql = "DELETE FROM Users WHERE id=?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
             ps.executeUpdate();
 
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not delete user.", e);
         }
     }
 
@@ -81,38 +73,23 @@ public class UserDAOImpl implements UserDAO {
     public User findById(int id) {
         String sql = "SELECT * FROM Users WHERE id=?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                User user = new User(
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return new User(
                         rs.getInt("id"),
-                        rs.getString("role"),
+                        UserRole.valueOf(rs.getString("role")),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("status"));
-
-                rs.close();
-                ps.close();
-                conn.close();
-
-                return user;
             }
-
-            rs.close();
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not find user by ID.", e);
         }
-
-        return null;
     }
 
     @Override
@@ -121,29 +98,19 @@ public class UserDAOImpl implements UserDAO {
 
         String sql = "SELECT * FROM Users";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                User user = new User(
+                list.add(new User(
                         rs.getInt("id"),
-                        rs.getString("role"),
+                        UserRole.valueOf(rs.getString("role")),
                         rs.getString("username"),
                         rs.getString("password"),
-                        rs.getString("status"));
-
-                list.add(user);
+                        rs.getString("status")));
             }
-
-            rs.close();
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not find users.", e);
         }
 
         return list;
@@ -153,180 +120,109 @@ public class UserDAOImpl implements UserDAO {
     public User findByUsername(String username) {
         String sql = "SELECT * FROM Users WHERE username=?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                User user = new User(
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return new User(
                         rs.getInt("id"),
-                        rs.getString("role"),
+                        UserRole.valueOf(rs.getString("role")),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("status"));
-
-                rs.close();
-                ps.close();
-                conn.close();
-
-                return user;
             }
-
-            rs.close();
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not find user by username.", e);
         }
-
-        return null;
     }
 
     @Override
     public User login(String username, String password) {
         String sql = "SELECT * FROM Users WHERE username=? AND password=? AND status='ACTIVE'";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
             ps.setString(2, password);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                User user = new User(
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return new User(
                         rs.getInt("id"),
-                        rs.getString("role"),
+                        UserRole.valueOf(rs.getString("role")),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("status"));
-
-                rs.close();
-                ps.close();
-                conn.close();
-
-                return user;
             }
-
-            rs.close();
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not authenticate user.", e);
         }
-
-        return null;
     }
 
     @Override
     public boolean changePassword(int userId, String newPassword) {
         String sql = "UPDATE Users SET password=? WHERE id=?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, newPassword);
             ps.setInt(2, userId);
 
             int rows = ps.executeUpdate();
 
-            ps.close();
-            conn.close();
-
             return rows > 0;
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not change user password.", e);
         }
-
-        return false;
     }
 
     @Override
     public boolean existsById(int id) {
         String sql = "SELECT * FROM Users WHERE id=?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
-
-            ResultSet rs = ps.executeQuery();
-
-            boolean exists = rs.next();
-
-            rs.close();
-            ps.close();
-            conn.close();
-
-            return exists;
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not check whether user exists.", e);
         }
-
-        return false;
     }
 
     @Override
     public boolean existsByUsername(String username) {
         String sql = "SELECT * FROM Users WHERE username=?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
-
-            ResultSet rs = ps.executeQuery();
-
-            boolean exists = rs.next();
-
-            rs.close();
-            ps.close();
-            conn.close();
-
-            return exists;
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not check whether username exists.", e);
         }
-
-        return false;
     }
 
     @Override
     public int countUsers() {
         String sql = "SELECT COUNT(*) FROM Users";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                int count = rs.getInt(1);
-
-                rs.close();
-                ps.close();
-                conn.close();
-
-                return count;
+                return rs.getInt(1);
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not count users.", e);
         }
 
         return 0;

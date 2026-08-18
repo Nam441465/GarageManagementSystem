@@ -1,5 +1,6 @@
 package controller;
 
+import enums.UserRole;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 
@@ -24,6 +25,18 @@ public class DashboardController {
 
     @FXML
     private Button serviceButton;
+
+    @FXML
+    private Button appointmentButton;
+
+    @FXML
+    private Button priceButton;
+
+    @FXML
+    private Button inventoryButton;
+
+    @FXML
+    private Button warrantyButton;
 
     @FXML
     private Button serviceRecordButton;
@@ -69,9 +82,9 @@ public class DashboardController {
             roleLabel.setText(
                     "Role: "
                             + user.getRole());
-
-            if (user.getRole()
-                    .equalsIgnoreCase("Employee")) {
+            if (user.getRole() == UserRole.OWNER) {
+                System.out.println("Owner login");
+            } else {
 
                 employeeButton.setVisible(false);
                 employeeButton.setManaged(false);
@@ -85,8 +98,7 @@ public class DashboardController {
 
             }
 
-            if (user.getRole()
-                    .equalsIgnoreCase("Owner")) {
+            if (user.getRole() == UserRole.OWNER) {
 
                 System.out.println(
                         "Owner login");
@@ -122,6 +134,26 @@ public class DashboardController {
                 "/ui/ServiceView.fxml",
                 "Service Management");
 
+    }
+
+    @FXML
+    public void showAppointment() {
+        openWindow("/ui/CustomerAppointmentView.fxml", "Appointment Management");
+    }
+
+    @FXML
+    public void showPriceList() {
+        openWindow("/ui/PriceView.fxml", "Price List Management");
+    }
+
+    @FXML
+    public void showInventory() {
+        openWindow("/ui/InventoryView.fxml", "Inventory Management");
+    }
+
+    @FXML
+    public void showWarranty() {
+        openWindow("/ui/WarrantyView.fxml", "Warranty Management");
     }
 
     @FXML

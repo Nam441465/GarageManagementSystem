@@ -10,15 +10,21 @@ public final class DatabaseInitializer {
 
     public static void initialize() {
         String[] statements = {
-            "CREATE TABLE IF NOT EXISTS Customer (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100), phone VARCHAR(20), address VARCHAR(255))",
-            "CREATE TABLE IF NOT EXISTS Users (id INT PRIMARY KEY AUTO_INCREMENT, role VARCHAR(50), username VARCHAR(50) UNIQUE, password VARCHAR(100), created_date DATETIME DEFAULT CURRENT_TIMESTAMP, status ENUM('ACTIVE','INACTIVE') DEFAULT 'ACTIVE')",
-            "CREATE TABLE IF NOT EXISTS Employee (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100), phone VARCHAR(20), position VARCHAR(50), salary DOUBLE, user_id INT UNIQUE, FOREIGN KEY(user_id) REFERENCES Users(id))",
-            "CREATE TABLE IF NOT EXISTS Vehicle (id INT PRIMARY KEY AUTO_INCREMENT, customer_id INT, brand VARCHAR(50), vehicle_type VARCHAR(30), status VARCHAR(30), license_plate VARCHAR(20) UNIQUE, model VARCHAR(50), FOREIGN KEY(customer_id) REFERENCES Customer(id))",
-            "CREATE TABLE IF NOT EXISTS Service (id INT PRIMARY KEY AUTO_INCREMENT, service_name VARCHAR(50), price DOUBLE, description VARCHAR(250))",
-            "CREATE TABLE IF NOT EXISTS ServiceRecord (id INT PRIMARY KEY AUTO_INCREMENT, vehicle_id INT, recordDate DATE, notes VARCHAR(250), total_cost DOUBLE, created_by INT, FOREIGN KEY(vehicle_id) REFERENCES Vehicle(id), FOREIGN KEY(created_by) REFERENCES Users(id))",
-            "CREATE TABLE IF NOT EXISTS ServiceRecordDetail (id INT PRIMARY KEY AUTO_INCREMENT, service_record_id INT, service_id INT, quantity INT, price DOUBLE, subtotal DOUBLE, FOREIGN KEY(service_record_id) REFERENCES ServiceRecord(id), FOREIGN KEY(service_id) REFERENCES Service(id))",
-            "CREATE TABLE IF NOT EXISTS Invoice (id INT PRIMARY KEY AUTO_INCREMENT, record_id INT, total_amount DOUBLE, issueDate DATE DEFAULT (CURRENT_DATE), FOREIGN KEY(record_id) REFERENCES ServiceRecord(id))",
-            "CREATE TABLE IF NOT EXISTS EmployeeInvite (id INT PRIMARY KEY AUTO_INCREMENT, invite_code VARCHAR(50) UNIQUE NOT NULL, status ENUM('UNUSED','USED') DEFAULT 'UNUSED', created_date DATETIME DEFAULT CURRENT_TIMESTAMP)"
+            "CREATE TABLE IF NOT EXISTS Customer (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100) NOT NULL, phone VARCHAR(20), address VARCHAR(255), created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+            "CREATE TABLE IF NOT EXISTS Users (id INT PRIMARY KEY AUTO_INCREMENT, role ENUM('OWNER','EMPLOYEE') NOT NULL DEFAULT 'EMPLOYEE', username VARCHAR(50) NOT NULL UNIQUE, password VARCHAR(255) NOT NULL, created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, status ENUM('ACTIVE','INACTIVE','BLOCKED') NOT NULL DEFAULT 'ACTIVE', last_login DATETIME NULL)",
+            "CREATE TABLE IF NOT EXISTS Employee (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100) NOT NULL, phone VARCHAR(20), position VARCHAR(50) NOT NULL, salary DECIMAL(12,2) NOT NULL DEFAULT 0.00, user_id INT UNIQUE, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(user_id) REFERENCES Users(id) ON DELETE SET NULL ON UPDATE CASCADE)",
+            "CREATE TABLE IF NOT EXISTS Vehicle (id INT PRIMARY KEY AUTO_INCREMENT, customer_id INT NOT NULL, brand VARCHAR(50) NOT NULL, vehicle_type ENUM('SEDAN','SUV','HATCHBACK','PICKUP','TRUCK','MOTORBIKE') NOT NULL, status ENUM('AVAILABLE','WAITING','IN_SERVICE','COMPLETED','DELIVERED') NOT NULL DEFAULT 'AVAILABLE', license_plate VARCHAR(20) NOT NULL UNIQUE, model VARCHAR(50) NOT NULL, year INT, color VARCHAR(30), created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(customer_id) REFERENCES Customer(id) ON DELETE CASCADE ON UPDATE CASCADE)",
+            "CREATE TABLE IF NOT EXISTS Service (id INT PRIMARY KEY AUTO_INCREMENT, service_name VARCHAR(100) NOT NULL, description TEXT, category ENUM('CLEANING','MAINTENANCE','REPAIR','REPLACEMENT') NOT NULL, is_active BOOLEAN NOT NULL DEFAULT TRUE, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+            "CREATE TABLE IF NOT EXISTS PriceList (id INT PRIMARY KEY AUTO_INCREMENT, service_id INT NOT NULL, vehicle_type ENUM('SEDAN','SUV','HATCHBACK','PICKUP','TRUCK','MOTORBIKE') NOT NULL, price DECIMAL(12,2) NOT NULL, effective_from DATE NOT NULL, effective_to DATE, note VARCHAR(255), UNIQUE(vehicle_type,service_id), FOREIGN KEY(service_id) REFERENCES Service(id) ON DELETE CASCADE ON UPDATE CASCADE)",
+            "CREATE TABLE IF NOT EXISTS Appointment (id INT PRIMARY KEY AUTO_INCREMENT, customer_id INT NOT NULL, vehicle_id INT, employee_id INT, appointment_date DATETIME NOT NULL, status ENUM('PENDING','CONFIRMED','COMPLETED','CANCELLED','NO_SHOW') NOT NULL DEFAULT 'PENDING', notes TEXT, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(customer_id) REFERENCES Customer(id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY(vehicle_id) REFERENCES Vehicle(id) ON DELETE SET NULL ON UPDATE CASCADE, FOREIGN KEY(employee_id) REFERENCES Employee(id) ON DELETE SET NULL ON UPDATE CASCADE)",
+            "CREATE TABLE IF NOT EXISTS AppointmentServiceItem (id INT PRIMARY KEY AUTO_INCREMENT, appointment_id INT NOT NULL, service_id INT NOT NULL, quantity INT NOT NULL DEFAULT 1, unit_price DECIMAL(12,2) NOT NULL, notes TEXT, FOREIGN KEY(appointment_id) REFERENCES Appointment(id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY(service_id) REFERENCES Service(id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+            "CREATE TABLE IF NOT EXISTS ServiceRecord (id INT PRIMARY KEY AUTO_INCREMENT, appointment_id INT, vehicle_id INT NOT NULL, record_date DATE NOT NULL, notes TEXT, total_cost DECIMAL(12,2) NOT NULL DEFAULT 0.00, created_by INT NOT NULL, employee_id INT, status ENUM('OPEN','IN_PROGRESS','COMPLETED','PAID','CANCELLED') NOT NULL DEFAULT 'OPEN', created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(appointment_id) REFERENCES Appointment(id) ON DELETE SET NULL ON UPDATE CASCADE, FOREIGN KEY(vehicle_id) REFERENCES Vehicle(id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY(created_by) REFERENCES Users(id) ON DELETE RESTRICT ON UPDATE CASCADE, FOREIGN KEY(employee_id) REFERENCES Employee(id) ON DELETE SET NULL ON UPDATE CASCADE)",
+            "CREATE TABLE IF NOT EXISTS ServiceRecordDetail (id INT PRIMARY KEY AUTO_INCREMENT, service_record_id INT NOT NULL, service_id INT NOT NULL, quantity INT NOT NULL DEFAULT 1, price DECIMAL(12,2) NOT NULL, subtotal DECIMAL(12,2) NOT NULL, notes TEXT, FOREIGN KEY(service_record_id) REFERENCES ServiceRecord(id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY(service_id) REFERENCES Service(id) ON DELETE RESTRICT ON UPDATE CASCADE)",
+            "CREATE TABLE IF NOT EXISTS Invoice (id INT PRIMARY KEY AUTO_INCREMENT, record_id INT NOT NULL, total_amount DECIMAL(12,2) NOT NULL, issue_date DATE NOT NULL DEFAULT (CURRENT_DATE), payment_status ENUM('UNPAID','PARTIAL','PAID') NOT NULL DEFAULT 'UNPAID', payment_method ENUM('CASH','BANK_TRANSFER','CARD') NOT NULL DEFAULT 'CASH', pdf_path VARCHAR(255), FOREIGN KEY(record_id) REFERENCES ServiceRecord(id) ON DELETE CASCADE ON UPDATE CASCADE)",
+            "CREATE TABLE IF NOT EXISTS Part (id INT PRIMARY KEY AUTO_INCREMENT, part_name VARCHAR(100) NOT NULL, part_code VARCHAR(50) UNIQUE, supplier VARCHAR(100), unit_price DECIMAL(12,2) NOT NULL DEFAULT 0.00, stock_quantity INT NOT NULL DEFAULT 0, min_stock INT NOT NULL DEFAULT 0, description TEXT, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+            "CREATE TABLE IF NOT EXISTS Warranty (id INT PRIMARY KEY AUTO_INCREMENT, service_record_id INT NOT NULL, warranty_code VARCHAR(50) NOT NULL UNIQUE, start_date DATE NOT NULL, end_date DATE NOT NULL, coverage TEXT, status ENUM('ACTIVE','EXPIRED','CLAIMED') NOT NULL DEFAULT 'ACTIVE', FOREIGN KEY(service_record_id) REFERENCES ServiceRecord(id) ON DELETE CASCADE ON UPDATE CASCADE)",
+            "CREATE TABLE IF NOT EXISTS AuditLog (id INT PRIMARY KEY AUTO_INCREMENT, user_id INT, action VARCHAR(100) NOT NULL, entity_name VARCHAR(100) NOT NULL, entity_id INT, old_value JSON, new_value JSON, ip_address VARCHAR(45), device VARCHAR(255), created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(user_id) REFERENCES Users(id) ON DELETE SET NULL ON UPDATE CASCADE)",
+            "CREATE TABLE IF NOT EXISTS EmployeeInvite (id INT PRIMARY KEY AUTO_INCREMENT, invite_code VARCHAR(50) NOT NULL UNIQUE, status ENUM('UNUSED','USED','EXPIRED') NOT NULL DEFAULT 'UNUSED', created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, expires_at DATETIME, created_by INT, FOREIGN KEY(created_by) REFERENCES Users(id) ON DELETE SET NULL ON UPDATE CASCADE)"
         };
 
         Connection connection = DatabaseConnection.getConnection();
@@ -30,9 +36,19 @@ public final class DatabaseInitializer {
             for (String sql : statements) {
                 statement.execute(sql);
             }
+            
+            // Insert default Owner account if not exists
             statement.executeUpdate("INSERT INTO Users(role, username, password, status) "
-                    + "SELECT 'Owner', 'owner', '123456', 'ACTIVE' "
-                    + "WHERE NOT EXISTS (SELECT 1 FROM Users WHERE role = 'Owner')");
+                    + "SELECT 'OWNER', 'owner', '123456', 'ACTIVE' "
+                    + "WHERE NOT EXISTS (SELECT 1 FROM Users WHERE role = 'OWNER')");
+            
+            // Create indexes
+            createIndexIfMissing(statement, "idx_vehicle_customer", "CREATE INDEX idx_vehicle_customer ON Vehicle(customer_id)");
+            createIndexIfMissing(statement, "idx_appointment_customer", "CREATE INDEX idx_appointment_customer ON Appointment(customer_id)");
+            createIndexIfMissing(statement, "idx_appointment_status", "CREATE INDEX idx_appointment_status ON Appointment(status)");
+            createIndexIfMissing(statement, "idx_servicerecord_vehicle", "CREATE INDEX idx_servicerecord_vehicle ON ServiceRecord(vehicle_id)");
+            createIndexIfMissing(statement, "idx_auditlog_user", "CREATE INDEX idx_auditlog_user ON AuditLog(user_id)");
+            
             createOwnerProtectionTriggers(statement);
         } catch (Exception e) {
             throw new IllegalStateException("Could not initialize the database schema.", e);
@@ -42,15 +58,15 @@ public final class DatabaseInitializer {
     private static void createOwnerProtectionTriggers(Statement statement) throws Exception {
         createTriggerIfMissing(statement, "prevent_extra_owner", "CREATE TRIGGER prevent_extra_owner "
                 + "BEFORE INSERT ON Users FOR EACH ROW "
-                + "BEGIN IF NEW.role = 'Owner' AND EXISTS (SELECT 1 FROM Users WHERE role = 'Owner') "
+                + "BEGIN IF NEW.role = 'OWNER' AND EXISTS (SELECT 1 FROM Users WHERE role = 'OWNER') "
                 + "THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Only one Owner account is allowed'; END IF; END");
         createTriggerIfMissing(statement, "prevent_owner_update", "CREATE TRIGGER prevent_owner_update "
                 + "BEFORE UPDATE ON Users FOR EACH ROW "
-                + "BEGIN IF OLD.role = 'Owner' THEN SIGNAL SQLSTATE '45000' "
+                + "BEGIN IF OLD.role = 'OWNER' THEN SIGNAL SQLSTATE '45000' "
                 + "SET MESSAGE_TEXT = 'Owner account cannot be modified'; END IF; END");
         createTriggerIfMissing(statement, "prevent_owner_delete", "CREATE TRIGGER prevent_owner_delete "
                 + "BEFORE DELETE ON Users FOR EACH ROW "
-                + "BEGIN IF OLD.role = 'Owner' THEN SIGNAL SQLSTATE '45000' "
+                + "BEGIN IF OLD.role = 'OWNER' THEN SIGNAL SQLSTATE '45000' "
                 + "SET MESSAGE_TEXT = 'Owner account cannot be deleted'; END IF; END");
     }
 
@@ -59,6 +75,16 @@ public final class DatabaseInitializer {
             statement.execute(sql);
         } catch (java.sql.SQLException exception) {
             if (exception.getErrorCode() != 1359) {
+                throw exception;
+            }
+        }
+    }
+
+    private static void createIndexIfMissing(Statement statement, String indexName, String sql) throws Exception {
+        try {
+            statement.execute(sql);
+        } catch (java.sql.SQLException exception) {
+            if (exception.getErrorCode() != 1061) {
                 throw exception;
             }
         }

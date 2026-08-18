@@ -3,57 +3,55 @@ package dao.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import dao.ServiceDAO;
 import database.DatabaseConnection;
+import enums.ServiceCategory;
 import model.Service;
 
 public class ServiceDAOImpl implements ServiceDAO {
 
     @Override
     public void addService(Service service) {
-        String sql = "INSERT INTO Service(service_name, price, description) VALUES(?, ?, ?)";
+        String sql = "INSERT INTO Service(service_name, description, is_active, category) VALUES(?, ?, ?, ?)";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, service.getServiceName());
-            ps.setDouble(2, service.getPrice());
-            ps.setString(3, service.getDescription());
+            ps.setString(2, service.getDescription());
+            ps.setBoolean(3, service.isActive());
+            ps.setString(4, service.getCategory() != null ? service.getCategory().name() : null);
 
             ps.executeUpdate();
 
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error adding service", e);
         }
     }
 
     @Override
     public void updateService(Service service) {
-        String sql = "UPDATE Service SET service_name = ?, price = ?, description = ? WHERE id = ?";
+        String sql = "UPDATE Service SET service_name = ?, description = ?, is_active = ?, category = ? WHERE id = ?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, service.getServiceName());
-            ps.setDouble(2, service.getPrice());
-            ps.setString(3, service.getDescription());
-            ps.setInt(4, service.getId());
+            ps.setString(2, service.getDescription());
+            ps.setBoolean(3, service.isActive());
+            ps.setString(4, service.getCategory() != null ? service.getCategory().name() : null);
+            ps.setInt(5, service.getId());
 
             ps.executeUpdate();
 
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating service", e);
         }
     }
 
@@ -61,19 +59,14 @@ public class ServiceDAOImpl implements ServiceDAO {
     public void deleteService(int id) {
         String sql = "DELETE FROM Service WHERE id = ?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-
             ps.executeUpdate();
 
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error deleting service", e);
         }
     }
 
@@ -81,34 +74,18 @@ public class ServiceDAOImpl implements ServiceDAO {
     public Service findById(int id) {
         String sql = "SELECT * FROM Service WHERE id = ?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                String serviceName = rs.getString("service_name");
-                double price = rs.getDouble("price");
-                String description = rs.getString("description");
-
-                Service service = new Service(id, serviceName, price, description);
-
-                rs.close();
-                ps.close();
-                conn.close();
-
-                return service;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToService(rs);
+                }
             }
 
-            rs.close();
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding service by ID", e);
         }
 
         return null;
@@ -117,32 +94,18 @@ public class ServiceDAOImpl implements ServiceDAO {
     @Override
     public List<Service> findAll() {
         List<Service> list = new ArrayList<>();
-
         String sql = "SELECT * FROM Service";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String serviceName = rs.getString("service_name");
-                double price = rs.getDouble("price");
-                String description = rs.getString("description");
-
-                Service service = new Service(id, serviceName, price, description);
-
-                list.add(service);
+                list.add(mapResultSetToService(rs));
             }
 
-            rs.close();
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding all services", e);
         }
 
         return list;
@@ -151,35 +114,23 @@ public class ServiceDAOImpl implements ServiceDAO {
     @Override
     public List<Service> findByPriceRange(double minPrice, double maxPrice) {
         List<Service> list = new ArrayList<>();
+        // Join với bảng PriceList để tìm dịch vụ theo khoảng giá
+        String sql = "SELECT DISTINCT s.* FROM Service s JOIN PriceList pl ON s.id = pl.service_id WHERE pl.price BETWEEN ? AND ?";
 
-        String sql = "SELECT * FROM Service WHERE price BETWEEN ? AND ?";
-
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setDouble(1, minPrice);
             ps.setDouble(2, maxPrice);
 
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String serviceName = rs.getString("service_name");
-                double price = rs.getDouble("price");
-                String description = rs.getString("description");
-
-                Service service = new Service(id, serviceName, price, description);
-
-                list.add(service);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapResultSetToService(rs));
+                }
             }
 
-            rs.close();
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding services by price range", e);
         }
 
         return list;
@@ -187,80 +138,69 @@ public class ServiceDAOImpl implements ServiceDAO {
 
     @Override
     public boolean existsById(int id) {
-        String sql = "SELECT * FROM Service WHERE id = ?";
+        String sql = "SELECT 1 FROM Service WHERE id = ?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
 
-            ResultSet rs = ps.executeQuery();
-
-            boolean exists = rs.next();
-
-            rs.close();
-            ps.close();
-            conn.close();
-
-            return exists;
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking if service exists by ID", e);
         }
-
-        return false;
     }
 
     @Override
     public boolean existsByName(String name) {
-        String sql = "SELECT * FROM Service WHERE service_name = ?";
+        String sql = "SELECT 1 FROM Service WHERE service_name = ?";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, name);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
 
-            ResultSet rs = ps.executeQuery();
-
-            boolean exists = rs.next();
-
-            rs.close();
-            ps.close();
-            conn.close();
-
-            return exists;
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking if service exists by name", e);
         }
-
-        return false;
     }
 
     @Override
     public int countServices() {
         String sql = "SELECT COUNT(*) FROM Service";
 
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) {
                 return rs.getInt(1);
             }
 
-            rs.close();
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error counting services", e);
         }
 
         return 0;
+    }
+
+    private Service mapResultSetToService(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
+        String serviceName = rs.getString("service_name");
+        String description = rs.getString("description");
+        boolean isActive = rs.getBoolean("is_active");
+
+        Timestamp createdAtTs = rs.getTimestamp("created_at");
+        LocalDateTime createdAt = createdAtTs != null ? createdAtTs.toLocalDateTime() : null;
+
+        String categoryStr = rs.getString("category");
+        ServiceCategory category = categoryStr != null ? ServiceCategory.valueOf(categoryStr) : null;
+
+        return new Service(id, serviceName, description, isActive, createdAt, category);
     }
 }

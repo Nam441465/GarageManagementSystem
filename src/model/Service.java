@@ -1,20 +1,52 @@
 package model;
 
-public class Service {
+import java.time.LocalDateTime;
 
+import enums.ServiceCategory;
+
+public class Service {
     private int id;
     private String serviceName;
-    private double price;
     private String description;
+    private boolean isActive;
+    private LocalDateTime createdAt;
+    private ServiceCategory category;
 
     public Service() {
     }
 
-    public Service(int id, String serviceName, double price, String description) {
+    public Service(String serviceName,
+            String description,
+            boolean isActive,
+            LocalDateTime createdAt,
+            ServiceCategory category) {
+        this.serviceName = serviceName;
+        this.description = description;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.category = category;
+    }
+
+    public Service(int id,
+            String serviceName,
+            String description,
+            boolean isActive,
+            LocalDateTime createdAt,
+            ServiceCategory category) {
         this.id = id;
         this.serviceName = serviceName;
-        this.price = price;
         this.description = description;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.category = category;
+    }
+
+    public ServiceCategory getCategory() {
+        return category;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public String getDescription() {
@@ -25,12 +57,20 @@ public class Service {
         return id;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
     public String getServiceName() {
         return serviceName;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setCategory(ServiceCategory category) {
+        this.category = category;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public void setDescription(String description) {
@@ -41,8 +81,8 @@ public class Service {
         this.id = id;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     public void setServiceName(String serviceName) {
@@ -54,8 +94,11 @@ public class Service {
         return "Service{" +
                 "id=" + id +
                 ", serviceName='" + serviceName + '\'' +
-                ", price=" + price +
                 ", description='" + description + '\'' +
+                ", category=" + category +
+                ", isActive=" + isActive +
+                ", createdAt=" + createdAt +
                 '}';
     }
+
 }

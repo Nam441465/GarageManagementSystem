@@ -61,6 +61,30 @@
                                 prefHeight="40"
                                 onAction="#showService" />
 
+                        <Button fx:id="priceButton"
+                                text="Price List Management"
+                                prefWidth="300"
+                                prefHeight="40"
+                                onAction="#showPriceList" />
+
+                        <Button fx:id="appointmentButton"
+                                text="Appointment Management"
+                                prefWidth="300"
+                                prefHeight="40"
+                                onAction="#showAppointment" />
+
+                        <Button fx:id="inventoryButton"
+                                text="Inventory Management"
+                                prefWidth="300"
+                                prefHeight="40"
+                                onAction="#showInventory" />
+
+                        <Button fx:id="warrantyButton"
+                                text="Warranty Management"
+                                prefWidth="300"
+                                prefHeight="40"
+                                onAction="#showWarranty" />
+
                         <Button fx:id="serviceRecordButton"
                                 text="Service Record Management"
                                 prefWidth="300"

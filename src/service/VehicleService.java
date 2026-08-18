@@ -1,25 +1,135 @@
 package service;
 
-import java.util.List;
+import dao.VehicleDAO;
+import dao.impl.VehicleDAOImpl;
 import model.Vehicle;
 
-public interface VehicleService {
-    void addVehicle(Vehicle vehicle);
+import java.util.List;
 
-    void updateVehicle(Vehicle vehicle);
+public class VehicleService {
 
-    void deleteVehicle(int id);
+    private final VehicleDAO vehicleDao;
 
-    Vehicle findById(int id);
+    public VehicleService() {
+        this(new VehicleDAOImpl());
+    }
 
-    List<Vehicle> findAll();
+    public VehicleService(VehicleDAO vehicleDao) {
+        this.vehicleDao = java.util.Objects.requireNonNull(vehicleDao, "vehicleDao is required");
+    }
 
-    Vehicle findByLicensePlate(String licensePlate);
+    private void validateVehicle(Vehicle vehicle) {
 
-    boolean existsById(int id);
+        if (vehicle == null) {
+            throw new IllegalArgumentException("Vehicle is null");
+        }
 
-    boolean existsByLicensePlate(String licensePlate);
+        if (vehicle.getCustomerId() <= 0) {
+            throw new IllegalArgumentException("Invalid customer id");
+        }
 
-    int countVehicles();
+        if (vehicle.getBrand() == null || vehicle.getBrand().trim().isEmpty()) {
+            throw new IllegalArgumentException("Brand can not be empty");
+        }
 
+        if (vehicle.getVehicleType() == null || vehicle.getVehicleType().trim().isEmpty()) {
+            throw new IllegalArgumentException("Vehicle type can not be empty");
+        }
+
+        if (vehicle.getLicensePlate() == null || vehicle.getLicensePlate().trim().isEmpty()) {
+            throw new IllegalArgumentException("License plate can not be empty");
+        }
+
+        if (vehicle.getStatus() == null || vehicle.getStatus().trim().isEmpty()) {
+            throw new IllegalArgumentException("Status can not be empty");
+        }
+    }
+
+    public void addVehicle(Vehicle vehicle) {
+
+        validateVehicle(vehicle);
+
+        if (vehicleDao.existsByLicensePlate(vehicle.getLicensePlate())) {
+            throw new IllegalArgumentException("License plate already exists");
+        }
+
+        vehicleDao.addVehicle(vehicle);
+    }
+
+    public void updateVehicle(Vehicle vehicle) {
+
+        validateVehicle(vehicle);
+
+        if (vehicle.getId() <= 0) {
+            throw new IllegalArgumentException("Invalid vehicle id");
+        }
+
+        if (!vehicleDao.existsById(vehicle.getId())) {
+            throw new IllegalArgumentException("Vehicle not found");
+        }
+
+        vehicleDao.updateVehicle(vehicle);
+    }
+
+    public void deleteVehicle(int id) {
+
+        if (!vehicleDao.existsById(id)) {
+            throw new IllegalArgumentException("Vehicle not found");
+        }
+
+        vehicleDao.deleteVehicle(id);
+    }
+
+    public Vehicle findById(int id) {
+
+        if (id <= 0) {
+            throw new IllegalArgumentException("Invalid vehicle id");
+        }
+
+        return vehicleDao.findById(id);
+    }
+
+    public List<Vehicle> findAll() {
+        return vehicleDao.findAll();
+    }
+
+    public Vehicle findByLicensePlate(String licensePlate) {
+
+        if (licensePlate == null || licensePlate.trim().isEmpty()) {
+            throw new IllegalArgumentException("License plate can not be empty");
+        }
+
+        return vehicleDao.findByLicensePlate(licensePlate);
+    }
+
+    public boolean existsById(int id) {
+
+        if (id <= 0) {
+            throw new IllegalArgumentException("Invalid vehicle id");
+        }
+
+        return vehicleDao.existsById(id);
+    }
+
+    public boolean existsByLicensePlate(String licensePlate) {
+
+        if (licensePlate == null || licensePlate.trim().isEmpty()) {
+            throw new IllegalArgumentException("License plate can not be empty");
+        }
+
+        return vehicleDao.existsByLicensePlate(licensePlate);
+    }
+
+    public int countVehicles() {
+        return vehicleDao.countVehicles();
+    }
+
+    public List<Vehicle> getVehiclesByCustomer(int customerId) {
+        if (customerId <= 0) {
+            throw new IllegalArgumentException("Invalid customer id");
+        }
+        return vehicleDao.findAll().stream()
+                .filter(vehicle -> vehicle.getCustomerId() == customerId)
+                .toList();
+    }
 }

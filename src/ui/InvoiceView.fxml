@@ -50,6 +50,10 @@
             <TextField fx:id="totalAmountField"
                        promptText="Total Amount"/>
 
+            <TextField fx:id="outputDirectoryField"
+                       text="exports"
+                       promptText="PDF output directory"/>
+
             <Button text="Add"
                     onAction="#addInvoice"/>
 
@@ -58,6 +62,9 @@
 
             <Button text="Delete"
                     onAction="#deleteInvoice"/>
+
+            <Button text="Export PDF"
+                    onAction="#exportInvoicePdf"/>
             <Button text="Back" onAction="#backToDashboard"/>
 
         </VBox>

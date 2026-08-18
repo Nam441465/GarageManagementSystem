@@ -7,6 +7,7 @@ import model.ServiceRecordDetail;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +36,8 @@ public class ServiceRecordDetailDAOImpl implements ServiceRecordDetailDAO {
 
                         ps.executeUpdate();
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error adding service record detail", e);
                 }
         }
 
@@ -67,8 +68,8 @@ public class ServiceRecordDetailDAOImpl implements ServiceRecordDetailDAO {
 
                         ps.executeUpdate();
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error updating service record detail", e);
                 }
         }
 
@@ -86,8 +87,8 @@ public class ServiceRecordDetailDAOImpl implements ServiceRecordDetailDAO {
 
                         ps.executeUpdate();
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error deleting service record detail", e);
                 }
         }
 
@@ -130,8 +131,8 @@ public class ServiceRecordDetailDAOImpl implements ServiceRecordDetailDAO {
                                 return detail;
                         }
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error finding service record detail by ID", e);
                 }
 
                 return null;
@@ -177,8 +178,8 @@ public class ServiceRecordDetailDAOImpl implements ServiceRecordDetailDAO {
                                 list.add(detail);
                         }
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error finding all service record details", e);
                 }
 
                 return list;
@@ -226,8 +227,8 @@ public class ServiceRecordDetailDAOImpl implements ServiceRecordDetailDAO {
                                 list.add(detail);
                         }
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error finding all service record details", e);
                 }
 
                 return list;
@@ -250,11 +251,9 @@ public class ServiceRecordDetailDAOImpl implements ServiceRecordDetailDAO {
 
                         return rs.next();
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error checking if service record detail exists", e);
                 }
-
-                return false;
         }
 
         @Override
@@ -274,8 +273,8 @@ public class ServiceRecordDetailDAOImpl implements ServiceRecordDetailDAO {
                                 return rs.getInt(1);
                         }
 
-                } catch (Exception e) {
-                        e.printStackTrace();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error counting service record details", e);
                 }
 
                 return 0;

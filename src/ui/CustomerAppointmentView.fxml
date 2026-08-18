@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+  xmlns:fx="http://javafx.com/fxml"
+  fx:controller="controller.CustomerAppointmentController">
+
+  <top>
+    <VBox spacing="5"
+      style="-fx-padding: 15;">
+
+      <Label text="ĐẶT LỊCH BẢO DƯỠNG"
+        style="-fx-font-size: 22px; -fx-font-weight: bold;" />
+
+      <Label text="Thông tin khách hàng"
+        style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+      <HBox spacing="10">
+
+        <Label text="Họ tên:"
+          prefWidth="70" />
+
+        <TextField fx:id="customerNameField"
+          promptText="Nhập họ tên"
+          prefWidth="220" />
+
+        <Label text="Số điện thoại:"
+          prefWidth="100" />
+
+        <TextField fx:id="customerPhoneField"
+          promptText="Nhập số điện thoại"
+          prefWidth="180" />
+
+      </HBox>
+
+    </VBox>
+  </top>
+
+  <center>
+
+    <SplitPane dividerPositions="0.5">
+
+      <!-- ========================= -->
+      <!-- THÔNG TIN ĐẶT LỊCH -->
+      <!-- ========================= -->
+
+      <VBox spacing="10"
+        style="-fx-padding: 15;">
+
+        <Label text="Thông tin xe"
+          style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+        <Label text="Biển số xe:" />
+
+        <TextField fx:id="licensePlateField"
+          promptText="Ví dụ: 30A-12345" />
+
+        <Label text="Hãng xe:" />
+
+        <TextField fx:id="vehicleBrandField"
+          promptText="Nhập hãng xe" />
+
+        <Label text="Loại xe:" />
+
+        <ComboBox fx:id="vehicleTypeComboBox"
+          promptText="Chọn loại xe"
+          maxWidth="Infinity" />
+
+        <Separator />
+
+        <Label text="Chọn dịch vụ"
+          style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+        <Label text="Có thể chọn nhiều dịch vụ" />
+
+        <ListView fx:id="serviceListView"
+          prefHeight="180"
+          VBox.vgrow="ALWAYS" />
+
+        <Label fx:id="totalLabel"
+          wrapText="true" />
+
+        <Separator />
+
+        <Label text="Ngày hẹn:" />
+
+        <DatePicker fx:id="appointmentDatePicker"
+          promptText="Chọn ngày"
+          maxWidth="Infinity" />
+
+        <Label text="Giờ hẹn:" />
+
+        <ComboBox fx:id="appointmentHourComboBox"
+          promptText="Chọn giờ"
+          maxWidth="Infinity" />
+
+        <Label text="Ghi chú:" />
+
+        <TextArea fx:id="notesArea"
+          promptText="Nhập yêu cầu nếu có..."
+          prefRowCount="3"
+          wrapText="true" />
+
+        <HBox spacing="10">
+
+          <Button text="Đặt lịch"
+            onAction="#createAppointment" />
+
+          <Button text="Clear"
+            onAction="#clearForm" />
+
+          <Button text="Back"
+            onAction="#backToDashboard" />
+
+        </HBox>
+
+      </VBox>
+
+
+      <!-- ========================= -->
+      <!-- DANH SÁCH LỊCH ĐÃ ĐẶT -->
+      <!-- ========================= -->
+
+      <VBox spacing="10"
+        style="-fx-padding: 15;">
+
+        <Label text="Lịch hẹn đã đặt"
+          style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+        <TableView fx:id="appointmentTable"
+          VBox.vgrow="ALWAYS">
+
+          <columns>
+
+            <TableColumn fx:id="idColumn"
+              text="Mã lịch"
+              prefWidth="70" />
+
+            <TableColumn fx:id="customerNameColumn"
+              text="Khách hàng"
+              prefWidth="130" />
+
+            <TableColumn fx:id="customerPhoneColumn"
+              text="Số điện thoại"
+              prefWidth="120" />
+
+            <TableColumn fx:id="licensePlateColumn"
+              text="Biển số"
+              prefWidth="100" />
+
+            <TableColumn fx:id="vehicleTypeColumn"
+              text="Loại xe"
+              prefWidth="100" />
+
+            <TableColumn fx:id="dateColumn"
+              text="Ngày giờ"
+              prefWidth="150" />
+
+          </columns>
+
+        </TableView>
+
+      </VBox>
+
+    </SplitPane>
+
+  </center>
+
+</BorderPane>

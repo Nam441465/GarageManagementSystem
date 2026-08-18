@@ -1,24 +1,84 @@
 package service;
 
-import java.util.List;
 import model.Customer;
+import dao.CustomerDAO;
+import dao.impl.CustomerDAOImpl;
 
-public interface CustomerService {
+import java.util.List;
 
-    void addCustomer(Customer customer); // Thêm khách hàng.
+public class CustomerService {
 
-    void updateCustomer(Customer customer); // Cập nhật khách hàng.
+    private final CustomerDAO customerDao;
 
-    void deleteCustomer(int id); // Xóa khách hàng.
+    public CustomerService() {
+        this(new CustomerDAOImpl());
+    }
 
-    Customer findById(int id); // Tìm theo ID.
+    public CustomerService(CustomerDAO customerDao) {
+        this.customerDao = java.util.Objects.requireNonNull(customerDao, "customerDao is required");
+    }
 
-    List<Customer> findAll(); // Lấy toàn bộ khách hàng.
+    private void validateCustomer(Customer customer) {
+        if (customer == null) {
+            throw new IllegalArgumentException("Customer is null");
+        }
 
-    boolean existsByPhone(String phone); // Kiểm tra số điện thoại đã tồn tại.
+        if (customer.getName() == null || customer.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Customer name can not be empty");
+        }
 
-    boolean existsById(int id);
+        if (customer.getPhone() == null || customer.getPhone().trim().isEmpty()) {
+            throw new IllegalArgumentException("Customer Phone can not be empty");
+        }
+    }
 
-    int countCustomers(); // Đếm số khách hàng.
+    public void addCustomer(Customer customer) {
+        validateCustomer(customer);
+        if (customerDao.existsByPhone(customer.getPhone())) {
+            throw new IllegalArgumentException("Phone already exists");
+        }
+        customerDao.addCustomer(customer);
+    }
+
+    public void updateCustomer(Customer customer) {
+        validateCustomer(customer);
+        if (customer.getId() <= 0) {
+            throw new IllegalArgumentException("Invalid customer id");
+        }
+
+        if (!customerDao.existsById(customer.getId())) {
+            throw new IllegalArgumentException("Customer not found!");
+        }
+        customerDao.updateCustomer(customer);
+    }
+
+    public void deleteCustomer(int id) {
+        if (!customerDao.existsById(id)) {
+            throw new IllegalArgumentException("Customer not found");
+        }
+        customerDao.deleteCustomer(id);
+    }
+
+    public Customer findById(int id) {
+        return customerDao.findById(id);
+    }
+
+    public List<Customer> findAll() {
+        return customerDao.findAll();
+    }
+
+    public boolean existsByPhone(String phone) {
+        if (phone == null || phone.trim().isEmpty()) {
+            throw new IllegalArgumentException("Customer phone can not be empty");
+        }
+        return customerDao.existsByPhone(phone);
+    }
+    public boolean existsById(int id) {
+        return customerDao.existsById(id);
+    }
+
+    public int countCustomers() {
+        return customerDao.countCustomers();
+    }
 
 }

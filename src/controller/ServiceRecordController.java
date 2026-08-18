@@ -2,6 +2,7 @@ package controller;
 
 import java.time.LocalDate;
 
+import enums.UserRole;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -20,7 +21,8 @@ import model.ServiceRecord;
 import model.Session;
 
 import service.ServiceRecordService;
-import service.impl.ServiceRecordServiceImpl;
+import service.PdfService;
+import util.AlertUtil;
 
 public class ServiceRecordController {
 
@@ -54,7 +56,11 @@ public class ServiceRecordController {
         @FXML
         private TextField totalCostField;
 
-        private final ServiceRecordService serviceRecordService = new ServiceRecordServiceImpl();
+        @FXML
+        private TextField outputDirectoryField;
+
+        private final ServiceRecordService serviceRecordService = new ServiceRecordService();
+        private final PdfService pdfService = new PdfService();
 
         private ObservableList<ServiceRecord> serviceRecordList;
 
@@ -195,13 +201,30 @@ public class ServiceRecordController {
                 loadServiceRecords();
         }
 
+        @FXML
+        public void exportServiceRecordPdf() {
+                ServiceRecord record = serviceRecordTable.getSelectionModel().getSelectedItem();
+                if (record == null) {
+                        AlertUtil.showWarning("Export service record", "Hãy chọn phiếu dịch vụ cần xuất.");
+                        return;
+                }
+                try {
+                        String outputDirectory = outputDirectoryField.getText().trim();
+                        if (pdfService.generateServiceRecordPdf(record.getId(), outputDirectory)) {
+                                AlertUtil.showInfo("Export service record", "Đã xuất PDF vào: " + outputDirectory);
+                        } else {
+                                AlertUtil.showError("Export service record", "Không thể xuất PDF phiếu dịch vụ.");
+                        }
+                } catch (Exception exception) {
+                        AlertUtil.showError("Export service record", exception.getMessage());
+                }
+        }
+
         private boolean isOwner() {
 
                 return Session.getCurrentUser() != null
                                 &&
-                                Session.getCurrentUser()
-                                                .getRole()
-                                                .equalsIgnoreCase("Owner");
+                                Session.getCurrentUser().getRole() == UserRole.OWNER;
         }
 
         private void clearFields() {

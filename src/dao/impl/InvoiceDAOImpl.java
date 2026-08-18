@@ -4,9 +4,11 @@ import dao.InvoiceDAO;
 import database.DatabaseConnection;
 import model.Invoice;
 
+import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class InvoiceDAOImpl implements InvoiceDAO {
     @Override
     public void addInvoice(Invoice invoice) {
 
-        String sql = "INSERT INTO Invoice(record_id, total_amount, issueDate) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Invoice(record_id, total_amount, issue_date, payment_status, payment_method, pdf_path) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -23,11 +25,14 @@ public class InvoiceDAOImpl implements InvoiceDAO {
             ps.setInt(1, invoice.getRecordId());
             ps.setDouble(2, invoice.getTotalAmount());
             ps.setDate(3, java.sql.Date.valueOf(invoice.getIssueDate()));
+            ps.setString(4, invoice.getPaymentStatus());
+            ps.setString(5, invoice.getPaymentMethod());
+            ps.setString(6, invoice.getPdfPath());
 
             ps.executeUpdate();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error adding invoice", e);
         }
     }
 
@@ -38,7 +43,10 @@ public class InvoiceDAOImpl implements InvoiceDAO {
                 UPDATE Invoice
                 SET record_id = ?,
                     total_amount = ?,
-                    issueDate = ?
+                    issue_date = ?,
+                    payment_status = ?,
+                    payment_method = ?,
+                    pdf_path = ?
                 WHERE id = ?
                 """;
 
@@ -48,12 +56,15 @@ public class InvoiceDAOImpl implements InvoiceDAO {
             ps.setInt(1, invoice.getRecordId());
             ps.setDouble(2, invoice.getTotalAmount());
             ps.setDate(3, java.sql.Date.valueOf(invoice.getIssueDate()));
-            ps.setInt(4, invoice.getId());
+            ps.setString(4, invoice.getPaymentStatus());
+            ps.setString(5, invoice.getPaymentMethod());
+            ps.setString(6, invoice.getPdfPath());
+            ps.setInt(7, invoice.getId());
 
             ps.executeUpdate();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating invoice", e);
         }
     }
 
@@ -69,8 +80,8 @@ public class InvoiceDAOImpl implements InvoiceDAO {
 
             ps.executeUpdate();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error deleting invoice", e);
         }
     }
 
@@ -88,16 +99,12 @@ public class InvoiceDAOImpl implements InvoiceDAO {
 
                 if (rs.next()) {
 
-                    return new Invoice(
-                            rs.getInt("id"),
-                            rs.getInt("record_id"),
-                            rs.getDouble("total_amount"),
-                            rs.getDate("issueDate").toLocalDate());
+                    return mapInvoice(rs);
                 }
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding invoice by ID", e);
         }
 
         return null;
@@ -116,15 +123,11 @@ public class InvoiceDAOImpl implements InvoiceDAO {
 
             while (rs.next()) {
 
-                list.add(new Invoice(
-                        rs.getInt("id"),
-                        rs.getInt("record_id"),
-                        rs.getDouble("total_amount"),
-                        rs.getDate("issueDate").toLocalDate()));
+                list.add(mapInvoice(rs));
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding all invoices", e);
         }
 
         return list;
@@ -143,8 +146,8 @@ public class InvoiceDAOImpl implements InvoiceDAO {
                 return rs.getDouble(1);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error calculating revenue", e);
         }
 
         return 0;
@@ -156,8 +159,8 @@ public class InvoiceDAOImpl implements InvoiceDAO {
         String sql = """
                 SELECT SUM(total_amount)
                 FROM Invoice
-                WHERE MONTH(issueDate)=?
-                AND YEAR(issueDate)=?
+                WHERE MONTH(issue_date)=?
+                AND YEAR(issue_date)=?
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -173,8 +176,8 @@ public class InvoiceDAOImpl implements InvoiceDAO {
                 }
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error calculating revenue by month", e);
         }
 
         return 0;
@@ -194,11 +197,9 @@ public class InvoiceDAOImpl implements InvoiceDAO {
                 return rs.next();
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking if invoice exists", e);
         }
-
-        return false;
     }
 
     @Override
@@ -214,10 +215,21 @@ public class InvoiceDAOImpl implements InvoiceDAO {
                 return rs.getInt(1);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error counting invoices", e);
         }
 
         return 0;
+    }
+
+    private Invoice mapInvoice(ResultSet rs) throws SQLException {
+        return new Invoice(
+                rs.getInt("id"),
+                rs.getInt("record_id"),
+                rs.getDouble("total_amount"),
+                rs.getDate("issue_date").toLocalDate(),
+                rs.getString("payment_status"),
+                rs.getString("payment_method"),
+                rs.getString("pdf_path"));
     }
 }

@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
 
 import javafx.stage.Stage;
 
@@ -15,7 +16,6 @@ import model.User;
 import model.Session;
 
 import service.UserService;
-import service.impl.UserServiceImpl;
 
 public class LoginController {
 
@@ -25,7 +25,7 @@ public class LoginController {
         @FXML
         private PasswordField passwordField;
 
-        private final UserService userService = new UserServiceImpl();
+        private final UserService userService = new UserService();
 
         @FXML
         public void handleLogin() {
@@ -78,34 +78,11 @@ public class LoginController {
                 } catch (Exception e) {
 
                         e.printStackTrace();
-
-                }
-        }
-
-        @FXML
-        public void loginAsCustomer() {
-
-                try {
-
-                        FXMLLoader loader = new FXMLLoader(
-                                        getClass().getResource(
-                                                        "/ui/CustomerSearchView.fxml"));
-
-                        Parent root = loader.load();
-
-                        Stage stage = (Stage) usernameField
-                                        .getScene()
-                                        .getWindow();
-
-                        stage.setScene(
-                                        new Scene(root));
-
-                        stage.show();
-
-                } catch (Exception e) {
-
-                        e.printStackTrace();
-
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("An error occurred");
+                        alert.setContentText(e.getMessage());
+                        alert.showAndWait();
                 }
         }
 
@@ -145,6 +122,11 @@ public class LoginController {
                         stage.setScene(new Scene(root, 420, 500));
                 } catch (Exception e) {
                         e.printStackTrace();
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("An error occurred");
+                        alert.setContentText(e.getMessage());
+                        alert.showAndWait();
                 }
         }
 }

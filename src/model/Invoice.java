@@ -8,18 +8,43 @@ public class Invoice {
     private int recordId;
     private double totalAmount;
     private LocalDate issueDate = LocalDate.now();
-    public Invoice(){
-    }
-    public Invoice(int recordId, double totalAmount){
-        this.recordId = recordId;
-        this.totalAmount = totalAmount;
+    private String paymentStatus;
+    private String paymentMethod;
+    private String pdfPath;
+
+    public Invoice() {
     }
 
-    public Invoice(int id, int recordId, double totalAmount, LocalDate issueDate) {
+    public Invoice(int recordId, double totalAmount, String paymentStatus, String paymentMethod, String pdfPath) {
+        this.recordId = recordId;
+        this.totalAmount = totalAmount;
+        this.paymentStatus = paymentStatus;
+        this.paymentMethod = paymentMethod;
+        this.pdfPath = pdfPath;
+        this.issueDate = LocalDate.now();
+    }
+
+    public Invoice(int id, int recordId, double totalAmount, LocalDate issueDate, String pdfPath, String paymentStatus,
+            String paymentMethod) {
         this.id = id;
         this.recordId = recordId;
         this.totalAmount = totalAmount;
         this.issueDate = issueDate;
+        this.pdfPath = pdfPath;
+        this.paymentStatus = paymentStatus;
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
     }
 
     public int getId() {
@@ -30,16 +55,8 @@ public class Invoice {
         return issueDate;
     }
 
-    public int getrecordId() {
-        return recordId;
-    }
-
     public int getRecordId() {
         return recordId;
-    }
-
-    public double gettotalAmount() {
-        return totalAmount;
     }
 
     public double getTotalAmount() {
@@ -54,28 +71,36 @@ public class Invoice {
         this.issueDate = issueDate;
     }
 
-    public void setrecordId(int recordId) {
-        this.recordId = recordId;
-    }
-
     public void setRecordId(int recordId) {
         this.recordId = recordId;
-    }
-
-    public void settotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
     }
 
     public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
     }
 
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getPdfPath() {
+        return pdfPath;
+    }
+
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         return "Invoice{" +
-               "id = " + id + 
-               ", recordId = " + recordId + 
-               ", totalAmount = " + totalAmount + 
-               ", issueDate = " + issueDate + "}";
+                "id=" + id +
+                ", recordId=" + recordId +
+                ", totalAmount=" + totalAmount +
+                ", issueDate=" + issueDate +
+                ", paymentStatus='" + paymentStatus + '\'' +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", pdfPath='" + pdfPath + '\'' +
+                '}';
     }
 }

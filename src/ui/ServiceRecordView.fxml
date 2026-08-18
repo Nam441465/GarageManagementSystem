@@ -59,6 +59,10 @@
             <TextField fx:id="totalCostField"
                        promptText="Total Cost"/>
 
+            <TextField fx:id="outputDirectoryField"
+                       text="exports"
+                       promptText="PDF output directory"/>
+
             <Button text="Add"
                     onAction="#addServiceRecord"/>
 
@@ -67,6 +71,9 @@
 
             <Button text="Delete"
                     onAction="#deleteServiceRecord"/>
+
+            <Button text="Export PDF"
+                    onAction="#exportServiceRecordPdf"/>
             <Button text="Back" onAction="#backToDashboard"/>
 
         </VBox>

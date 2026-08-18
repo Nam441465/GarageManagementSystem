@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import dao.ServiceRecordDAO;
 import database.DatabaseConnection;
+import exception.DatabaseException;
 import model.ServiceRecord;
 
 public class ServiceRecordDAOImpl implements ServiceRecordDAO {
@@ -19,7 +22,7 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
         String sql = """
                 INSERT INTO ServiceRecord(
                     vehicle_id,
-                    recordDate,
+                    record_date,
                     notes,
                     total_cost,
                     created_by
@@ -27,11 +30,8 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
                 VALUES(?, ?, ?, ?, ?)
                 """;
 
-        try {
-
-            Connection conn = DatabaseConnection.getConnection();
-
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, record.getVehicleId());
             ps.setDate(2, Date.valueOf(record.getRecordDate()));
@@ -41,11 +41,8 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
 
             ps.executeUpdate();
 
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not add service record.", e);
         }
     }
 
@@ -55,18 +52,15 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
         String sql = """
                 UPDATE ServiceRecord
                 SET vehicle_id=?,
-                    recordDate=?,
+                    record_date=?,
                     notes=?,
                     total_cost=?,
                     created_by=?
                 WHERE id=?
                 """;
 
-        try {
-
-            Connection conn = DatabaseConnection.getConnection();
-
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, record.getVehicleId());
             ps.setDate(2, Date.valueOf(record.getRecordDate()));
@@ -77,11 +71,8 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
 
             ps.executeUpdate();
 
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not update service record.", e);
         }
     }
 
@@ -90,21 +81,15 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
 
         String sql = "DELETE FROM ServiceRecord WHERE id=?";
 
-        try {
-
-            Connection conn = DatabaseConnection.getConnection();
-
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
             ps.executeUpdate();
 
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not delete service record.", e);
         }
     }
 
@@ -120,34 +105,26 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
                 WHERE sr.id=?
                 """;
 
-        try {
-
-            Connection conn = DatabaseConnection.getConnection();
-
-            PreparedStatement ps = conn.prepareStatement(sql);
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
                 return new ServiceRecord(
                         rs.getInt("id"),
                         rs.getInt("employee_id"),
                         rs.getInt("vehicle_id"),
-                        rs.getDate("recordDate").toLocalDate(),
+                        rs.getDate("record_date").toLocalDate(),
                         rs.getString("notes"),
                         rs.getDouble("total_cost"),
                         rs.getInt("created_by"),
                         rs.getString("employee_name"));
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not find service record by ID.", e);
         }
-
-        return null;
     }
 
     @Override
@@ -163,21 +140,16 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
                        ON sr.created_by = e.user_id
                 """;
 
-        try {
-
-            Connection conn = DatabaseConnection.getConnection();
-
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
 
                 ServiceRecord record = new ServiceRecord(
                         rs.getInt("id"),
                         rs.getInt("employee_id"),
                         rs.getInt("vehicle_id"),
-                        rs.getDate("recordDate").toLocalDate(),
+                        rs.getDate("record_date").toLocalDate(),
                         rs.getString("notes"),
                         rs.getDouble("total_cost"),
                         rs.getInt("created_by"),
@@ -186,12 +158,8 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
                 list.add(record);
             }
 
-            rs.close();
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not find service records.", e);
         }
 
         return list;
@@ -208,40 +176,30 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
                 FROM ServiceRecord sr
                 LEFT JOIN Employee e
                        ON sr.created_by = e.user_id
-                WHERE sr.recordDate=?
+                WHERE sr.record_date=?
                 """;
 
-        try {
-
-            Connection conn = DatabaseConnection.getConnection();
-
-            PreparedStatement ps = conn.prepareStatement(sql);
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, date);
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
 
                 ServiceRecord record = new ServiceRecord(
                         rs.getInt("id"),
                         rs.getInt("employee_id"),
                         rs.getInt("vehicle_id"),
-                        rs.getDate("recordDate").toLocalDate(),
+                        rs.getDate("record_date").toLocalDate(),
                         rs.getString("notes"),
                         rs.getDouble("total_cost"),
                         rs.getInt("created_by"),
                         rs.getString("employee_name"));
 
-                list.add(record);
+                    list.add(record);
+                }
             }
-
-            rs.close();
-            ps.close();
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not find service records by date.", e);
         }
 
         return list;
@@ -252,29 +210,15 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
 
         String sql = "SELECT * FROM ServiceRecord WHERE id=?";
 
-        try {
-
-            Connection conn = DatabaseConnection.getConnection();
-
-            PreparedStatement ps = conn.prepareStatement(sql);
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
-
-            ResultSet rs = ps.executeQuery();
-
-            boolean exists = rs.next();
-
-            rs.close();
-            ps.close();
-            conn.close();
-
-            return exists;
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not check whether service record exists.", e);
         }
-
-        return false;
     }
 
     @Override
@@ -282,20 +226,14 @@ public class ServiceRecordDAOImpl implements ServiceRecordDAO {
 
         String sql = "SELECT COUNT(*) FROM ServiceRecord";
 
-        try {
-
-            Connection conn = DatabaseConnection.getConnection();
-
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
-
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1);
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Could not count service records.", e);
         }
 
         return 0;

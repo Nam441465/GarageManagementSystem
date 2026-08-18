@@ -1,5 +1,6 @@
 package controller;
 
+import enums.UserRole;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -16,7 +17,6 @@ import model.Customer;
 import model.Session;
 
 import service.CustomerService;
-import service.impl.CustomerServiceImpl;
 import javafx.scene.Node;
 
 public class CustomerController {
@@ -45,7 +45,7 @@ public class CustomerController {
         @FXML
         private TextField addressField;
 
-        private final CustomerService customerService = new CustomerServiceImpl();
+        private final CustomerService customerService = new CustomerService();
 
         private ObservableList<Customer> customerList;
 
@@ -179,9 +179,7 @@ public class CustomerController {
 
                 return Session.getCurrentUser() != null
                                 &&
-                                Session.getCurrentUser()
-                                                .getRole()
-                                                .equalsIgnoreCase("Owner");
+                                Session.getCurrentUser().getRole() == UserRole.OWNER;
 
         }
 

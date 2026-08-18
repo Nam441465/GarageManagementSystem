@@ -4,6 +4,8 @@ import dao.EmployeeInviteDAO;
 import database.DatabaseConnection;
 import model.EmployeeInvite;
 
+import java.sql.SQLException;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +30,9 @@ public class EmployeeInviteDAOImpl implements EmployeeInviteDAO {
 
             return rows > 0;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error adding employee invite", e);
         }
-
-        return false;
     }
 
     @Override
@@ -54,7 +54,6 @@ public class EmployeeInviteDAOImpl implements EmployeeInviteDAO {
                         rs.getString("status")
                 );
 
-                // Nếu model có createdDate
                 if (rs.getTimestamp("created_date") != null) {
                     invite.setCreatedDate(
                             rs.getTimestamp("created_date").toLocalDateTime()
@@ -72,8 +71,8 @@ public class EmployeeInviteDAOImpl implements EmployeeInviteDAO {
             ps.close();
             conn.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding employee invite by code", e);
         }
 
         return null;
@@ -97,11 +96,9 @@ public class EmployeeInviteDAOImpl implements EmployeeInviteDAO {
 
             return rows > 0;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating invite status", e);
         }
-
-        return false;
     }
 
     @Override
@@ -125,7 +122,6 @@ public class EmployeeInviteDAOImpl implements EmployeeInviteDAO {
                         rs.getString("status")
                 );
 
-                // Nếu model có createdDate
                 if (rs.getTimestamp("created_date") != null) {
                     invite.setCreatedDate(
                             rs.getTimestamp("created_date").toLocalDateTime()
@@ -139,8 +135,8 @@ public class EmployeeInviteDAOImpl implements EmployeeInviteDAO {
             ps.close();
             conn.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding all employee invites", e);
         }
 
         return list;
@@ -164,10 +160,8 @@ public class EmployeeInviteDAOImpl implements EmployeeInviteDAO {
 
             return rows > 0;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error deleting employee invite", e);
         }
-
-        return false;
     }
 }

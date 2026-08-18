@@ -1,0 +1,3 @@
+-- Intentionally empty.
+-- Customer-account schema changes were reverted to preserve the existing
+-- authentication and role model. This file is retained to avoid deleting files.

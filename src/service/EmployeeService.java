@@ -1,24 +1,101 @@
 package service;
 
+import dao.EmployeeDAO;
+import dao.impl.EmployeeDAOImpl;
+
 import model.Employee;
+
 
 import java.util.List;
 
-public interface EmployeeService {
+public class EmployeeService {
 
-    void addEmployee(Employee employee);
+    private final EmployeeDAO dao;
 
-    void updateEmployee(Employee employee);
+    public EmployeeService() {
+        this(new EmployeeDAOImpl());
+    }
 
-    void deleteEmployee(int id);
+    public EmployeeService(EmployeeDAO dao) {
+        this.dao = java.util.Objects.requireNonNull(dao, "employeeDAO is required");
+    }
 
-    Employee findById(int id);
+    private void validate(Employee employee) {
 
-    List<Employee> findAll();
+        if (employee == null) {
+            throw new IllegalArgumentException("Employee is required");
+        }
 
-    int countEmployees();
+        if (employee.getName() == null ||
+                employee.getName().trim().isEmpty()) {
 
-    boolean existsById(int id);
+            throw new IllegalArgumentException(
+                    "Employee name is required");
+        }
 
-    Employee findByUserId(int userId);
+        if (employee.getPhone() == null ||
+                employee.getPhone().trim().isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "Phone is required");
+        }
+
+        if (employee.getSalary() < 0) {
+
+            throw new IllegalArgumentException(
+                    "Salary cannot be negative");
+        }
+    }
+
+    public void addEmployee(Employee employee) {
+
+        validate(employee);
+
+        dao.addEmployee(employee);
+    }
+
+    public void updateEmployee(Employee employee) {
+
+        validate(employee);
+
+        if (employee.getId() <= 0 || dao.findById(employee.getId()) == null) {
+            throw new IllegalArgumentException("Employee not found");
+        }
+
+        dao.updateEmployee(employee);
+    }
+
+    public void deleteEmployee(int id) {
+
+        if (id <= 0 || dao.findById(id) == null) {
+            throw new IllegalArgumentException("Employee not found");
+        }
+        dao.deleteEmployee(id);
+    }
+
+    public Employee findByUserId(int userId) {
+
+        return dao.findByUserId(userId);
+
+    }
+
+    public Employee findById(int id) {
+
+        return dao.findById(id);
+    }
+
+    public List<Employee> findAll() {
+
+        return dao.findAll();
+    }
+
+    public int countEmployees() {
+
+        return dao.countEmployees();
+    }
+
+    public boolean existsById(int id) {
+
+        return dao.findById(id) != null;
+    }
 }

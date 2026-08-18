@@ -1,5 +1,6 @@
 package controller;
 
+import enums.UserRole;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -15,7 +16,6 @@ import model.ServiceRecordDetail;
 import model.Session;
 
 import service.ServiceRecordDetailService;
-import service.impl.ServiceRecordDetailServiceImpl;
 
 public class ServiceRecordDetailController {
 
@@ -55,7 +55,7 @@ public class ServiceRecordDetailController {
         @FXML
         private TableColumn<ServiceRecordDetail, Double> subtotalColumn;
 
-        private final ServiceRecordDetailService service = new ServiceRecordDetailServiceImpl();
+        private final ServiceRecordDetailService service = new ServiceRecordDetailService();
 
         @FXML
         public void initialize() {
@@ -201,9 +201,7 @@ public class ServiceRecordDetailController {
 
                 return Session.getCurrentUser() != null
                                 &&
-                                Session.getCurrentUser()
-                                                .getRole()
-                                                .equalsIgnoreCase("Owner");
+                                Session.getCurrentUser().getRole() == UserRole.OWNER;
 
         }
 
