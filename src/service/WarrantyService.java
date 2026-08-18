@@ -1,7 +1,6 @@
 package service;
 
 import dao.WarrantyDAO;
-import dao.impl.WarrantyDAOImpl;
 import model.Warranty;
 
 import java.time.LocalDate;
@@ -11,8 +10,13 @@ public class WarrantyService {
 
     private final WarrantyDAO warrantyDAO;
 
-    public WarrantyService() { this(new WarrantyDAOImpl()); }
-    public WarrantyService(WarrantyDAO warrantyDAO) { this.warrantyDAO = java.util.Objects.requireNonNull(warrantyDAO, "warrantyDAO is required"); }
+    public WarrantyService() {
+        this(new WarrantyDAO());
+    }
+
+    public WarrantyService(WarrantyDAO warrantyDAO) {
+        this.warrantyDAO = java.util.Objects.requireNonNull(warrantyDAO, "warrantyDAO is required");
+    }
 
     public boolean createWarranty(int serviceRecordId, String warrantyCode, LocalDate startDate, LocalDate endDate,
             String coverage) {

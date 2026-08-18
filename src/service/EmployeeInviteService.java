@@ -1,7 +1,6 @@
 package service;
 
 import dao.EmployeeInviteDAO;
-import dao.impl.EmployeeInviteDAOImpl;
 import enums.InviteStatus;
 import model.EmployeeInvite;
 
@@ -12,7 +11,7 @@ public class EmployeeInviteService {
     private final EmployeeInviteDAO dao;
 
     public EmployeeInviteService() {
-        this(new EmployeeInviteDAOImpl());
+        this(new EmployeeInviteDAO());
     }
 
     public EmployeeInviteService(EmployeeInviteDAO dao) {

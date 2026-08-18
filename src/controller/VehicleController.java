@@ -228,13 +228,13 @@ public class VehicleController {
 
         }
 
-        private boolean isOwner() {
+        // private boolean isOwner() {
 
-                return Session.getCurrentUser() != null
-                                &&
-                                Session.getCurrentUser().getRole() == UserRole.OWNER;
+        //         return Session.getCurrentUser() != null
+        //                         &&
+        //                         Session.getCurrentUser().getRole() == UserRole.OWNER;
 
-        }
+        // }
 
         private void clearFields() {
 

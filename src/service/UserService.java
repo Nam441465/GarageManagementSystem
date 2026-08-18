@@ -3,7 +3,6 @@ package service;
 import java.util.List;
 
 import dao.UserDAO;
-import dao.impl.UserDAOImpl;
 import enums.UserRole;
 import model.User;
 
@@ -12,7 +11,7 @@ public class UserService {
     private final UserDAO userDAO;
 
     public UserService() {
-        this(new UserDAOImpl());
+        this(new UserDAO());
     }
 
     public UserService(UserDAO userDAO) {

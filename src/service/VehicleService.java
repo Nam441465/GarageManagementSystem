@@ -1,7 +1,6 @@
 package service;
 
 import dao.VehicleDAO;
-import dao.impl.VehicleDAOImpl;
 import model.Vehicle;
 
 import java.util.List;
@@ -11,7 +10,7 @@ public class VehicleService {
     private final VehicleDAO vehicleDao;
 
     public VehicleService() {
-        this(new VehicleDAOImpl());
+        this(new VehicleDAO());
     }
 
     public VehicleService(VehicleDAO vehicleDao) {

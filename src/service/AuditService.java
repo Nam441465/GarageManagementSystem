@@ -1,7 +1,6 @@
 package service;
 
 import dao.AuditLogDAO;
-import dao.impl.AuditLogDAOImpl;
 import model.AuditLog;
 
 import java.util.List;
@@ -10,8 +9,13 @@ public class AuditService {
 
     private final AuditLogDAO auditLogDAO;
 
-    public AuditService() { this(new AuditLogDAOImpl()); }
-    public AuditService(AuditLogDAO auditLogDAO) { this.auditLogDAO = java.util.Objects.requireNonNull(auditLogDAO, "auditLogDAO is required"); }
+    public AuditService() {
+        this(new AuditLogDAO());
+    }
+
+    public AuditService(AuditLogDAO auditLogDAO) {
+        this.auditLogDAO = java.util.Objects.requireNonNull(auditLogDAO, "auditLogDAO is required");
+    }
 
     public boolean logAction(int userId, String action, String entityName, int entityId, String oldValue,
             String newValue, String ipAddress, String device) {

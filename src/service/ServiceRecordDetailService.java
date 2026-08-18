@@ -1,7 +1,6 @@
 package service;
 
 import dao.ServiceRecordDetailDAO;
-import dao.impl.ServiceRecordDetailDAOImpl;
 import model.ServiceRecordDetail;
 
 import java.util.List;
@@ -11,7 +10,7 @@ public class ServiceRecordDetailService {
     private final ServiceRecordDetailDAO dao;
 
     public ServiceRecordDetailService() {
-        this(new ServiceRecordDetailDAOImpl());
+        this(new ServiceRecordDetailDAO());
     }
 
     public ServiceRecordDetailService(ServiceRecordDetailDAO dao) {

@@ -3,9 +3,6 @@ package service;
 import dao.AppointmentDAO;
 import dao.AppointmentServiceItemDAO;
 import dao.VehicleDAO;
-import dao.impl.AppointmentDAOImpl;
-import dao.impl.AppointmentServiceItemDAOImpl;
-import dao.impl.VehicleDAOImpl;
 
 import model.Appointment;
 import model.AppointmentServiceItem;
@@ -22,9 +19,9 @@ public class AppointmentService {
 
         public AppointmentService() {
                 this(
-                                new AppointmentDAOImpl(),
-                                new VehicleDAOImpl(),
-                                new AppointmentServiceItemDAOImpl());
+                                new AppointmentDAO(),
+                                new VehicleDAO(),
+                                new AppointmentServiceItemDAO());
         }
 
         public AppointmentService(

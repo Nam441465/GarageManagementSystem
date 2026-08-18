@@ -1,7 +1,6 @@
 package service;
 
 import dao.AppointmentServiceItemDAO;
-import dao.impl.AppointmentServiceItemDAOImpl;
 import model.AppointmentServiceItem;
 
 import java.math.BigDecimal;
@@ -12,7 +11,7 @@ public class AppointmentServiceItemService {
     private final AppointmentServiceItemDAO appointmentServiceItemDAO;
 
     public AppointmentServiceItemService() {
-        this(new AppointmentServiceItemDAOImpl());
+        this(new AppointmentServiceItemDAO());
     }
 
     public AppointmentServiceItemService(AppointmentServiceItemDAO appointmentServiceItemDAO) {
@@ -20,7 +19,8 @@ public class AppointmentServiceItemService {
                 "appointmentServiceItemDAO is required");
     }
 
-    public boolean addServiceToAppointment(int appointmentId, int serviceId, int quantity, BigDecimal unitPrice, String notes) {
+    public boolean addServiceToAppointment(int appointmentId, int serviceId, int quantity, BigDecimal unitPrice,
+            String notes) {
         validateItem(appointmentId, serviceId, quantity, unitPrice);
         AppointmentServiceItem item = new AppointmentServiceItem(appointmentId, serviceId, quantity, unitPrice, notes);
         return appointmentServiceItemDAO.addAppointmentServiceItem(item);

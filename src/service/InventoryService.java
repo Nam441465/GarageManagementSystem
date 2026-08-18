@@ -1,7 +1,6 @@
 package service;
 
 import dao.PartDAO;
-import dao.impl.PartDAOImpl;
 import model.Part;
 
 import java.util.List;
@@ -10,8 +9,13 @@ public class InventoryService {
 
     private final PartDAO partDAO;
 
-    public InventoryService() { this(new PartDAOImpl()); }
-    public InventoryService(PartDAO partDAO) { this.partDAO = java.util.Objects.requireNonNull(partDAO, "partDAO is required"); }
+    public InventoryService() {
+        this(new PartDAO());
+    }
+
+    public InventoryService(PartDAO partDAO) {
+        this.partDAO = java.util.Objects.requireNonNull(partDAO, "partDAO is required");
+    }
 
     public List<Part> getAllParts() {
         return partDAO.findAll();

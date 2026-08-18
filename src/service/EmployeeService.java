@@ -1,10 +1,8 @@
 package service;
 
 import dao.EmployeeDAO;
-import dao.impl.EmployeeDAOImpl;
 
 import model.Employee;
-
 
 import java.util.List;
 
@@ -13,7 +11,7 @@ public class EmployeeService {
     private final EmployeeDAO dao;
 
     public EmployeeService() {
-        this(new EmployeeDAOImpl());
+        this(new EmployeeDAO());
     }
 
     public EmployeeService(EmployeeDAO dao) {

@@ -5,14 +5,13 @@ import model.Invoice;
 import java.util.List;
 
 import dao.InvoiceDAO;
-import dao.impl.InvoiceDAOImpl;
 import java.time.LocalDate;
 
 public class InvoiceService {
     private final InvoiceDAO invoiceDao;
 
     public InvoiceService() {
-        this(new InvoiceDAOImpl());
+        this(new InvoiceDAO());
     }
 
     public InvoiceService(InvoiceDAO invoiceDao) {

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 
 import dao.ServiceDAO;
-import dao.impl.ServiceDAOImpl;
 import model.Service;
 
 public class ServiceService {
@@ -12,7 +11,7 @@ public class ServiceService {
     private final ServiceDAO serviceDAO;
 
     public ServiceService() {
-        this(new ServiceDAOImpl());
+        this(new ServiceDAO());
     }
 
     public ServiceService(ServiceDAO serviceDAO) {

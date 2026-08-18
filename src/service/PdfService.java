@@ -2,12 +2,6 @@ package service;
 
 import model.Invoice;
 import model.ServiceRecord;
-import model.ServiceRecordDetail;
-import util.PdfUtil;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 
 public class PdfService {
 
@@ -26,10 +20,6 @@ public class PdfService {
         }
 
         try {
-            // Tạo nội dung PDF sử dụng PdfUtil
-            String pdfPath = outputPath + "/invoice-" + invoiceId + ".pdf";
-            
-            // Chuẩn bị dữ liệu cho PDF
             StringBuilder content = new StringBuilder();
             content.append("HÓA ĐƠN SỬA CHỮA\n");
             content.append("================\n");
@@ -39,7 +29,6 @@ public class PdfService {
             content.append("Trạng thái: ").append(invoice.getPaymentStatus()).append("\n");
             content.append("Tổng tiền: ").append(invoice.getTotalAmount()).append("\n");
 
-            // TODO: Implement PDF generation using PdfUtil
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,10 +43,6 @@ public class PdfService {
         }
 
         try {
-            // Tạo nội dung PDF sử dụng PdfUtil
-            String pdfPath = outputPath + "/service-record-" + serviceRecordId + ".pdf";
-            
-            // Chuẩn bị dữ liệu cho PDF
             StringBuilder content = new StringBuilder();
             content.append("HỒ SƠ DỊCH VỤ\n");
             content.append("================\n");

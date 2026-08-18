@@ -1,29 +1,274 @@
 package dao;
 
-import java.util.List;
+import dao.ServiceRecordDetailDAO;
+import database.DatabaseConnection;
 import model.ServiceRecordDetail;
 
-public interface ServiceRecordDetailDAO extends BaseDAO<ServiceRecordDetail> {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-    void addServiceRecordDetail(ServiceRecordDetail detail);
+import java.util.ArrayList;
+import java.util.List;
 
-    void updateServiceRecordDetail(ServiceRecordDetail detail);
+public class ServiceRecordDetailDAO {
 
-    void deleteServiceRecordDetail(int id);
+        public void addServiceRecordDetail(ServiceRecordDetail detail) {
 
-    ServiceRecordDetail findById(int id);
+                String sql = """
+                                INSERT INTO ServiceRecordDetail
+                                (service_record_id, service_id, quantity, price, subtotal)
+                                VALUES (?, ?, ?, ?, ?)
+                                """;
 
-    List<ServiceRecordDetail> findAll();
+                try {
+                        Connection conn = DatabaseConnection.getConnection();
 
-    List<ServiceRecordDetail> findByServiceRecordId(int serviceRecordId);
+                        PreparedStatement ps = conn.prepareStatement(sql);
 
-    boolean existsById(int id);
+                        ps.setInt(1, detail.getServiceRecordId());
+                        ps.setInt(2, detail.getServiceId());
+                        ps.setInt(3, detail.getQuantity());
+                        ps.setDouble(4, detail.getPrice());
+                        ps.setDouble(5, detail.getSubtotal());
 
-    int countServiceRecordDetails();
+                        ps.executeUpdate();
 
-    @Override default boolean create(ServiceRecordDetail value) { addServiceRecordDetail(value); return true; }
-    @Override default ServiceRecordDetail read(int id) { return findById(id); }
-    @Override default List<ServiceRecordDetail> readAll() { return findAll(); }
-    @Override default boolean update(ServiceRecordDetail value) { updateServiceRecordDetail(value); return true; }
-    @Override default boolean delete(int id) { deleteServiceRecordDetail(id); return true; }
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error adding service record detail", e);
+                }
+        }
+
+        public void updateServiceRecordDetail(ServiceRecordDetail detail) {
+
+                String sql = """
+                                UPDATE ServiceRecordDetail
+                                SET service_record_id=?,
+                                    service_id=?,
+                                    quantity=?,
+                                    price=?,
+                                    subtotal=?
+                                WHERE id=?
+                                """;
+
+                try {
+                        Connection conn = DatabaseConnection.getConnection();
+
+                        PreparedStatement ps = conn.prepareStatement(sql);
+
+                        ps.setInt(1, detail.getServiceRecordId());
+                        ps.setInt(2, detail.getServiceId());
+                        ps.setInt(3, detail.getQuantity());
+                        ps.setDouble(4, detail.getPrice());
+                        ps.setDouble(5, detail.getSubtotal());
+                        ps.setInt(6, detail.getId());
+
+                        ps.executeUpdate();
+
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error updating service record detail", e);
+                }
+        }
+
+        public void deleteServiceRecordDetail(int id) {
+
+                String sql = "DELETE FROM ServiceRecordDetail WHERE id=?";
+
+                try {
+                        Connection conn = DatabaseConnection.getConnection();
+
+                        PreparedStatement ps = conn.prepareStatement(sql);
+
+                        ps.setInt(1, id);
+
+                        ps.executeUpdate();
+
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error deleting service record detail", e);
+                }
+        }
+
+        public ServiceRecordDetail findById(int id) {
+
+                String sql = "SELECT * FROM ServiceRecordDetail WHERE id=?";
+
+                try {
+                        Connection conn = DatabaseConnection.getConnection();
+
+                        PreparedStatement ps = conn.prepareStatement(sql);
+
+                        ps.setInt(1, id);
+
+                        ResultSet rs = ps.executeQuery();
+
+                        if (rs.next()) {
+
+                                ServiceRecordDetail detail = new ServiceRecordDetail();
+
+                                detail.setId(
+                                                rs.getInt("id"));
+
+                                detail.setServiceRecordId(
+                                                rs.getInt("service_record_id"));
+
+                                detail.setServiceId(
+                                                rs.getInt("service_id"));
+
+                                detail.setQuantity(
+                                                rs.getInt("quantity"));
+
+                                detail.setPrice(
+                                                rs.getDouble("price"));
+
+                                detail.setSubtotal(
+                                                rs.getDouble("subtotal"));
+
+                                return detail;
+                        }
+
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error finding service record detail by ID", e);
+                }
+
+                return null;
+        }
+
+        public List<ServiceRecordDetail> findAll() {
+
+                List<ServiceRecordDetail> list = new ArrayList<>();
+
+                String sql = "SELECT * FROM ServiceRecordDetail";
+
+                try {
+
+                        Connection conn = DatabaseConnection.getConnection();
+
+                        PreparedStatement ps = conn.prepareStatement(sql);
+
+                        ResultSet rs = ps.executeQuery();
+
+                        while (rs.next()) {
+
+                                ServiceRecordDetail detail = new ServiceRecordDetail();
+
+                                detail.setId(
+                                                rs.getInt("id"));
+
+                                detail.setServiceRecordId(
+                                                rs.getInt("service_record_id"));
+
+                                detail.setServiceId(
+                                                rs.getInt("service_id"));
+
+                                detail.setQuantity(
+                                                rs.getInt("quantity"));
+
+                                detail.setPrice(
+                                                rs.getDouble("price"));
+
+                                detail.setSubtotal(
+                                                rs.getDouble("subtotal"));
+
+                                list.add(detail);
+                        }
+
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error finding all service record details", e);
+                }
+
+                return list;
+        }
+
+        public List<ServiceRecordDetail> findByServiceRecordId(int serviceRecordId) {
+
+                List<ServiceRecordDetail> list = new ArrayList<>();
+
+                String sql = "SELECT * FROM ServiceRecordDetail WHERE service_record_id=?";
+
+                try {
+
+                        Connection conn = DatabaseConnection.getConnection();
+
+                        PreparedStatement ps = conn.prepareStatement(sql);
+
+                        ps.setInt(1, serviceRecordId);
+
+                        ResultSet rs = ps.executeQuery();
+
+                        while (rs.next()) {
+
+                                ServiceRecordDetail detail = new ServiceRecordDetail();
+
+                                detail.setId(
+                                                rs.getInt("id"));
+
+                                detail.setServiceRecordId(
+                                                rs.getInt("service_record_id"));
+
+                                detail.setServiceId(
+                                                rs.getInt("service_id"));
+
+                                detail.setQuantity(
+                                                rs.getInt("quantity"));
+
+                                detail.setPrice(
+                                                rs.getDouble("price"));
+
+                                detail.setSubtotal(
+                                                rs.getDouble("subtotal"));
+
+                                list.add(detail);
+                        }
+
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error finding all service record details", e);
+                }
+
+                return list;
+        }
+
+        public boolean existsById(int id) {
+
+                String sql = "SELECT * FROM ServiceRecordDetail WHERE id=?";
+
+                try {
+
+                        Connection conn = DatabaseConnection.getConnection();
+
+                        PreparedStatement ps = conn.prepareStatement(sql);
+
+                        ps.setInt(1, id);
+
+                        ResultSet rs = ps.executeQuery();
+
+                        return rs.next();
+
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error checking if service record detail exists", e);
+                }
+        }
+
+        public int countServiceRecordDetails() {
+
+                String sql = "SELECT COUNT(*) FROM ServiceRecordDetail";
+
+                try {
+
+                        Connection conn = DatabaseConnection.getConnection();
+
+                        PreparedStatement ps = conn.prepareStatement(sql);
+
+                        ResultSet rs = ps.executeQuery();
+
+                        if (rs.next()) {
+                                return rs.getInt(1);
+                        }
+
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error counting service record details", e);
+                }
+
+                return 0;
+        }
 }

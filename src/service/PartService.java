@@ -1,7 +1,6 @@
 package service;
 
 import dao.PartDAO;
-import dao.impl.PartDAOImpl;
 import model.Part;
 
 import java.util.List;
@@ -10,8 +9,13 @@ public class PartService {
 
     private final PartDAO partDAO;
 
-    public PartService() { this(new PartDAOImpl()); }
-    public PartService(PartDAO partDAO) { this.partDAO = java.util.Objects.requireNonNull(partDAO, "partDAO is required"); }
+    public PartService() {
+        this(new PartDAO());
+    }
+
+    public PartService(PartDAO partDAO) {
+        this.partDAO = java.util.Objects.requireNonNull(partDAO, "partDAO is required");
+    }
 
     public boolean addPart(String partName, String supplier, double unitPrice, int stockQuantity,
             String description) {

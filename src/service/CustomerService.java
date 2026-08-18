@@ -2,7 +2,6 @@ package service;
 
 import model.Customer;
 import dao.CustomerDAO;
-import dao.impl.CustomerDAOImpl;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ public class CustomerService {
     private final CustomerDAO customerDao;
 
     public CustomerService() {
-        this(new CustomerDAOImpl());
+        this(new CustomerDAO());
     }
 
     public CustomerService(CustomerDAO customerDao) {
@@ -73,6 +72,7 @@ public class CustomerService {
         }
         return customerDao.existsByPhone(phone);
     }
+
     public boolean existsById(int id) {
         return customerDao.existsById(id);
     }

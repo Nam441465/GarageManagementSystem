@@ -17,7 +17,6 @@ import model.Customer;
 import model.Session;
 
 import service.CustomerService;
-import javafx.scene.Node;
 
 public class CustomerController {
 
