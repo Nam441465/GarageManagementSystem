@@ -1,8 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="controller.PriceController">
-    <top><Label text="Price List Management" style="-fx-font-size: 20px; -fx-padding: 12;"/></top>
-    <center><TableView fx:id="priceTable"><columns><TableColumn fx:id="idColumn" text="ID" prefWidth="55"/><TableColumn fx:id="serviceColumn" text="Service ID" prefWidth="95"/><TableColumn fx:id="vehicleTypeColumn" text="Vehicle type" prefWidth="125"/><TableColumn fx:id="priceColumn" text="Price" prefWidth="120"/><TableColumn fx:id="effectiveFromColumn" text="Effective from" prefWidth="130"/></columns></TableView></center>
-    <right><VBox spacing="8" prefWidth="240" style="-fx-padding: 12;"><TextField fx:id="serviceIdField" promptText="Service ID"/><ComboBox fx:id="vehicleTypeComboBox" promptText="Vehicle type"/><TextField fx:id="priceField" promptText="Price"/><DatePicker fx:id="effectiveFromPicker" promptText="Effective from"/><DatePicker fx:id="effectiveToPicker" promptText="Effective to (optional)"/><TextArea fx:id="noteArea" promptText="Note" prefRowCount="3"/><HBox spacing="8"><Button text="Add" onAction="#addPrice"/><Button text="Update" onAction="#updatePrice"/></HBox><HBox spacing="8"><Button text="Delete" onAction="#deletePrice"/><Button text="Clear" onAction="#clearForm"/></HBox><Button text="Back" onAction="#backToDashboard"/></VBox></right>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.PriceController">
+
+    <top>
+        <Label text="Price List Management"
+            style="-fx-font-size: 20px; -fx-padding: 12;" />
+    </top>
+
+    <center>
+        <TableView fx:id="priceTable">
+            <columns>
+
+                <TableColumn fx:id="idColumn"
+                    text="ID"
+                    prefWidth="55" />
+
+                <TableColumn fx:id="serviceColumn"
+                    text="Service ID"
+                    prefWidth="95" />
+
+                <TableColumn fx:id="vehicleTypeColumn"
+                    text="Vehicle Type"
+                    prefWidth="125" />
+
+                <TableColumn fx:id="vehicleBrandColumn"
+                    text="Vehicle Brand"
+                    prefWidth="130" />
+
+                <TableColumn fx:id="priceColumn"
+                    text="Price"
+                    prefWidth="120" />
+
+                <TableColumn fx:id="effectiveFromColumn"
+                    text="Effective From"
+                    prefWidth="130" />
+
+            </columns>
+        </TableView>
+    </center>
+
+    <right>
+        <VBox spacing="8"
+            prefWidth="240"
+            style="-fx-padding: 12;">
+
+            <TextField fx:id="serviceIdField"
+                promptText="Service ID" />
+
+            <ComboBox fx:id="vehicleTypeComboBox"
+                promptText="Vehicle Type" />
+
+            <ComboBox fx:id="vehicleBrandComboBox"
+                promptText="Vehicle Brand" />
+
+            <TextField fx:id="priceField"
+                promptText="Price" />
+
+            <DatePicker fx:id="effectiveFromPicker"
+                promptText="Effective From" />
+
+            <DatePicker fx:id="effectiveToPicker"
+                promptText="Effective To (Optional)" />
+
+            <TextArea fx:id="noteArea"
+                promptText="Note"
+                prefRowCount="3" />
+
+            <HBox spacing="8">
+                <Button text="Add"
+                    onAction="#addPrice" />
+
+                <Button text="Update"
+                    onAction="#updatePrice" />
+            </HBox>
+
+            <HBox spacing="8">
+                <Button text="Delete"
+                    onAction="#deletePrice" />
+
+                <Button text="Clear"
+                    onAction="#clearForm" />
+            </HBox>
+
+            <Button text="Back"
+                onAction="#backToDashboard" />
+
+        </VBox>
+    </right>
+
 </BorderPane>

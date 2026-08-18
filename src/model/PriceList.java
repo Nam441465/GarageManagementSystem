@@ -7,7 +7,8 @@ public class PriceList {
 
     private int id;
     private int serviceId;
-    private String vehicleType; // ENUM: SEDAN, SUV, HATCHBACK, PICKUP, TRUCK, MOTORBIKE
+    private String vehicleType;
+    private String vehicleBrand;
     private BigDecimal price;
     private LocalDate effectiveFrom;
     private LocalDate effectiveTo;
@@ -16,25 +17,31 @@ public class PriceList {
     public PriceList() {
     }
 
-    public PriceList(int serviceId, String vehicleType, BigDecimal price,
-                    LocalDate effectiveFrom, LocalDate effectiveTo, String note) {
+    public PriceList(int serviceId, String vehicleType, String vehicleBrand, BigDecimal price,
+            LocalDate effectiveFrom, LocalDate effectiveTo, String note) {
         this.serviceId = serviceId;
         this.vehicleType = vehicleType;
+        this.price = price;
+        this.effectiveFrom = effectiveFrom;
+        this.effectiveTo = effectiveTo;
+        this.note = note;
+        this.vehicleBrand = vehicleBrand;
+    }
+
+    public PriceList(int id, int serviceId, String vehicleType, String vehicleBrand, BigDecimal price,
+            LocalDate effectiveFrom, LocalDate effectiveTo, String note) {
+        this.id = id;
+        this.serviceId = serviceId;
+        this.vehicleType = vehicleType;
+        this.vehicleBrand = vehicleBrand;
         this.price = price;
         this.effectiveFrom = effectiveFrom;
         this.effectiveTo = effectiveTo;
         this.note = note;
     }
 
-    public PriceList(int id, int serviceId, String vehicleType, BigDecimal price,
-                    LocalDate effectiveFrom, LocalDate effectiveTo, String note) {
-        this.id = id;
-        this.serviceId = serviceId;
-        this.vehicleType = vehicleType;
-        this.price = price;
-        this.effectiveFrom = effectiveFrom;
-        this.effectiveTo = effectiveTo;
-        this.note = note;
+    public String getVehicleBrand() {
+        return vehicleBrand;
     }
 
     public int getId() {
@@ -93,12 +100,17 @@ public class PriceList {
         this.note = note;
     }
 
+    public void setVehicleBrand(String vehicleBrand) {
+        this.vehicleBrand = vehicleBrand;
+    }
+
     @Override
     public String toString() {
         return "PriceList{" +
                 "id=" + id +
                 ", serviceId=" + serviceId +
                 ", vehicleType='" + vehicleType + '\'' +
+                ", vehicleBrand='" + vehicleBrand + '\'' +
                 ", price=" + price +
                 ", effectiveFrom=" + effectiveFrom +
                 ", effectiveTo=" + effectiveTo +

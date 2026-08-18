@@ -42,10 +42,6 @@ public class AppointmentController {
         @FXML
         private TableColumn<Appointment, LocalDateTime> dateColumn;
 
-        // ==============================
-        // FORM
-        // ==============================
-
         @FXML
         private TextField customerNameField;
 
@@ -70,21 +66,9 @@ public class AppointmentController {
         @FXML
         private TextArea notesArea;
 
-        /*
-         * Danh sách dịch vụ khách chọn.
-         *
-         * Cách hiển thị/chọn dịch vụ cụ thể sẽ phụ thuộc FXML
-         * của mày.
-         *
-         * Tạm thời controller quản lý danh sách này ở đây.
-         */
         private final List<AppointmentServiceItem> selectedServices = new ArrayList<>();
 
         private final AppointmentService appointmentService = new AppointmentService();
-
-        // ==============================
-        // INITIALIZE
-        // ==============================
 
         @FXML
         public void initialize() {
@@ -110,10 +94,6 @@ public class AppointmentController {
                 dateColumn.setCellValueFactory(
                                 new PropertyValueFactory<>("appointmentDate"));
 
-                /*
-                 * Chỉ cho khách chọn các giờ garage hoạt động.
-                 */
-
                 appointmentTimeComboBox.setItems(
                                 FXCollections.observableArrayList(
                                                 LocalTime.of(7, 0),
@@ -136,18 +116,10 @@ public class AppointmentController {
                 loadAppointments();
         }
 
-        // ==============================
-        // ADD APPOINTMENT
-        // ==============================
-
         @FXML
         public void addAppointment() {
 
                 try {
-
-                        /*
-                         * 1. Lấy dữ liệu khách nhập
-                         */
 
                         String customerName = customerNameField.getText().trim();
 
@@ -155,38 +127,17 @@ public class AppointmentController {
 
                         String licensePlate = licensePlateField.getText().trim();
 
-                        /*
-                         * 2. Lấy dữ liệu khách chọn
-                         */
-
                         String vehicleBrand = vehicleBrandComboBox.getValue();
 
                         String vehicleType = vehicleTypeComboBox.getValue();
 
-                        /*
-                         * 3. Lấy ngày + giờ
-                         */
-
                         LocalDateTime appointmentDate = getAppointmentDateTime();
-
-                        /*
-                         * 4. Kiểm tra danh sách dịch vụ
-                         */
 
                         if (selectedServices.isEmpty()) {
 
                                 throw new IllegalArgumentException(
                                                 "Vui lòng chọn ít nhất một dịch vụ.");
                         }
-
-                        /*
-                         * 5. Tạo Appointment
-                         *
-                         * customerId KHÔNG được nhập ở đây.
-                         *
-                         * AppointmentService sẽ tự tìm xe bằng biển số
-                         * và quyết định customerId.
-                         */
 
                         Appointment appointment = new Appointment();
 
@@ -211,10 +162,6 @@ public class AppointmentController {
                         appointment.setNotes(
                                         notesArea.getText().trim());
 
-                        /*
-                         * 6. Gửi toàn bộ dữ liệu xuống Service
-                         */
-
                         boolean created = appointmentService.createAppointment(
                                         appointment,
                                         selectedServices);
@@ -224,10 +171,6 @@ public class AppointmentController {
                                 throw new IllegalStateException(
                                                 "Không thể tạo lịch hẹn.");
                         }
-
-                        /*
-                         * 7. Thành công
-                         */
 
                         loadAppointments();
 
@@ -242,10 +185,6 @@ public class AppointmentController {
                         showInputError(exception);
                 }
         }
-
-        // ==============================
-        // CLEAR FORM
-        // ==============================
 
         @FXML
         public void clearForm() {
@@ -262,19 +201,11 @@ public class AppointmentController {
 
                 notesArea.clear();
 
-                /*
-                 * Xóa toàn bộ dịch vụ đã chọn.
-                 */
-
                 selectedServices.clear();
 
                 appointmentTable.getSelectionModel()
                                 .clearSelection();
         }
-
-        // ==============================
-        // LOAD APPOINTMENTS
-        // ==============================
 
         private void loadAppointments() {
 
@@ -283,10 +214,6 @@ public class AppointmentController {
                                                 appointmentService
                                                                 .getAllAppointments()));
         }
-
-        // ==============================
-        // SHOW APPOINTMENT
-        // ==============================
 
         private void showAppointment(
                         Appointment appointment) {
@@ -335,10 +262,6 @@ public class AppointmentController {
                                                 : appointment.getNotes());
         }
 
-        // ==============================
-        // DATE + TIME
-        // ==============================
-
         private LocalDateTime getAppointmentDateTime() {
 
                 LocalDate date = appointmentDatePicker.getValue();
@@ -369,10 +292,6 @@ public class AppointmentController {
                 return dateTime;
         }
 
-        // ==============================
-        // ERROR
-        // ==============================
-
         private void showInputError(
                         Exception exception) {
 
@@ -382,10 +301,6 @@ public class AppointmentController {
                                                 ? "Vui lòng kiểm tra lại dữ liệu."
                                                 : exception.getMessage());
         }
-
-        // ==============================
-        // BACK
-        // ==============================
 
         @FXML
         public void backToDashboard() {

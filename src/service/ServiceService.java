@@ -1,6 +1,7 @@
 package service;
 
 import java.util.List;
+import java.util.Objects;
 
 import dao.ServiceDAO;
 import dao.impl.ServiceDAOImpl;
@@ -15,23 +16,34 @@ public class ServiceService {
     }
 
     public ServiceService(ServiceDAO serviceDAO) {
-        this.serviceDAO = java.util.Objects.requireNonNull(serviceDAO, "serviceDAO is required");
+        this.serviceDAO = Objects.requireNonNull(
+                serviceDAO,
+                "serviceDAO is required");
     }
 
     public void addService(Service service) {
 
         if (service == null) {
-            throw new IllegalArgumentException("Service is null");
+            throw new IllegalArgumentException(
+                    "Service is null");
         }
 
         if (service.getServiceName() == null
-                || service.getServiceName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Service name can not be empty");
+                || service.getServiceName().isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Service name cannot be empty");
         }
 
-        if (serviceDAO.existsByName(service.getServiceName())) {
-            throw new IllegalArgumentException("Service name already exists");
+        if (serviceDAO.existsByName(
+                service.getServiceName().trim())) {
+
+            throw new IllegalArgumentException(
+                    "Service name already exists");
         }
+
+        service.setServiceName(
+                service.getServiceName().trim());
 
         serviceDAO.addService(service);
     }
@@ -39,21 +51,41 @@ public class ServiceService {
     public void updateService(Service service) {
 
         if (service == null) {
-            throw new IllegalArgumentException("Service is null");
+            throw new IllegalArgumentException(
+                    "Service is null");
         }
 
         if (service.getId() <= 0) {
-            throw new IllegalArgumentException("Invalid service id");
+            throw new IllegalArgumentException(
+                    "Invalid service id");
         }
 
         if (service.getServiceName() == null
-                || service.getServiceName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Service name can not be empty");
+                || service.getServiceName().isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Service name cannot be empty");
         }
 
-        if (!serviceDAO.existsById(service.getId())) {
-            throw new IllegalArgumentException("Service not found");
+        Service existing = serviceDAO.findById(
+                service.getId());
+
+        if (existing == null) {
+            throw new IllegalArgumentException(
+                    "Service not found");
         }
+
+        String newName = service.getServiceName().trim();
+
+        if (!existing.getServiceName()
+                .equalsIgnoreCase(newName)
+                && serviceDAO.existsByName(newName)) {
+
+            throw new IllegalArgumentException(
+                    "Service name already exists");
+        }
+
+        service.setServiceName(newName);
 
         serviceDAO.updateService(service);
     }
@@ -61,11 +93,13 @@ public class ServiceService {
     public void deleteService(int id) {
 
         if (id <= 0) {
-            throw new IllegalArgumentException("Invalid service id");
+            throw new IllegalArgumentException(
+                    "Invalid service id");
         }
 
         if (!serviceDAO.existsById(id)) {
-            throw new IllegalArgumentException("Service not found");
+            throw new IllegalArgumentException(
+                    "Service not found");
         }
 
         serviceDAO.deleteService(id);
@@ -74,7 +108,8 @@ public class ServiceService {
     public Service findById(int id) {
 
         if (id <= 0) {
-            throw new IllegalArgumentException("Invalid service id");
+            throw new IllegalArgumentException(
+                    "Invalid service id");
         }
 
         return serviceDAO.findById(id);
@@ -84,24 +119,11 @@ public class ServiceService {
         return serviceDAO.findAll();
     }
 
-    public List<Service> findByPriceRange(double minPrice,
-            double maxPrice) {
-
-        if (minPrice < 0 || maxPrice < 0) {
-            throw new IllegalArgumentException("Invalid price");
-        }
-
-        if (minPrice > maxPrice) {
-            throw new IllegalArgumentException("Min price must be less than max price");
-        }
-
-        return serviceDAO.findByPriceRange(minPrice, maxPrice);
-    }
-
     public boolean existsById(int id) {
 
         if (id <= 0) {
-            throw new IllegalArgumentException("Invalid service id");
+            throw new IllegalArgumentException(
+                    "Invalid service id");
         }
 
         return serviceDAO.existsById(id);
@@ -109,20 +131,15 @@ public class ServiceService {
 
     public boolean existsByName(String name) {
 
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Service name can not be empty");
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Service name cannot be empty");
         }
 
-        return serviceDAO.existsByName(name);
+        return serviceDAO.existsByName(name.trim());
     }
 
     public int countServices() {
         return serviceDAO.countServices();
-    }
-
-    public List<Service> getAllServices() {
-        return serviceDAO.findAll().stream()
-                .filter(Service::isActive)
-                .toList();
     }
 }

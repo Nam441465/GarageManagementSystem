@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -11,33 +9,66 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.ServiceController">
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.ServiceController">
 
     <top>
-        <Label text="Service Management"/>
+        <Label text="Service Management"
+            style="-fx-font-size: 20px; -fx-padding: 12px;" />
     </top>
 
     <center>
         <TableView fx:id="serviceTable">
             <columns>
-                <TableColumn fx:id="idColumn" text="ID"/>
-                <TableColumn fx:id="serviceNameColumn" text="Service Name"/>
-                <TableColumn fx:id="descriptionColumn" text="Description"/>
+
+                <TableColumn fx:id="idColumn"
+                    text="ID"
+                    prefWidth="70" />
+
+                <TableColumn fx:id="serviceNameColumn"
+                    text="Service Name"
+                    prefWidth="180" />
+
+                <TableColumn fx:id="descriptionColumn"
+                    text="Description"
+                    prefWidth="300" />
+
             </columns>
         </TableView>
     </center>
 
     <right>
-        <VBox spacing="10">
-            <TextField fx:id="serviceNameField" promptText="Service Name"/>
-            <TextField fx:id="descriptionField" promptText="Description"/>
-            <CheckBox fx:id="isActiveCheckBox" text="Is Active"/>
-            <ComboBox fx:id="categoryComboBox" promptText="Select Category"/>
-            <Button text="Add" onAction="#addService"/>
-            <Button text="Update" onAction="#updateService"/>
-            <Button text="Delete" onAction="#deleteService"/>
-            <Button text="Back" onAction="#backToDashboard"/>
+        <VBox spacing="10"
+            prefWidth="250"
+            style="-fx-padding: 15px;">
+
+            <Label text="Service Information"
+                style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+            <TextField fx:id="serviceNameField"
+                promptText="Service Name"
+                maxWidth="Infinity" />
+
+            <TextField fx:id="descriptionField"
+                promptText="Description"
+                maxWidth="Infinity" />
+
+            <Button text="Add"
+                onAction="#addService"
+                maxWidth="Infinity" />
+
+            <Button text="Update"
+                onAction="#updateService"
+                maxWidth="Infinity" />
+
+            <Button text="Delete"
+                onAction="#deleteService"
+                maxWidth="Infinity" />
+
+            <Button text="Back"
+                onAction="#backToDashboard"
+                maxWidth="Infinity" />
+
         </VBox>
     </right>
 

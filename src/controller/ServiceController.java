@@ -1,6 +1,5 @@
 package controller;
 
-import enums.ServiceCategory;
 import enums.UserRole;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -9,8 +8,6 @@ import javafx.collections.ObservableList;
 
 import javafx.fxml.FXML;
 
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -40,12 +37,6 @@ public class ServiceController {
         @FXML
         private TextField descriptionField;
 
-        @FXML
-        private CheckBox isActiveCheckBox;
-
-        @FXML
-        private ComboBox<ServiceCategory> categoryComboBox;
-
         private final ServiceService serviceService = new ServiceService();
 
         private ObservableList<Service> serviceList;
@@ -54,9 +45,6 @@ public class ServiceController {
         public void initialize() {
 
                 serviceList = FXCollections.observableArrayList();
-
-                // Đưa dữ liệu vào ComboBox category
-                categoryComboBox.setItems(FXCollections.observableArrayList(ServiceCategory.values()));
 
                 idColumn.setCellValueFactory(
                                 data -> new SimpleIntegerProperty(
@@ -72,15 +60,19 @@ public class ServiceController {
 
                 loadServices();
 
-                serviceTable.getSelectionModel().selectedItemProperty().addListener((obs, old, service) -> {
-                        if (service != null) {
-                                serviceNameField.setText(service.getServiceName());
-                                descriptionField.setText(service.getDescription());
-                                isActiveCheckBox.setSelected(service.isActive());
-                                categoryComboBox.setValue(service.getCategory());
-                        }
-                });
+                serviceTable.getSelectionModel()
+                                .selectedItemProperty()
+                                .addListener((obs, old, service) -> {
 
+                                        if (service != null) {
+
+                                                serviceNameField.setText(
+                                                                service.getServiceName());
+
+                                                descriptionField.setText(
+                                                                service.getDescription());
+                                        }
+                                });
         }
 
         private void loadServices() {
@@ -90,16 +82,18 @@ public class ServiceController {
                 serviceList.addAll(
                                 serviceService.findAll());
 
-                serviceTable.setItems(serviceList);
-
+                serviceTable.setItems(
+                                serviceList);
         }
 
         @FXML
         public void addService() {
 
                 if (!isOwner()) {
+
                         System.out.println(
                                         "Employee cannot add service");
+
                         return;
                 }
 
@@ -111,15 +105,11 @@ public class ServiceController {
                 service.setDescription(
                                 descriptionField.getText());
 
-                service.setActive(isActiveCheckBox.isSelected());
-                service.setCategory(categoryComboBox.getValue());
-
                 serviceService.addService(service);
 
                 loadServices();
 
                 clearFields();
-
         }
 
         @FXML
@@ -147,13 +137,11 @@ public class ServiceController {
                 service.setDescription(
                                 descriptionField.getText());
 
-                service.setActive(isActiveCheckBox.isSelected());
-                service.setCategory(categoryComboBox.getValue());
-
                 serviceService.updateService(service);
 
                 loadServices();
 
+                clearFields();
         }
 
         @FXML
@@ -180,14 +168,13 @@ public class ServiceController {
 
                 loadServices();
 
+                clearFields();
         }
 
         private boolean isOwner() {
 
                 return Session.getCurrentUser() != null
-                                &&
-                                Session.getCurrentUser().getRole() == UserRole.OWNER;
-
+                                && Session.getCurrentUser().getRole() == UserRole.OWNER;
         }
 
         private void clearFields() {
@@ -196,15 +183,17 @@ public class ServiceController {
 
                 descriptionField.clear();
 
-                isActiveCheckBox.setSelected(false);
-
-                categoryComboBox.setValue(null);
-
+                serviceTable.getSelectionModel()
+                                .clearSelection();
         }
 
         @FXML
         public void backToDashboard() {
-                Navigation.changeScene(serviceTable, "/ui/DashboardView.fxml", 650, 650);
-        }
 
+                Navigation.changeScene(
+                                serviceTable,
+                                "/ui/DashboardView.fxml",
+                                650,
+                                650);
+        }
 }

@@ -59,8 +59,9 @@
 
         <Label text="Hãng xe:" />
 
-        <TextField fx:id="vehicleBrandField"
-          promptText="Nhập hãng xe" />
+        <ComboBox fx:id="vehicleBrandComboBox"
+          promptText="Chọn hãng xe"
+          maxWidth="Infinity" />
 
         <Label text="Loại xe:" />
 
@@ -73,7 +74,7 @@
         <Label text="Chọn dịch vụ"
           style="-fx-font-size: 16px; -fx-font-weight: bold;" />
 
-        <Label text="Có thể chọn nhiều dịch vụ" />
+        <Label text="Click từng dịch vụ để chọn/bỏ chọn nhiều dịch vụ." />
 
         <ListView fx:id="serviceListView"
           prefHeight="180"

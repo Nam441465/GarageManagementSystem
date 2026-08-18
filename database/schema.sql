@@ -65,8 +65,6 @@ CREATE TABLE Service (
     id INT PRIMARY KEY AUTO_INCREMENT,
     service_name VARCHAR(100) NOT NULL,
     description TEXT NULL,
-    category ENUM('CLEANING', 'MAINTENANCE', 'REPAIR', 'REPLACEMENT') NOT NULL,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE PriceList (
@@ -80,27 +78,36 @@ CREATE TABLE PriceList (
         'TRUCK',
         'MOTORBIKE'
     ) NOT NULL,
+    vehicle_brand ENUM(
+        'TOYOTA',
+        'HONDA',
+        'FORD',
+        'HYUNDAI',
+        'KIA',
+        'MAZDA',
+        'MERCEDES',
+        'BMW',
+        'AUDI',
+        'VINFAST',
+        'MITSUBISHI',
+        'NISSAN'
+    ) NOT NULL,
     price DECIMAL(12, 2) NOT NULL,
     effective_from DATE NOT NULL,
     effective_to DATE NULL,
     note VARCHAR(255) NULL,
-    UNIQUE (vehicle_type, service_id),
+    UNIQUE (service_id, vehicle_type, vehicle_brand),
     FOREIGN KEY (service_id) REFERENCES Service(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE Appointment (
     id INT PRIMARY KEY AUTO_INCREMENT,
-
     customer_id INT NULL,
-
     customer_name VARCHAR(100) NOT NULL,
     customer_phone VARCHAR(20) NOT NULL,
-
     license_plate VARCHAR(20) NOT NULL,
     vehicle_brand VARCHAR(50) NOT NULL,
     vehicle_type VARCHAR(50) NOT NULL,
-
     appointment_date DATETIME NOT NULL,
-
     status ENUM(
         'PENDING',
         'CONFIRMED',
@@ -108,41 +115,20 @@ CREATE TABLE Appointment (
         'CANCELLED',
         'NO_SHOW'
     ) NOT NULL DEFAULT 'PENDING',
-
     notes TEXT NULL,
-
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (customer_id)
-        REFERENCES Customer(id)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE,
-
-    FOREIGN KEY (employee_id)
-        REFERENCES Employee(id)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE
+    FOREIGN KEY (customer_id) REFERENCES Customer(id) ON DELETE
+    SET NULL ON UPDATE CASCADE
 );
-
 CREATE TABLE AppointmentServiceItem (
     id INT PRIMARY KEY AUTO_INCREMENT,
-
     appointment_id INT NOT NULL,
     service_id INT NOT NULL,
-
+    unit_price DECIMAL(12, 2) NOT NULL,
     quantity INT NOT NULL DEFAULT 1,
-
     notes TEXT NULL,
-
-    FOREIGN KEY (appointment_id)
-        REFERENCES Appointment(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-
-    FOREIGN KEY (service_id)
-        REFERENCES Service(id)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE
+    FOREIGN KEY (appointment_id) REFERENCES Appointment(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES Service(id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 CREATE TABLE ServiceRecord (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -230,7 +216,6 @@ CREATE INDEX idx_vehicle_license_plate ON Vehicle(license_plate);
 CREATE INDEX idx_service_name ON Service(service_name);
 CREATE INDEX idx_price_list_service_id ON PriceList(service_id);
 CREATE INDEX idx_appointment_customer_id ON Appointment(customer_id);
-CREATE INDEX idx_appointment_vehicle_id ON Appointment(vehicle_id);
 CREATE INDEX idx_appointment_date ON Appointment(appointment_date);
 CREATE INDEX idx_service_record_vehicle_id ON ServiceRecord(vehicle_id);
 CREATE INDEX idx_service_record_appointment_id ON ServiceRecord(appointment_id);
@@ -238,15 +223,14 @@ CREATE INDEX idx_invoice_record_id ON Invoice(record_id);
 CREATE INDEX idx_auditlog_user_id ON AuditLog(user_id);
 INSERT INTO Users(role, username, password, status)
 SELECT 'OWNER',
-       'owner',
-       '123456',
-       'ACTIVE'
+    'owner',
+    '123456',
+    'ACTIVE'
 WHERE NOT EXISTS (
-    SELECT 1
-    FROM Users
-    WHERE role = 'OWNER'
-);
-
+        SELECT 1
+        FROM Users
+        WHERE role = 'OWNER'
+    );
 DELIMITER //
 
 CREATE TRIGGER prevent_extra_owner

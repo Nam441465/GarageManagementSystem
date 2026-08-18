@@ -2,51 +2,30 @@ package model;
 
 import java.time.LocalDateTime;
 
-import enums.ServiceCategory;
-
 public class Service {
     private int id;
-    private String serviceName;
     private String description;
-    private boolean isActive;
-    private LocalDateTime createdAt;
-    private ServiceCategory category;
+    private String serviceName;
+    private LocalDateTime createdDate;
 
     public Service() {
     }
 
-    public Service(String serviceName,
-            String description,
-            boolean isActive,
-            LocalDateTime createdAt,
-            ServiceCategory category) {
-        this.serviceName = serviceName;
-        this.description = description;
-        this.isActive = isActive;
-        this.createdAt = createdAt;
-        this.category = category;
-    }
-
-    public Service(int id,
-            String serviceName,
-            String description,
-            boolean isActive,
-            LocalDateTime createdAt,
-            ServiceCategory category) {
+    public Service(int id, String description, String serviceName, LocalDateTime createdDate) {
         this.id = id;
-        this.serviceName = serviceName;
         this.description = description;
-        this.isActive = isActive;
-        this.createdAt = createdAt;
-        this.category = category;
+        this.serviceName = serviceName;
+        this.createdDate = createdDate;
     }
 
-    public ServiceCategory getCategory() {
-        return category;
+    public Service(String description, String serviceName, LocalDateTime createdDate) {
+        this.description = description;
+        this.serviceName = serviceName;
+        this.createdDate = createdDate;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 
     public String getDescription() {
@@ -61,16 +40,8 @@ public class Service {
         return serviceName;
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setCategory(ServiceCategory category) {
-        this.category = category;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     public void setDescription(String description) {
@@ -81,24 +52,13 @@ public class Service {
         this.id = id;
     }
 
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
-    }
-
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
 
     @Override
     public String toString() {
-        return "Service{" +
-                "id=" + id +
-                ", serviceName='" + serviceName + '\'' +
-                ", description='" + description + '\'' +
-                ", category=" + category +
-                ", isActive=" + isActive +
-                ", createdAt=" + createdAt +
-                '}';
+        return serviceName;
     }
 
 }

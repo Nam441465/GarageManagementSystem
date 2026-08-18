@@ -206,31 +206,26 @@ public class AppointmentServiceItemDAOImpl implements AppointmentServiceItemDAO 
 
     @Override
     public boolean addAppointmentServiceItem(AppointmentServiceItem item) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addAppointmentServiceItem'");
+        return create(item);
     }
 
     @Override
     public AppointmentServiceItem findById(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        return read(id);
     }
 
     @Override
     public List<AppointmentServiceItem> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        return readAll();
     }
 
     @Override
     public boolean updateAppointmentServiceItem(AppointmentServiceItem item) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateAppointmentServiceItem'");
+        return update(item);
     }
 
     @Override
     public boolean deleteAppointmentServiceItem(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteAppointmentServiceItem'");
+        return delete(id);
     }
 }
