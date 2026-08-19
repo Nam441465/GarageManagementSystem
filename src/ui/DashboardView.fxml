@@ -16,20 +16,20 @@
                         alignment="CENTER"
                         style="-fx-padding:20;">
 
-                        <Label text="GARAGE MANAGEMENT SYSTEM"
+                        <Label text="HỆ THỐNG QUẢN LÝ GARA"
                                 style="
                    -fx-font-size:24px;
                    -fx-font-weight:bold;
                    " />
 
                         <Label fx:id="welcomeLabel"
-                                text="Welcome"
+                                text="Chào mừng"
                                 style="
                    -fx-font-size:16px;
                    " />
 
                         <Label fx:id="roleLabel"
-                                text="Role"
+                                text="Vai trò"
                                 style="
                    -fx-font-size:14px;
                    " />
@@ -44,79 +44,79 @@
                         alignment="CENTER">
 
                         <Button fx:id="customerButton"
-                                text="Customer Management"
+                                text="Quản lý khách hàng"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showCustomer" />
 
                         <Button fx:id="vehicleButton"
-                                text="Vehicle Management"
+                                text="Quản lý xe"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showVehicle" />
 
                         <Button fx:id="serviceButton"
-                                text="Service Management"
+                                text="Quản lý dịch vụ"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showService" />
 
                         <Button fx:id="priceButton"
-                                text="Price List Management"
+                                text="Quản lý bảng giá"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showPriceList" />
 
                         <Button fx:id="appointmentButton"
-                                text="Appointment Management"
+                                text="Quản lý lịch hẹn"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showAppointment" />
 
                         <Button fx:id="inventoryButton"
-                                text="Inventory Management"
+                                text="Quản lý kho phụ tùng"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showInventory" />
 
                         <Button fx:id="warrantyButton"
-                                text="Warranty Management"
+                                text="Quản lý bảo hành"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showWarranty" />
 
                         <Button fx:id="serviceRecordButton"
-                                text="Service Record Management"
+                                text="Quản lý phiếu dịch vụ"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showServiceRecord" />
 
                         <Button fx:id="serviceRecordDetailButton"
-                                text="Service Record Details"
+                                text="Chi tiết phiếu dịch vụ"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showServiceRecordDetails" />
 
                         <Button fx:id="invoiceButton"
-                                text="Invoice Management"
+                                text="Quản lý hóa đơn"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showInvoice" />
 
                         <Button fx:id="employeeButton"
-                                text="Employee Management"
+                                text="Quản lý nhân viên"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showEmployee" />
 
                         <Button fx:id="inviteButton"
-                                text="Employee Invites"
+                                text="Quản lý mã mời nhân viên"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showInviteManagement" />
 
                         <Button fx:id="statisticsButton"
-                                text="Statistics"
+                                text="Thống kê"
                                 prefWidth="300"
                                 prefHeight="40"
                                 onAction="#showStatistics" />
@@ -132,12 +132,12 @@
                         style="-fx-padding:20;">
 
                         <Button fx:id="backButton"
-                                text="Back"
+                                text="Quay lại"
                                 prefWidth="120"
                                 onAction="#back" />
 
                         <Button fx:id="logoutButton"
-                                text="Logout"
+                                text="Đăng xuất"
                                 prefWidth="120"
                                 onAction="#logout" />
 

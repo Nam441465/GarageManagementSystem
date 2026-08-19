@@ -205,7 +205,7 @@ public class VehicleController {
                 if (!(Session.getCurrentUser().getRole() == UserRole.OWNER)) {
 
                         System.out.println(
-                                        "Employee cannot delete vehicle");
+                                        "Nhân viên không thể xóa xe");
 
                         return;
 

@@ -14,18 +14,18 @@
     <top>
         <VBox spacing="15" style="-fx-padding:20;">
 
-            <Label text="Customer Vehicle Lookup"
+            <Label text="Tra cứu xe khách hàng"
                    style="-fx-font-size:18px; -fx-font-weight:bold;"/>
 
             <HBox spacing="10">
 
-                <Label text="License Plate:"/>
+                <Label text="Biển số xe:"/>
 
                 <TextField fx:id="licensePlateField"
                            prefWidth="250"
-                           promptText="Enter license plate"/>
+                           promptText="Nhập biển số xe"/>
 
-                <Button text="Search Vehicle"
+                <Button text="Tìm xe"
                         onAction="#searchVehicle"/>
 
             </HBox>
@@ -46,13 +46,13 @@
         <HBox spacing="10"
               style="-fx-padding:15;">
 
-            <Button text="View Services"
+            <Button text="Xem dịch vụ"
                     onAction="#showServices"/>
 
             <Button text="Đặt lịch bảo dưỡng"
                     onAction="#bookAppointment"/>
 
-            <Button text="Back To Login"
+            <Button text="Về đăng nhập"
                     onAction="#goBack"/>
 
         </HBox>

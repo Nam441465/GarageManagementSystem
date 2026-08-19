@@ -30,18 +30,18 @@ public class RegisterController {
             String code = inviteCodeField.getText().trim();
             EmployeeInvite invite = inviteService.findByCode(code);
             if (invite == null || !"UNUSED".equalsIgnoreCase(invite.getStatus()))
-                throw new IllegalArgumentException("Invite code is invalid or has already been used.");
+                throw new IllegalArgumentException("Mã mời không hợp lệ hoặc đã được sử dụng.");
             User user = new User();
             user.setRole(UserRole.EMPLOYEE);
             user.setUsername(usernameField.getText().trim());
             user.setPassword(passwordField.getText());
             userService.addUser(user);
             if (!inviteService.useInvite(code))
-                throw new IllegalStateException("Account was created but invite could not be marked as used.");
-            new Alert(Alert.AlertType.INFORMATION, "Registration completed. You can now log in.").showAndWait();
+                throw new IllegalStateException("Tài khoản đã được tạo nhưng không thể đánh dấu mã mời là đã dùng.");
+            new Alert(Alert.AlertType.INFORMATION, "Đăng ký thành công. Bạn có thể đăng nhập ngay.").showAndWait();
             goBack();
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, e.getMessage() == null ? "Registration failed." : e.getMessage())
+            new Alert(Alert.AlertType.ERROR, e.getMessage() == null ? "Đăng ký thất bại." : e.getMessage())
                     .showAndWait();
         }
     }
@@ -53,7 +53,7 @@ public class RegisterController {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root, 400, 300));
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Cannot open the login screen.").showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Không thể mở màn hình đăng nhập.").showAndWait();
         }
     }
 }

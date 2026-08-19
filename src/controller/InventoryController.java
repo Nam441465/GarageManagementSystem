@@ -14,78 +14,147 @@ import util.AlertUtil;
 import java.math.BigDecimal;
 
 public class InventoryController {
+
     @FXML
     private TableView<Part> partTable;
+
     @FXML
     private TableColumn<Part, Integer> idColumn;
+
     @FXML
     private TableColumn<Part, String> nameColumn;
+
     @FXML
     private TableColumn<Part, BigDecimal> unitPriceColumn;
+
     @FXML
     private TableColumn<Part, Integer> stockColumn;
+
     @FXML
     private TextField nameField;
+
     @FXML
     private TextField supplierField;
+
     @FXML
     private TextField unitPriceField;
+
     @FXML
     private TextField stockField;
+
     @FXML
     private TextArea descriptionArea;
+
     private final InventoryService inventoryService = new InventoryService();
 
     @FXML
     public void initialize() {
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("partName"));
-        unitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
-        stockColumn.setCellValueFactory(new PropertyValueFactory<>("stockQuantity"));
-        partTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, part) -> showPart(part));
+
+        idColumn.setCellValueFactory(
+                new PropertyValueFactory<>("id"));
+
+        nameColumn.setCellValueFactory(
+                new PropertyValueFactory<>("partName"));
+
+        unitPriceColumn.setCellValueFactory(
+                new PropertyValueFactory<>("unitPrice"));
+
+        stockColumn.setCellValueFactory(
+                new PropertyValueFactory<>("stockQuantity"));
+
+        partTable.getSelectionModel()
+                .selectedItemProperty()
+                .addListener(
+                        (obs, oldValue, part) -> showPart(part));
+
         loadParts();
     }
 
     @FXML
     public void addPart() {
+
         try {
-            if (!inventoryService.addPart(readPart(new Part())))
-                throw new IllegalStateException("Không thể thêm phụ tùng.");
+
+            Part part = readPart(new Part());
+
+            if (!inventoryService.addPart(part)) {
+                throw new IllegalStateException(
+                        "Không thể thêm phụ tùng.");
+            }
+
             loadParts();
             clearForm();
+
         } catch (Exception exception) {
-            error(exception);
+            showError(exception);
         }
     }
 
     @FXML
     public void updatePart() {
-        Part part = partTable.getSelectionModel().getSelectedItem();
-        if (part == null) {
-            AlertUtil.showWarning("Inventory", "Hãy chọn phụ tùng cần cập nhật.");
+
+        Part selectedPart = partTable.getSelectionModel()
+                .getSelectedItem();
+
+        if (selectedPart == null) {
+            AlertUtil.showWarning(
+                    "Kho phụ tùng",
+                    "Hãy chọn phụ tùng cần cập nhật.");
             return;
         }
+
         try {
-            if (!inventoryService.updatePart(readPart(part)))
-                throw new IllegalStateException("Không thể cập nhật phụ tùng.");
+
+            readPart(selectedPart);
+
+            if (!inventoryService.updatePart(selectedPart)) {
+                throw new IllegalStateException(
+                        "Không thể cập nhật phụ tùng.");
+            }
+
             loadParts();
+
         } catch (Exception exception) {
-            error(exception);
+            showError(exception);
         }
     }
 
     @FXML
     public void deletePart() {
-        Part part = partTable.getSelectionModel().getSelectedItem();
-        if (part == null) {
-            AlertUtil.showWarning("Inventory", "Hãy chọn phụ tùng cần xóa.");
+
+        Part selectedPart = partTable.getSelectionModel()
+                .getSelectedItem();
+
+        if (selectedPart == null) {
+            AlertUtil.showWarning(
+                    "Kho phụ tùng",
+                    "Hãy chọn phụ tùng cần xóa.");
             return;
         }
-        if (AlertUtil.showConfirmation("Xóa phụ tùng", "Bạn có chắc muốn xóa phụ tùng đã chọn?")
-                && !inventoryService.deletePart(part.getId()))
-            AlertUtil.showError("Inventory", "Không thể xóa phụ tùng.");
-        else
+
+        boolean confirmed = AlertUtil.showConfirmation(
+                "Xóa phụ tùng",
+                "Bạn có chắc muốn xóa phụ tùng đã chọn?");
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+
+            if (!inventoryService.deletePart(
+                    selectedPart.getId())) {
+
+                throw new IllegalStateException(
+                        "Không thể xóa phụ tùng.");
+            }
+
             loadParts();
+            clearForm();
+
+        } catch (Exception exception) {
+            showError(exception);
+        }
     }
 
     @FXML
@@ -95,59 +164,104 @@ public class InventoryController {
 
     @FXML
     public void clearForm() {
+
         nameField.clear();
         supplierField.clear();
         unitPriceField.clear();
         stockField.clear();
         descriptionArea.clear();
+
         partTable.getSelectionModel().clearSelection();
     }
 
     @FXML
     public void backToDashboard() {
-        Navigation.changeScene(partTable, "/ui/DashboardView.fxml", 900, 650);
+
+        Navigation.changeScene(
+                partTable,
+                "/ui/DashboardView.fxml",
+                900,
+                650);
     }
 
     private void loadParts() {
-        partTable.setItems(FXCollections.observableArrayList(inventoryService.getAllParts()));
+
+        partTable.setItems(
+                FXCollections.observableArrayList(
+                        inventoryService.getAllParts()));
     }
 
     private Part readPart(Part part) {
-        String name = nameField.getText().trim();
-        if (name.isEmpty())
-            throw new IllegalArgumentException("Tên phụ tùng là bắt buộc.");
 
-        BigDecimal price = new BigDecimal(unitPriceField.getText().trim());
-        int stock = Integer.parseInt(stockField.getText().trim());
+        BigDecimal price;
 
-        if (price.signum() < 0 || stock < 0)
-            throw new IllegalArgumentException("Giá và số lượng không được âm.");
+        try {
+            price = new BigDecimal(
+                    unitPriceField.getText().trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                    "Đơn giá phải là số hợp lệ.");
+        }
 
-        part.setPartName(name);
-        part.setSupplier(supplierField.getText().trim());
+        int stock;
+
+        try {
+            stock = Integer.parseInt(
+                    stockField.getText().trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                    "Số lượng tồn kho phải là số nguyên hợp lệ.");
+        }
+
+        part.setPartName(
+                nameField.getText().trim());
+
+        part.setSupplier(
+                supplierField.getText().trim());
+
         part.setUnitPrice(price);
+
         part.setStockQuantity(stock);
-        part.setDescription(descriptionArea.getText().trim());
+
+        part.setDescription(
+                descriptionArea.getText().trim());
+
+        part.validate();
 
         return part;
     }
 
     private void showPart(Part part) {
-        if (part == null)
-            return;
 
-        nameField.setText(part.getPartName());
-        supplierField.setText(part.getSupplier());
-        unitPriceField.setText(part.getUnitPrice().toPlainString());
-        stockField.setText(String.valueOf(part.getStockQuantity()));
-        descriptionArea.setText(part.getDescription());
+        if (part == null) {
+            return;
+        }
+
+        nameField.setText(
+                part.getPartName());
+
+        supplierField.setText(
+                part.getSupplier());
+
+        unitPriceField.setText(
+                part.getUnitPrice().toPlainString());
+
+        stockField.setText(
+                String.valueOf(
+                        part.getStockQuantity()));
+
+        descriptionArea.setText(
+                part.getDescription());
     }
 
-    private void error(Exception exception) {
+    private void showError(Exception exception) {
+
+        String message = exception.getMessage();
+
         AlertUtil.showError(
-                "Dữ liệu không hợp lệ",
-                exception.getMessage() == null
-                        ? "Vui lòng kiểm tra lại dữ liệu."
-                        : exception.getMessage());
+                "Lỗi kho phụ tùng",
+                message == null
+                        ? "Vui lòng kiểm tra lại dữ liệu đã nhập."
+                        : message);
     }
 }

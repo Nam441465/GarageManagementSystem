@@ -23,7 +23,7 @@ public class Main extends Application {
         Scene scene = new Scene(loader.load(),400,300);
 
 
-        stage.setTitle("Login");
+        stage.setTitle("Đăng nhập");
 
         stage.setScene(scene);
 

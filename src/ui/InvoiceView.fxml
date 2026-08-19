@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -9,11 +11,11 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.InvoiceController">
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.InvoiceController">
 
     <top>
-        <Label text="Invoice Management"/>
+        <Label text="Quản lý hóa đơn" />
     </top>
 
     <center>
@@ -23,16 +25,31 @@
             <columns>
 
                 <TableColumn fx:id="idColumn"
-                             text="ID"/>
+                    text="ID" />
 
-                <TableColumn fx:id="recordIdColumn"
-                             text="Record ID"/>
+                <TableColumn fx:id="customerIdColumn"
+                    text="Mã khách hàng" />
+
+                <TableColumn fx:id="employeeIdColumn"
+                    text="Mã nhân viên" />
+
+                <TableColumn fx:id="licensePlateColumn"
+                    text="Biển số" />
+
+                <TableColumn fx:id="vehicleTypeColumn"
+                    text="Loại xe" />
+
+                <TableColumn fx:id="vehicleBrandColumn"
+                    text="Hãng xe" />
 
                 <TableColumn fx:id="totalAmountColumn"
-                             text="Total Amount"/>
+                    text="Tổng tiền" />
 
                 <TableColumn fx:id="issueDateColumn"
-                             text="Issue Date"/>
+                    text="Ngày lập" />
+
+                <TableColumn fx:id="paymentStatusColumn"
+                    text="Trạng thái thanh toán" />
 
             </columns>
 
@@ -44,28 +61,48 @@
 
         <VBox spacing="10">
 
-            <TextField fx:id="recordIdField"
-                       promptText="Record ID"/>
+            <Label text="Thông tin hóa đơn" />
 
-            <TextField fx:id="totalAmountField"
-                       promptText="Total Amount"/>
+            <TextField fx:id="customerIdField"
+                promptText="Mã khách hàng" />
+
+            <TextField fx:id="licensePlateField"
+                promptText="Biển số xe" />
+
+            <ComboBox fx:id="vehicleTypeComboBox"
+                promptText="Loại xe" />
+
+            <ComboBox fx:id="vehicleBrandComboBox"
+                promptText="Hãng xe" />
+
+            <Label text="Chọn dịch vụ" />
+
+            <ListView fx:id="serviceListView"
+                prefHeight="150" />
+
+            <ComboBox fx:id="paymentStatusComboBox"
+                promptText="Trạng thái thanh toán" />
+
+            <Label text="Tổng tiền được tự động tính" />
 
             <TextField fx:id="outputDirectoryField"
-                       text="exports"
-                       promptText="PDF output directory"/>
+                text="exports"
+                promptText="Thư mục xuất PDF" />
 
-            <Button text="Add"
-                    onAction="#addInvoice"/>
+            <Button text="Thêm"
+                onAction="#addInvoice" />
 
-            <Button text="Update"
-                    onAction="#updateInvoice"/>
+            <Button text="Xóa"
+                onAction="#deleteInvoice" />
 
-            <Button text="Delete"
-                    onAction="#deleteInvoice"/>
+            <Button text="Xuất PDF"
+                onAction="#exportInvoicePdf" />
 
-            <Button text="Export PDF"
-                    onAction="#exportInvoicePdf"/>
-            <Button text="Back" onAction="#backToDashboard"/>
+            <Button text="Làm mới"
+                onAction="#clearFields" />
+
+            <Button text="Quay lại"
+                onAction="#backToDashboard" />
 
         </VBox>
 

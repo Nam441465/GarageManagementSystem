@@ -1,7 +1,7 @@
 package model;
 
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class Part {
 
@@ -16,8 +16,13 @@ public class Part {
     public Part() {
     }
 
-    public Part(String partName, String supplier, BigDecimal unitPrice,
-               int stockQuantity, String description) {
+    public Part(
+            String partName,
+            String supplier,
+            BigDecimal unitPrice,
+            int stockQuantity,
+            String description) {
+
         this.partName = partName;
         this.supplier = supplier;
         this.unitPrice = unitPrice;
@@ -25,8 +30,15 @@ public class Part {
         this.description = description;
     }
 
-    public Part(int id, String partName, String supplier, BigDecimal unitPrice,
-               int stockQuantity, String description, LocalDateTime createdAt) {
+    public Part(
+            int id,
+            String partName,
+            String supplier,
+            BigDecimal unitPrice,
+            int stockQuantity,
+            String description,
+            LocalDateTime createdAt) {
+
         this.id = id;
         this.partName = partName;
         this.supplier = supplier;
@@ -36,56 +48,135 @@ public class Part {
         this.createdAt = createdAt;
     }
 
+    // ==================== Validation ====================
+
+    public void validate() {
+        if (partName == null || partName.isBlank()) {
+            throw new IllegalArgumentException("Part name is required.");
+        }
+
+        if (unitPrice == null) {
+            throw new IllegalArgumentException("Unit price is required.");
+        }
+
+        if (unitPrice.signum() < 0) {
+            throw new IllegalArgumentException("Unit price cannot be negative.");
+        }
+
+        if (stockQuantity < 0) {
+            throw new IllegalArgumentException("Stock quantity cannot be negative.");
+        }
+    }
+
+    // ==================== Stock behavior ====================
+
+    public boolean isOutOfStock() {
+        return stockQuantity == 0;
+    }
+
+    public boolean isLowStock() {
+        return stockQuantity <= 0;
+    }
+
+    public boolean hasEnoughStock(int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException(
+                    "Quantity must be greater than zero.");
+        }
+
+        return stockQuantity >= quantity;
+    }
+
+    public void increaseStock(int quantity) {
+        validateQuantity(quantity);
+
+        stockQuantity += quantity;
+    }
+
+    public void decreaseStock(int quantity) {
+        validateQuantity(quantity);
+
+        if (!hasEnoughStock(quantity)) {
+            throw new IllegalArgumentException(
+                    "Not enough parts in stock.");
+        }
+
+        stockQuantity -= quantity;
+    }
+
+    private void validateQuantity(int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException(
+                    "Quantity must be greater than zero.");
+        }
+    }
+
+    // ==================== Getters / Setters ====================
+
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        if (id < 0) {
+            throw new IllegalArgumentException("ID cannot be negative.");
+        }
+
+        this.id = id;
     }
 
     public String getPartName() {
         return partName;
     }
 
-    public String getSupplier() {
-        return supplier;
-    }
-
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
-
-    public int getStockQuantity() {
-        return stockQuantity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setPartName(String partName) {
         this.partName = partName;
+    }
+
+    public String getSupplier() {
+        return supplier;
     }
 
     public void setSupplier(String supplier) {
         this.supplier = supplier;
     }
 
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+
     public void setUnitPrice(BigDecimal unitPrice) {
+        if (unitPrice != null && unitPrice.signum() < 0) {
+            throw new IllegalArgumentException(
+                    "Unit price cannot be negative.");
+        }
+
         this.unitPrice = unitPrice;
     }
 
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
     public void setStockQuantity(int stockQuantity) {
+        if (stockQuantity < 0) {
+            throw new IllegalArgumentException(
+                    "Stock quantity cannot be negative.");
+        }
+
         this.stockQuantity = stockQuantity;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {

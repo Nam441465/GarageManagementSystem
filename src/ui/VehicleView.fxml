@@ -13,7 +13,7 @@
             fx:controller="controller.VehicleController">
 
     <top>
-        <Label text="Vehicle Management"/>
+        <Label text="Quản lý xe"/>
     </top>
 
     <center>
@@ -26,22 +26,22 @@
                              text="ID"/>
 
                 <TableColumn fx:id="customerIdColumn"
-                             text="Customer ID"/>
+                             text="Mã khách hàng"/>
 
                 <TableColumn fx:id="brandColumn"
-                             text="Brand"/>
+                             text="Hãng xe"/>
 
                 <TableColumn fx:id="vehicleTypeColumn"
-                             text="Vehicle Type"/>
+                             text="Loại xe"/>
 
                 <TableColumn fx:id="statusColumn"
-                             text="Status"/>
+                             text="Trạng thái"/>
 
                 <TableColumn fx:id="licensePlateColumn"
-                             text="License Plate"/>
+                             text="Biển số xe"/>
 
                 <TableColumn fx:id="modelColumn"
-                             text="Model"/>
+                             text="Dòng xe"/>
 
             </columns>
 
@@ -54,32 +54,32 @@
         <VBox spacing="10">
 
             <TextField fx:id="customerIdField"
-                       promptText="Customer ID"/>
+                       promptText="Mã khách hàng"/>
 
             <TextField fx:id="brandField"
-                       promptText="Brand"/>
+                       promptText="Hãng xe"/>
 
             <TextField fx:id="vehicleTypeField"
-                       promptText="Vehicle Type"/>
+                       promptText="Loại xe"/>
 
             <TextField fx:id="statusField"
-                       promptText="Status"/>
+                       promptText="Trạng thái"/>
 
             <TextField fx:id="licensePlateField"
-                       promptText="License Plate"/>
+                       promptText="Biển số xe"/>
 
             <TextField fx:id="modelField"
-                       promptText="Model"/>
+                       promptText="Dòng xe"/>
 
-            <Button text="Add"
+            <Button text="Thêm"
                     onAction="#addVehicle"/>
 
-            <Button text="Update"
+            <Button text="Cập nhật"
                     onAction="#updateVehicle"/>
 
-            <Button text="Delete"
+            <Button text="Xóa"
                     onAction="#deleteVehicle"/>
-            <Button text="Back" onAction="#backToDashboard"/>
+            <Button text="Quay lại" onAction="#backToDashboard"/>
 
         </VBox>
 

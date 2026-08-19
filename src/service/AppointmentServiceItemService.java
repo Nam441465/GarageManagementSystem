@@ -19,10 +19,10 @@ public class AppointmentServiceItemService {
                 "appointmentServiceItemDAO is required");
     }
 
-    public boolean addServiceToAppointment(int appointmentId, int serviceId, int quantity, BigDecimal unitPrice,
-            String notes) {
+    public boolean addServiceToAppointment(int appointmentId, int serviceId, int quantity, BigDecimal unitPrice,String notes) {
         validateItem(appointmentId, serviceId, quantity, unitPrice);
         AppointmentServiceItem item = new AppointmentServiceItem(appointmentId, serviceId, quantity, unitPrice, notes);
+        
         return appointmentServiceItemDAO.addAppointmentServiceItem(item);
     }
 

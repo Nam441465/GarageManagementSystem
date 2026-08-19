@@ -1,92 +1,182 @@
 package service;
 
+import dao.InvoiceDAO;
 import model.Invoice;
 
 import java.util.List;
-
-import dao.InvoiceDAO;
-import java.time.LocalDate;
+import java.util.Objects;
 
 public class InvoiceService {
-    private final InvoiceDAO invoiceDao;
+
+    private final InvoiceDAO invoiceDAO;
 
     public InvoiceService() {
         this(new InvoiceDAO());
     }
 
-    public InvoiceService(InvoiceDAO invoiceDao) {
-        this.invoiceDao = java.util.Objects.requireNonNull(invoiceDao, "invoiceDao is required");
+    public InvoiceService(InvoiceDAO invoiceDAO) {
+        this.invoiceDAO = Objects.requireNonNull(
+                invoiceDAO,
+                "invoiceDAO is required");
     }
 
     public void addInvoice(Invoice invoice) {
-        if (invoice == null) {
-            throw new IllegalArgumentException("Invoice is null");
-        }
 
-        if (invoice.getRecordId() <= 0) {
-            throw new IllegalArgumentException("Invalid invoice record id");
-        }
+        validateInvoice(invoice);
 
-        invoiceDao.addInvoice(invoice);
+        boolean created = invoiceDAO.addInvoice(invoice);
+
+        if (!created) {
+            throw new IllegalStateException(
+                    "Cannot create invoice.");
+        }
     }
 
     public void updateInvoice(Invoice invoice) {
 
-        if (invoice == null) {
-            throw new IllegalArgumentException("invoice is null");
-        }
-        if (invoice.getId() <= 0 || !invoiceDao.existsById(invoice.getId())) {
-            throw new IllegalArgumentException("Invalid invoice id");
+        validateInvoice(invoice);
+
+        if (invoice.getId() <= 0) {
+            throw new IllegalArgumentException(
+                    "Invalid invoice ID.");
         }
 
-        if (invoice.getRecordId() <= 0) {
-            throw new IllegalArgumentException("Invalid invoice record id");
+        if (!invoiceDAO.existsById(invoice.getId())) {
+            throw new IllegalArgumentException(
+                    "Invoice not found.");
         }
 
-        invoiceDao.updateInvoice(invoice);
+        boolean updated = invoiceDAO.updateInvoice(invoice);
+
+        if (!updated) {
+            throw new IllegalStateException(
+                    "Cannot update invoice.");
+        }
     }
 
     public void deleteInvoice(int id) {
-        if (!invoiceDao.existsById(id)) {
-            throw new IllegalArgumentException("invoice not found");
+
+        validateId(id);
+
+        if (!invoiceDAO.existsById(id)) {
+            throw new IllegalArgumentException(
+                    "Invoice not found.");
         }
-        invoiceDao.deleteInvoice(id);
+
+        boolean deleted = invoiceDAO.deleteInvoice(id);
+
+        if (!deleted) {
+            throw new IllegalStateException(
+                    "Cannot delete invoice.");
+        }
     }
 
     public Invoice findById(int id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException("id not found");
+
+        validateId(id);
+
+        Invoice invoice = invoiceDAO.findById(id);
+
+        if (invoice == null) {
+            throw new IllegalArgumentException(
+                    "Invoice not found.");
         }
-        return invoiceDao.findById(id);
+
+        return invoice;
     }
 
     public List<Invoice> findAll() {
-        return invoiceDao.findAll();
-    }
 
-    public double calculateRevenue() {
-        return invoiceDao.calculateRevenue();
-    }
+        List<Invoice> invoices = invoiceDAO.findAll();
 
-    public double calculateRevenueByMonth(int month, int year) {
-        if (month > 12 || month < 1) {
-            throw new IllegalArgumentException("Invalid invoice month");
-        }
-        if (year > LocalDate.now().getYear()) {
-            throw new IllegalArgumentException("Invalid invoice year");
+        if (invoices == null) {
+            throw new IllegalStateException(
+                    "Cannot load invoices.");
         }
 
-        return invoiceDao.calculateRevenueByMonth(month, year);
-    }
-
-    public int countInvoices() {
-        return invoiceDao.countInvoices();
+        return invoices;
     }
 
     public boolean existsById(int id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException("Invalid invoidce id");
+
+        validateId(id);
+
+        return invoiceDAO.existsById(id);
+    }
+
+    private void validateInvoice(Invoice invoice) {
+
+        if (invoice == null) {
+            throw new IllegalArgumentException(
+                    "Invoice is required.");
         }
-        return invoiceDao.existsById(id);
+
+        if (invoice.getCustomerId() <= 0) {
+            throw new IllegalArgumentException(
+                    "Invalid customer ID.");
+        }
+
+        if (invoice.getEmployeeId() <= 0) {
+            throw new IllegalArgumentException(
+                    "Invalid employee ID.");
+        }
+
+        if (invoice.getLicensePlate() == null
+                || invoice.getLicensePlate().isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "License plate is required.");
+        }
+
+        if (invoice.getVehicleType() == null
+                || invoice.getVehicleType().isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Vehicle type is required.");
+        }
+
+        if (invoice.getVehicleBrand() == null
+                || invoice.getVehicleBrand().isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Vehicle brand is required.");
+        }
+
+        if (invoice.getInvoiceDetails() == null
+                || invoice.getInvoiceDetails().isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "At least one service is required.");
+        }
+
+        if (invoice.getTotalAmount() == null) {
+            throw new IllegalArgumentException(
+                    "Total amount is required.");
+        }
+
+        if (invoice.getTotalAmount().compareTo(
+                java.math.BigDecimal.ZERO) < 0) {
+
+            throw new IllegalArgumentException(
+                    "Total amount cannot be negative.");
+        }
+
+        if (invoice.getPaymentStatus() == null) {
+            throw new IllegalArgumentException(
+                    "Payment status is required.");
+        }
+
+        if (invoice.getIssueDate() == null) {
+            throw new IllegalArgumentException(
+                    "Issue date is required.");
+        }
+    }
+
+    private void validateId(int id) {
+
+        if (id <= 0) {
+            throw new IllegalArgumentException(
+                    "Invalid invoice ID.");
+        }
     }
 }

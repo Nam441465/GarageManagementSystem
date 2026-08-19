@@ -151,7 +151,7 @@ public class CustomerController {
                 if (!isOwner()) {
 
                         System.out.println(
-                                        "Employee cannot delete customer");
+                                        "Nhân viên không thể xóa khách hàng");
 
                         return;
 

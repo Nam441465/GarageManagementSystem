@@ -35,7 +35,7 @@ public class InviteController {
     @FXML
     public void initialize() {
         if (!isOwner()) {
-            showError("Access denied", "Only an owner can manage employee invites.");
+            showError("Từ chối truy cập", "Chỉ chủ gara mới có thể quản lý mã mời nhân viên.");
             return;
         }
         idColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getId()).asObject());
@@ -60,11 +60,11 @@ public class InviteController {
             EmployeeInvite invite = new EmployeeInvite();
             invite.setInviteCode(inviteCodeField.getText());
             if (!inviteService.createInvite(invite))
-                throw new IllegalArgumentException("Invite code is invalid or already exists.");
+                throw new IllegalArgumentException("Mã mời không hợp lệ hoặc đã tồn tại.");
             loadInvites();
             inviteCodeField.clear();
         } catch (Exception e) {
-            showError("Cannot create invite", e.getMessage());
+            showError("Không thể tạo mã mời", e.getMessage());
         }
     }
 
@@ -72,11 +72,11 @@ public class InviteController {
     public void deleteInvite() {
         EmployeeInvite invite = inviteTable.getSelectionModel().getSelectedItem();
         if (invite == null) {
-            showError("No selection", "Select an invite to delete.");
+            showError("Chưa chọn mục", "Hãy chọn mã mời cần xóa.");
             return;
         }
         if (!inviteService.deleteInvite(invite.getId())) {
-            showError("Cannot delete invite", "The invite could not be deleted.");
+            showError("Không thể xóa mã mời", "Không thể xóa mã mời.");
             return;
         }
         loadInvites();
@@ -97,6 +97,6 @@ public class InviteController {
     }
 
     private void showError(String title, String message) {
-        new Alert(Alert.AlertType.ERROR, message == null ? "Unexpected error." : message).showAndWait();
+        new Alert(Alert.AlertType.ERROR, message == null ? "Đã xảy ra lỗi không xác định." : message).showAndWait();
     }
 }

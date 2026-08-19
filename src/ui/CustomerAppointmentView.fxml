@@ -109,10 +109,10 @@
           <Button text="Đặt lịch"
             onAction="#createAppointment" />
 
-          <Button text="Clear"
+          <Button text="Xóa trắng"
             onAction="#clearForm" />
 
-          <Button text="Back"
+          <Button text="Quay lại"
             onAction="#backToDashboard" />
 
         </HBox>

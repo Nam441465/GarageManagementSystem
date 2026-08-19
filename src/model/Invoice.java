@@ -1,86 +1,154 @@
 package model;
 
-import java.time.LocalDate;
+import enums.PaymentStatus;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Invoice {
 
     private int id;
-    private int recordId;
-    private double totalAmount;
-    private LocalDate issueDate = LocalDate.now();
-    private String paymentStatus;
-    private String paymentMethod;
+    private int customerId;
+    private int employeeId;
+
+    private String licensePlate;
+    private String vehicleType;
+    private String vehicleBrand;
+
+    private BigDecimal totalAmount;
+
+    private PaymentStatus paymentStatus;
+    private LocalDateTime issueDate;
     private String pdfPath;
 
+    private List<InvoiceDetail> invoiceDetails;
+
     public Invoice() {
+        this.invoiceDetails = new ArrayList<>();
+        this.totalAmount = BigDecimal.ZERO;
     }
 
-    public Invoice(int recordId, double totalAmount, String paymentStatus, String paymentMethod, String pdfPath) {
-        this.recordId = recordId;
-        this.totalAmount = totalAmount;
+    public Invoice(
+            int customerId,
+            int employeeId,
+            String licensePlate,
+            String vehicleType,
+            String vehicleBrand,
+            PaymentStatus paymentStatus,
+            LocalDateTime issueDate,
+            String pdfPath) {
+
+        this.customerId = customerId;
+        this.employeeId = employeeId;
+        this.licensePlate = licensePlate;
+        this.vehicleType = vehicleType;
+        this.vehicleBrand = vehicleBrand;
         this.paymentStatus = paymentStatus;
-        this.paymentMethod = paymentMethod;
-        this.pdfPath = pdfPath;
-        this.issueDate = LocalDate.now();
-    }
-
-    public Invoice(int id, int recordId, double totalAmount, LocalDate issueDate, String pdfPath, String paymentStatus,
-            String paymentMethod) {
-        this.id = id;
-        this.recordId = recordId;
-        this.totalAmount = totalAmount;
         this.issueDate = issueDate;
         this.pdfPath = pdfPath;
+
+        this.invoiceDetails = new ArrayList<>();
+        this.totalAmount = BigDecimal.ZERO;
+    }
+
+    public Invoice(
+            int id,
+            int customerId,
+            int employeeId,
+            String licensePlate,
+            String vehicleType,
+            String vehicleBrand,
+            BigDecimal totalAmount,
+            PaymentStatus paymentStatus,
+            LocalDateTime issueDate,
+            String pdfPath) {
+
+        this.id = id;
+        this.customerId = customerId;
+        this.employeeId = employeeId;
+        this.licensePlate = licensePlate;
+        this.vehicleType = vehicleType;
+        this.vehicleBrand = vehicleBrand;
+        this.totalAmount = totalAmount;
         this.paymentStatus = paymentStatus;
-        this.paymentMethod = paymentMethod;
-    }
+        this.issueDate = issueDate;
+        this.pdfPath = pdfPath;
 
-    public String getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
+        this.invoiceDetails = new ArrayList<>();
     }
 
     public int getId() {
         return id;
     }
 
-    public LocalDate getIssueDate() {
-        return issueDate;
-    }
-
-    public int getRecordId() {
-        return recordId;
-    }
-
-    public double getTotalAmount() {
-        return totalAmount;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setIssueDate(LocalDate issueDate) {
-        this.issueDate = issueDate;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setRecordId(int recordId) {
-        this.recordId = recordId;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
-    public void setTotalAmount(double totalAmount) {
+    public int getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public String getLicensePlate() {
+        return licensePlate;
+    }
+
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
+    }
+
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public String getVehicleBrand() {
+        return vehicleBrand;
+    }
+
+    public void setVehicleBrand(String vehicleBrand) {
+        this.vehicleBrand = vehicleBrand;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public LocalDateTime getIssueDate() {
+        return issueDate;
+    }
+
+    public void setIssueDate(LocalDateTime issueDate) {
+        this.issueDate = issueDate;
     }
 
     public String getPdfPath() {
@@ -91,16 +159,96 @@ public class Invoice {
         this.pdfPath = pdfPath;
     }
 
+    public List<InvoiceDetail> getInvoiceDetails() {
+        return invoiceDetails;
+    }
+
+    public void setInvoiceDetails(List<InvoiceDetail> invoiceDetails) {
+
+        if (invoiceDetails == null) {
+            this.invoiceDetails = new ArrayList<>();
+        } else {
+            this.invoiceDetails = invoiceDetails;
+        }
+
+        calculateTotal();
+    }
+
+    public void addDetail(InvoiceDetail detail) {
+
+        if (detail == null) {
+            throw new IllegalArgumentException(
+                    "Invoice detail cannot be null.");
+        }
+
+        invoiceDetails.add(detail);
+        calculateTotal();
+    }
+
+    public void removeDetail(InvoiceDetail detail) {
+
+        if (detail == null) {
+            return;
+        }
+
+        invoiceDetails.remove(detail);
+        calculateTotal();
+    }
+
+    public BigDecimal calculateTotal() {
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (InvoiceDetail detail : invoiceDetails) {
+
+            if (detail == null) {
+                continue;
+            }
+
+            total = total.add(
+                    detail.calculateSubtotal());
+        }
+
+        totalAmount = total;
+
+        return total;
+    }
+
+    public static BigDecimal calculateTotalRevenue(List<Invoice> invoices) {
+
+        if (invoices == null || invoices.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+
+        for (Invoice invoice : invoices) {
+
+            if (invoice == null || invoice.getTotalAmount() == null) {
+                continue;
+            }
+
+            totalRevenue = totalRevenue.add(
+                    invoice.getTotalAmount());
+        }
+
+        return totalRevenue;
+    }
+
     @Override
     public String toString() {
         return "Invoice{" +
                 "id=" + id +
-                ", recordId=" + recordId +
+                ", customerId=" + customerId +
+                ", employeeId=" + employeeId +
+                ", licensePlate='" + licensePlate + '\'' +
+                ", vehicleType='" + vehicleType + '\'' +
+                ", vehicleBrand='" + vehicleBrand + '\'' +
                 ", totalAmount=" + totalAmount +
+                ", paymentStatus=" + paymentStatus +
                 ", issueDate=" + issueDate +
-                ", paymentStatus='" + paymentStatus + '\'' +
-                ", paymentMethod='" + paymentMethod + '\'' +
                 ", pdfPath='" + pdfPath + '\'' +
+                ", invoiceDetails=" + invoiceDetails +
                 '}';
     }
 }

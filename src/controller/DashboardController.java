@@ -76,11 +76,11 @@ public class DashboardController {
         if (user != null) {
 
             welcomeLabel.setText(
-                    "Welcome: "
+                    "Chào mừng: "
                             + user.getUsername());
 
             roleLabel.setText(
-                    "Role: "
+                    "Vai trò: "
                             + user.getRole());
             if (user.getRole() == UserRole.OWNER) {
                 System.out.println("Owner login");
@@ -114,7 +114,7 @@ public class DashboardController {
 
         openWindow(
                 "/ui/CustomerView.fxml",
-                "Customer Management");
+                "Quản lý khách hàng");
 
     }
 
@@ -123,7 +123,7 @@ public class DashboardController {
 
         openWindow(
                 "/ui/VehicleView.fxml",
-                "Vehicle Management");
+                "Quản lý xe");
 
     }
 
@@ -132,28 +132,28 @@ public class DashboardController {
 
         openWindow(
                 "/ui/ServiceView.fxml",
-                "Service Management");
+                "Quản lý dịch vụ");
 
     }
 
     @FXML
     public void showAppointment() {
-        openWindow("/ui/CustomerAppointmentView.fxml", "Appointment Management");
+        openWindow("/ui/CustomerAppointmentView.fxml", "Quản lý lịch hẹn");
     }
 
     @FXML
     public void showPriceList() {
-        openWindow("/ui/PriceView.fxml", "Price List Management");
+        openWindow("/ui/PriceView.fxml", "Quản lý bảng giá");
     }
 
     @FXML
     public void showInventory() {
-        openWindow("/ui/InventoryView.fxml", "Inventory Management");
+        openWindow("/ui/InventoryView.fxml", "Quản lý kho phụ tùng");
     }
 
     @FXML
     public void showWarranty() {
-        openWindow("/ui/WarrantyView.fxml", "Warranty Management");
+        openWindow("/ui/WarrantyView.fxml", "Quản lý bảo hành");
     }
 
     @FXML
@@ -161,7 +161,7 @@ public class DashboardController {
 
         openWindow(
                 "/ui/ServiceRecordView.fxml",
-                "Service Record Management");
+                "Quản lý phiếu dịch vụ");
 
     }
 
@@ -170,7 +170,7 @@ public class DashboardController {
 
         openWindow(
                 "/ui/InvoiceView.fxml",
-                "Invoice Management");
+                "Quản lý hóa đơn");
 
     }
 
@@ -179,23 +179,23 @@ public class DashboardController {
 
         openWindow(
                 "/ui/EmployeeView.fxml",
-                "Employee Management");
+                "Quản lý nhân viên");
 
     }
 
     @FXML
     public void showInviteManagement() {
-        openWindow("/ui/InviteManagementView.fxml", "Employee Invites");
+        openWindow("/ui/InviteManagementView.fxml", "Quản lý mã mời nhân viên");
     }
 
     @FXML
     public void showStatistics() {
-        openWindow("/ui/StatisticsView.fxml", "Garage Statistics");
+        openWindow("/ui/StatisticsView.fxml", "Thống kê gara");
     }
 
     @FXML
     public void showServiceRecordDetails() {
-        openWindow("/ui/ServiceRecordDetailView.fxml", "Service Record Details");
+        openWindow("/ui/ServiceRecordDetailView.fxml", "Chi tiết phiếu dịch vụ");
     }
 
     private void openWindow(

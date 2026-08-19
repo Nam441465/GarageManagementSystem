@@ -130,51 +130,84 @@ CREATE TABLE AppointmentServiceItem (
     FOREIGN KEY (appointment_id) REFERENCES Appointment(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (service_id) REFERENCES Service(id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
-CREATE TABLE ServiceRecord (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    appointment_id INT NULL,
-    vehicle_id INT NOT NULL,
-    record_date DATE NOT NULL,
-    notes TEXT NULL,
-    total_cost DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
-    created_by INT NOT NULL,
-    employee_id INT NULL,
-    status ENUM(
-        'OPEN',
-        'IN_PROGRESS',
-        'COMPLETED',
-        'PAID',
-        'CANCELLED'
-    ) NOT NULL DEFAULT 'OPEN',
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (appointment_id) REFERENCES Appointment(id) ON DELETE
-    SET NULL ON UPDATE CASCADE,
-        FOREIGN KEY (vehicle_id) REFERENCES Vehicle(id) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (created_by) REFERENCES Users(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-        FOREIGN KEY (employee_id) REFERENCES Employee(id) ON DELETE
-    SET NULL ON UPDATE CASCADE
-);
-CREATE TABLE ServiceRecordDetail (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    service_record_id INT NOT NULL,
-    service_id INT NOT NULL,
-    quantity INT NOT NULL DEFAULT 1,
-    price DECIMAL(12, 2) NOT NULL,
-    subtotal DECIMAL(12, 2) NOT NULL,
-    notes TEXT NULL,
-    FOREIGN KEY (service_record_id) REFERENCES ServiceRecord(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (service_id) REFERENCES Service(id) ON DELETE RESTRICT ON UPDATE CASCADE
-);
 CREATE TABLE Invoice (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    record_id INT NOT NULL,
-    total_amount DECIMAL(12, 2) NOT NULL,
-    issue_date DATE NOT NULL DEFAULT (CURRENT_DATE),
-    payment_status ENUM('UNPAID', 'PARTIAL', 'PAID') NOT NULL DEFAULT 'UNPAID',
-    payment_method ENUM('CASH', 'BANK_TRANSFER', 'CARD') NOT NULL DEFAULT 'CASH',
+
+    customer_id INT NOT NULL,
+    employee_id INT NOT NULL,
+
+    license_plate VARCHAR(20) NOT NULL,
+    vehicle_type ENUM(
+        'SEDAN',
+        'SUV',
+        'HATCHBACK',
+        'PICKUP',
+        'TRUCK',
+        'MOTORBIKE'
+    ) NOT NULL,
+
+    vehicle_brand ENUM(
+        'TOYOTA',
+        'HONDA',
+        'FORD',
+        'HYUNDAI',
+        'KIA',
+        'MAZDA',
+        'MERCEDES',
+        'BMW',
+        'AUDI',
+        'VINFAST',
+        'MITSUBISHI',
+        'NISSAN'
+    ) NOT NULL,
+
+    total_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    payment_status ENUM(
+        'UNPAID',
+        'PAID'
+    ) NOT NULL DEFAULT 'UNPAID',
+
+    issue_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     pdf_path VARCHAR(255) NULL,
-    FOREIGN KEY (record_id) REFERENCES ServiceRecord(id) ON DELETE CASCADE ON UPDATE CASCADE
+
+    FOREIGN KEY (customer_id)
+        REFERENCES Customer(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (employee_id)
+        REFERENCES Employee(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
 );
+
+CREATE TABLE InvoiceDetail (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+
+    invoice_id INT NOT NULL,
+    service_id INT NOT NULL,
+
+    service_name VARCHAR(100) NOT NULL,
+
+    quantity INT NOT NULL DEFAULT 1,
+
+    unit_price DECIMAL(12,2) NOT NULL,
+
+    subtotal DECIMAL(12,2) NOT NULL,
+
+    FOREIGN KEY (invoice_id)
+        REFERENCES Invoice(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (service_id)
+        REFERENCES Service(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
 CREATE TABLE Part (
     id INT PRIMARY KEY AUTO_INCREMENT,
     part_name VARCHAR(100) NOT NULL,
@@ -231,42 +264,20 @@ WHERE NOT EXISTS (
         FROM Users
         WHERE role = 'OWNER'
     );
-DELIMITER //
-
-CREATE TRIGGER prevent_extra_owner
-BEFORE INSERT ON Users
-FOR EACH ROW
-BEGIN
-    IF NEW.role = 'OWNER'
-       AND EXISTS (
-           SELECT 1
-           FROM Users
-           WHERE role = 'OWNER'
-       )
-    THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Only one OWNER account is allowed';
-    END IF;
-END //
-
-CREATE TRIGGER prevent_owner_update
-BEFORE UPDATE ON Users
-FOR EACH ROW
-BEGIN
-    IF OLD.role = 'OWNER' THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'OWNER account cannot be modified';
-    END IF;
-END //
-
-CREATE TRIGGER prevent_owner_delete
-BEFORE DELETE ON Users
-FOR EACH ROW
-BEGIN
-    IF OLD.role = 'OWNER' THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'OWNER account cannot be deleted';
-    END IF;
-END //
-
-DELIMITER ;
+DELIMITER // CREATE TRIGGER prevent_extra_owner BEFORE
+INSERT ON Users FOR EACH ROW BEGIN IF NEW.role = 'OWNER'
+    AND EXISTS (
+        SELECT 1
+        FROM Users
+        WHERE role = 'OWNER'
+    ) THEN SIGNAL SQLSTATE '45000'
+SET MESSAGE_TEXT = 'Only one OWNER account is allowed';
+END IF;
+END // CREATE TRIGGER prevent_owner_update BEFORE
+UPDATE ON Users FOR EACH ROW BEGIN IF OLD.role = 'OWNER' THEN SIGNAL SQLSTATE '45000'
+SET MESSAGE_TEXT = 'OWNER account cannot be modified';
+END IF;
+END // CREATE TRIGGER prevent_owner_delete BEFORE DELETE ON Users FOR EACH ROW BEGIN IF OLD.role = 'OWNER' THEN SIGNAL SQLSTATE '45000'
+SET MESSAGE_TEXT = 'OWNER account cannot be deleted';
+END IF;
+END // DELIMITER;

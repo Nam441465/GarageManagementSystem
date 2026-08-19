@@ -151,7 +151,7 @@ public class PriceController {
         if (price == null) {
 
             AlertUtil.showWarning(
-                    "Price list",
+                    "Bảng giá",
                     "Hãy chọn bảng giá cần cập nhật.");
 
             return;
@@ -206,7 +206,7 @@ public class PriceController {
         if (price == null) {
 
             AlertUtil.showWarning(
-                    "Price list",
+                    "Bảng giá",
                     "Hãy chọn bảng giá cần xóa.");
 
             return;
@@ -220,7 +220,7 @@ public class PriceController {
                     price.getId())) {
 
                 AlertUtil.showError(
-                        "Price list",
+                        "Bảng giá",
                         "Không thể xóa bảng giá.");
             } else {
 
@@ -306,7 +306,7 @@ public class PriceController {
         if (text.isEmpty()) {
 
             throw new IllegalArgumentException(
-                    "Service ID là bắt buộc.");
+                    "Mã dịch vụ là bắt buộc.");
         }
 
         try {
@@ -316,7 +316,7 @@ public class PriceController {
             if (id <= 0) {
 
                 throw new IllegalArgumentException(
-                        "Service ID phải lớn hơn 0.");
+                        "Mã dịch vụ phải lớn hơn 0.");
             }
 
             return id;
@@ -324,7 +324,7 @@ public class PriceController {
         } catch (NumberFormatException exception) {
 
             throw new IllegalArgumentException(
-                    "Service ID phải là số nguyên.");
+                    "Mã dịch vụ phải là số nguyên.");
         }
     }
 

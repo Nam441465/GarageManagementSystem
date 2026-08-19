@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -166,16 +164,10 @@ public class ServiceDAO {
         int id = rs.getInt("id");
         String serviceName = rs.getString("service_name");
         String description = rs.getString("description");
-        Timestamp timestamp = rs.getTimestamp("created_at");
-
-        LocalDateTime createdDate = timestamp == null
-                ? null
-                : timestamp.toLocalDateTime();
 
         return new Service(
                 id,
                 description,
-                serviceName,
-                createdDate);
+                serviceName);
     }
 }

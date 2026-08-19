@@ -15,7 +15,7 @@
 
 
     <top>
-        <Label text="Customer Management System"/>
+        <Label text="Quản lý khách hàng"/>
     </top>
 
 
@@ -29,13 +29,13 @@
                              text="ID"/>
 
                 <TableColumn fx:id="nameColumn"
-                             text="Name"/>
+                             text="Họ tên"/>
 
                 <TableColumn fx:id="phoneColumn"
-                             text="Phone"/>
+                             text="Số điện thoại"/>
 
                 <TableColumn fx:id="addressColumn"
-                             text="Address"/>
+                             text="Địa chỉ"/>
 
             </columns>
 
@@ -49,28 +49,28 @@
         <VBox spacing="10">
 
             <TextField fx:id="nameField"
-                       promptText="Name"/>
+                       promptText="Họ tên"/>
 
 
             <TextField fx:id="phoneField"
-                       promptText="Phone"/>
+                       promptText="Số điện thoại"/>
 
 
             <TextField fx:id="addressField"
-                       promptText="Address"/>
+                       promptText="Địa chỉ"/>
 
 
-            <Button text="Add"
+            <Button text="Thêm"
                     onAction="#addCustomer"/>
 
 
-            <Button text="Update"
+            <Button text="Cập nhật"
                     onAction="#updateCustomer"/>
 
 
-            <Button text="Delete"
+            <Button text="Xóa"
                     onAction="#deleteCustomer"/>
-            <Button text="Back" onAction="#backToDashboard"/>
+            <Button text="Quay lại" onAction="#backToDashboard"/>
 
         </VBox>
 

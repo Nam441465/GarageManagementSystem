@@ -2,46 +2,92 @@ package dao;
 
 import database.DatabaseConnection;
 import model.Invoice;
+import enums.PaymentStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InvoiceDAO {
 
-    public void addInvoice(Invoice invoice) {
-        String sql = "INSERT INTO Invoice(record_id, total_amount, issue_date, payment_status, payment_method, pdf_path) VALUES (?, ?, ?, ?, ?, ?)";
+    public boolean addInvoice(Invoice invoice) {
+
+        String sql = """
+                INSERT INTO Invoice (
+                    customer_id,
+                    employee_id,
+                    license_plate,
+                    vehicle_type,
+                    vehicle_brand,
+                    total_amount,
+                    payment_status,
+                    issue_date,
+                    pdf_path
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """;
 
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(
+                        sql,
+                        java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setInt(1, invoice.getRecordId());
-            ps.setDouble(2, invoice.getTotalAmount());
-            ps.setDate(3, invoice.getIssueDate() == null ? null : Date.valueOf(invoice.getIssueDate()));
-            ps.setString(4, invoice.getPaymentStatus());
-            ps.setString(5, invoice.getPaymentMethod());
-            ps.setString(6, invoice.getPdfPath());
+            ps.setInt(1, invoice.getCustomerId());
+            ps.setInt(2, invoice.getEmployeeId());
+            ps.setString(3, invoice.getLicensePlate());
+            ps.setString(4, invoice.getVehicleType());
+            ps.setString(5, invoice.getVehicleBrand());
+            ps.setBigDecimal(6, invoice.getTotalAmount());
+            ps.setString(7, invoice.getPaymentStatus().name());
 
-            ps.executeUpdate();
+            if (invoice.getIssueDate() != null) {
+                ps.setTimestamp(
+                        8,
+                        Timestamp.valueOf(invoice.getIssueDate()));
+            } else {
+                ps.setTimestamp(8, null);
+            }
+
+            ps.setString(9, invoice.getPdfPath());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                return false;
+            }
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    invoice.setId(rs.getInt(1));
+                }
+            }
+
+            return true;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error adding invoice", e);
+            throw new RuntimeException(
+                    "Error adding invoice",
+                    e);
         }
     }
 
-    public void updateInvoice(Invoice invoice) {
+    public boolean updateInvoice(Invoice invoice) {
+
         String sql = """
                 UPDATE Invoice
-                SET record_id = ?,
+                SET customer_id = ?,
+                    employee_id = ?,
+                    license_plate = ?,
+                    vehicle_type = ?,
+                    vehicle_brand = ?,
                     total_amount = ?,
-                    issue_date = ?,
                     payment_status = ?,
-                    payment_method = ?,
+                    issue_date = ?,
                     pdf_path = ?
                 WHERE id = ?
                 """;
@@ -49,37 +95,55 @@ public class InvoiceDAO {
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, invoice.getRecordId());
-            ps.setDouble(2, invoice.getTotalAmount());
-            ps.setDate(3, invoice.getIssueDate() == null ? null : Date.valueOf(invoice.getIssueDate()));
-            ps.setString(4, invoice.getPaymentStatus());
-            ps.setString(5, invoice.getPaymentMethod());
-            ps.setString(6, invoice.getPdfPath());
-            ps.setInt(7, invoice.getId());
+            ps.setInt(1, invoice.getCustomerId());
+            ps.setInt(2, invoice.getEmployeeId());
+            ps.setString(3, invoice.getLicensePlate());
+            ps.setString(4, invoice.getVehicleType());
+            ps.setString(5, invoice.getVehicleBrand());
+            ps.setBigDecimal(6, invoice.getTotalAmount());
+            ps.setString(7, invoice.getPaymentStatus().name());
 
-            ps.executeUpdate();
+            if (invoice.getIssueDate() != null) {
+                ps.setTimestamp(
+                        8,
+                        Timestamp.valueOf(invoice.getIssueDate()));
+            } else {
+                ps.setTimestamp(8, null);
+            }
+
+            ps.setString(9, invoice.getPdfPath());
+            ps.setInt(10, invoice.getId());
+
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error updating invoice", e);
+            throw new RuntimeException(
+                    "Error updating invoice",
+                    e);
         }
     }
 
-    public void deleteInvoice(int id) {
-        String sql = "DELETE FROM Invoice WHERE id=?";
+    public boolean deleteInvoice(int id) {
+
+        String sql = "DELETE FROM Invoice WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-            ps.executeUpdate();
+
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error deleting invoice", e);
+            throw new RuntimeException(
+                    "Error deleting invoice",
+                    e);
         }
     }
 
     public Invoice findById(int id) {
-        String sql = "SELECT * FROM Invoice WHERE id=?";
+
+        String sql = "SELECT * FROM Invoice WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -87,21 +151,26 @@ public class InvoiceDAO {
             ps.setInt(1, id);
 
             try (ResultSet rs = ps.executeQuery()) {
+
                 if (rs.next()) {
                     return mapInvoice(rs);
                 }
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error finding invoice by ID", e);
+            throw new RuntimeException(
+                    "Error finding invoice by ID",
+                    e);
         }
 
         return null;
     }
 
     public List<Invoice> findAll() {
+
         List<Invoice> list = new ArrayList<>();
-        String sql = "SELECT * FROM Invoice";
+
+        String sql = "SELECT * FROM Invoice ORDER BY issue_date DESC";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);
@@ -112,59 +181,17 @@ public class InvoiceDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error finding all invoices", e);
+            throw new RuntimeException(
+                    "Error finding all invoices",
+                    e);
         }
 
         return list;
     }
 
-    public double calculateRevenue() {
-        String sql = "SELECT SUM(total_amount) FROM Invoice";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-
-            if (rs.next()) {
-                return rs.getDouble(1);
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error calculating revenue", e);
-        }
-
-        return 0;
-    }
-
-    public double calculateRevenueByMonth(int month, int year) {
-        String sql = """
-                SELECT SUM(total_amount)
-                FROM Invoice
-                WHERE MONTH(issue_date)=?
-                AND YEAR(issue_date)=?
-                """;
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, month);
-            ps.setInt(2, year);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getDouble(1);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error calculating revenue by month", e);
-        }
-
-        return 0;
-    }
-
     public boolean existsById(int id) {
-        String sql = "SELECT 1 FROM Invoice WHERE id=?";
+
+        String sql = "SELECT 1 FROM Invoice WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -176,38 +203,60 @@ public class InvoiceDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error checking if invoice exists", e);
+            throw new RuntimeException(
+                    "Error checking invoice existence",
+                    e);
         }
     }
 
-    public int countInvoices() {
-        String sql = "SELECT COUNT(*) FROM Invoice";
+    private Invoice mapInvoice(ResultSet rs)
+            throws SQLException {
 
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
+        Timestamp issueDateSql = rs.getTimestamp("issue_date");
 
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
+        LocalDateTime issueDate = issueDateSql == null
+                ? null
+                : issueDateSql.toLocalDateTime();
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Error counting invoices", e);
-        }
+        String paymentStatusValue = rs.getString("payment_status");
 
-        return 0;
-    }
+        PaymentStatus paymentStatus = paymentStatusValue == null
+                ? null
+                : PaymentStatus.valueOf(
+                        paymentStatusValue);
 
-    private Invoice mapInvoice(ResultSet rs) throws SQLException {
-        Date issueDateSql = rs.getDate("issue_date");
-        LocalDate issueDate = issueDateSql == null ? null : issueDateSql.toLocalDate();
-        return new Invoice(
-                rs.getInt("id"),
-                rs.getInt("record_id"),
-                rs.getDouble("total_amount"),
-                issueDate,
-                rs.getString("payment_status"),
-                rs.getString("payment_method"),
+        Invoice invoice = new Invoice();
+
+        invoice.setId(
+                rs.getInt("id"));
+
+        invoice.setCustomerId(
+                rs.getInt("customer_id"));
+
+        invoice.setEmployeeId(
+                rs.getInt("employee_id"));
+
+        invoice.setLicensePlate(
+                rs.getString("license_plate"));
+
+        invoice.setVehicleType(
+                rs.getString("vehicle_type"));
+
+        invoice.setVehicleBrand(
+                rs.getString("vehicle_brand"));
+
+        invoice.setTotalAmount(
+                rs.getBigDecimal("total_amount"));
+
+        invoice.setPaymentStatus(
+                paymentStatus);
+
+        invoice.setIssueDate(
+                issueDate);
+
+        invoice.setPdfPath(
                 rs.getString("pdf_path"));
+
+        return invoice;
     }
 }

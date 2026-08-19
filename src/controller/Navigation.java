@@ -40,7 +40,7 @@ public final class Navigation {
             exception.printStackTrace();
 
             throw new IllegalStateException(
-                    "Cannot open screen: " + fxmlPath,
+                    "Không thể mở màn hình: " + fxmlPath,
                     exception);
         }
     }

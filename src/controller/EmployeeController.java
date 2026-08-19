@@ -68,7 +68,7 @@ public class EmployeeController {
                                 || !(Session.getCurrentUser().getRole() == UserRole.OWNER)) {
 
                         throw new RuntimeException(
-                                        "Access denied");
+                                        "Từ chối truy cập");
                 }
 
                 employeeList = FXCollections.observableArrayList();

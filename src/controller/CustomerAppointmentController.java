@@ -337,26 +337,19 @@ public class CustomerAppointmentController {
 
                         Appointment appointment = new Appointment();
 
-                        appointment.setCustomerName(
-                                        customerName);
+                        appointment.setCustomerName(customerName);
 
-                        appointment.setCustomerPhone(
-                                        customerPhone);
+                        appointment.setCustomerPhone(customerPhone);
 
-                        appointment.setLicensePlate(
-                                        licensePlate);
+                        appointment.setLicensePlate(licensePlate);
 
-                        appointment.setVehicleBrand(
-                                        vehicleBrand);
+                        appointment.setVehicleBrand(vehicleBrand);
 
-                        appointment.setVehicleType(
-                                        vehicleType);
+                        appointment.setVehicleType(vehicleType);
 
-                        appointment.setAppointmentDate(
-                                        appointmentDate);
+                        appointment.setAppointmentDate(appointmentDate);
 
-                        appointment.setNotes(
-                                        notesArea.getText().trim());
+                        appointment.setNotes(notesArea.getText().trim());
 
                         List<AppointmentServiceItem> items = new ArrayList<>();
 

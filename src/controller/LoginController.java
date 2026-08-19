@@ -38,7 +38,7 @@ public class LoginController {
                                 || password.isEmpty()) {
 
                         System.out.println(
-                                        "Username or password is empty");
+                                        "Tên đăng nhập hoặc mật khẩu đang để trống");
 
                         return;
                 }
@@ -79,8 +79,8 @@ public class LoginController {
 
                         e.printStackTrace();
                         Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Error");
-                        alert.setHeaderText("An error occurred");
+                        alert.setTitle("Lỗi");
+                        alert.setHeaderText("Đã xảy ra lỗi");
                         alert.setContentText(e.getMessage());
                         alert.showAndWait();
                 }
@@ -123,8 +123,8 @@ public class LoginController {
                 } catch (Exception e) {
                         e.printStackTrace();
                         Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Error");
-                        alert.setHeaderText("An error occurred");
+                        alert.setTitle("Lỗi");
+                        alert.setHeaderText("Đã xảy ra lỗi");
                         alert.setContentText(e.getMessage());
                         alert.showAndWait();
                 }

@@ -13,7 +13,7 @@
     fx:controller="controller.ServiceController">
 
     <top>
-        <Label text="Service Management"
+        <Label text="Quản lý dịch vụ"
             style="-fx-font-size: 20px; -fx-padding: 12px;" />
     </top>
 
@@ -26,11 +26,11 @@
                     prefWidth="70" />
 
                 <TableColumn fx:id="serviceNameColumn"
-                    text="Service Name"
+                    text="Tên dịch vụ"
                     prefWidth="180" />
 
                 <TableColumn fx:id="descriptionColumn"
-                    text="Description"
+                    text="Mô tả"
                     prefWidth="300" />
 
             </columns>
@@ -42,30 +42,30 @@
             prefWidth="250"
             style="-fx-padding: 15px;">
 
-            <Label text="Service Information"
+            <Label text="Thông tin dịch vụ"
                 style="-fx-font-size: 16px; -fx-font-weight: bold;" />
 
             <TextField fx:id="serviceNameField"
-                promptText="Service Name"
+                promptText="Tên dịch vụ"
                 maxWidth="Infinity" />
 
             <TextField fx:id="descriptionField"
-                promptText="Description"
+                promptText="Mô tả"
                 maxWidth="Infinity" />
 
-            <Button text="Add"
+            <Button text="Thêm"
                 onAction="#addService"
                 maxWidth="Infinity" />
 
-            <Button text="Update"
+            <Button text="Cập nhật"
                 onAction="#updateService"
                 maxWidth="Infinity" />
 
-            <Button text="Delete"
+            <Button text="Xóa"
                 onAction="#deleteService"
                 maxWidth="Infinity" />
 
-            <Button text="Back"
+            <Button text="Quay lại"
                 onAction="#backToDashboard"
                 maxWidth="Infinity" />
 

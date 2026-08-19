@@ -62,7 +62,7 @@ WELCOME TO GARAGE CUSTOMER PORTAL
         if (licensePlate.isEmpty()) {
 
             resultArea.setText(
-                    "Please enter a license plate.");
+                    "Vui lòng nhập biển số xe.");
             return;
         }
 
@@ -73,7 +73,7 @@ WELCOME TO GARAGE CUSTOMER PORTAL
         if (vehicle == null) {
 
             resultArea.setText(
-                    "Vehicle not found.");
+                    "Không tìm thấy xe.");
             return;
         }
 
@@ -81,33 +81,33 @@ WELCOME TO GARAGE CUSTOMER PORTAL
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("===== VEHICLE INFORMATION =====\n\n");
+        sb.append("===== THÔNG TIN XE =====\n\n");
 
-        sb.append("Vehicle ID: ")
+        sb.append("Mã xe: ")
                 .append(vehicle.getId())
                 .append("\n");
 
-        sb.append("Customer ID: ")
+        sb.append("Mã khách hàng: ")
                 .append(vehicle.getCustomerId())
                 .append("\n");
 
-        sb.append("Brand: ")
+        sb.append("Hãng xe: ")
                 .append(vehicle.getBrand())
                 .append("\n");
 
-        sb.append("Model: ")
+        sb.append("Dòng xe: ")
                 .append(vehicle.getModel())
                 .append("\n");
 
-        sb.append("Type: ")
+        sb.append("Loại xe: ")
                 .append(vehicle.getVehicleType())
                 .append("\n");
 
-        sb.append("License Plate: ")
+        sb.append("Biển số xe: ")
                 .append(vehicle.getLicensePlate())
                 .append("\n");
 
-        sb.append("Status: ")
+        sb.append("Trạng thái: ")
                 .append(vehicle.getStatus())
                 .append("\n");
 
@@ -121,7 +121,7 @@ WELCOME TO GARAGE CUSTOMER PORTAL
             if (selectedVehicle == null) {
                 String licensePlate = licensePlateField.getText().trim();
                 if (licensePlate.isEmpty()) {
-                    throw new IllegalArgumentException("Hãy nhập biển số rồi bấm Search Vehicle trước.");
+                    throw new IllegalArgumentException("Hãy nhập biển số rồi bấm Tìm xe trước.");
                 }
                 selectedVehicle = vehicleService.findByLicensePlate(licensePlate);
             }
@@ -132,7 +132,7 @@ WELCOME TO GARAGE CUSTOMER PORTAL
             // Appointment-specific handoff: the booking screen reads only Session.
             Customer customer = customerService.findById(selectedVehicle.getCustomerId());
             if (customer == null) {
-                throw new IllegalArgumentException("Không tìm thấy Customer của xe.");
+                throw new IllegalArgumentException("Không tìm thấy khách hàng của xe.");
             }
             Session.setCurrentCustomer(customer);
 
@@ -157,15 +157,15 @@ WELCOME TO GARAGE CUSTOMER PORTAL
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("===== AVAILABLE SERVICES =====\n\n");
+        sb.append("===== DỊCH VỤ HIỆN CÓ =====\n\n");
 
         for (Service service : services) {
 
-            sb.append("Service Name : ")
+            sb.append("Tên dịch vụ: ")
                     .append(service.getServiceName())
                     .append("\n");
 
-            sb.append("Description  : ")
+            sb.append("Mô tả: ")
                     .append(service.getDescription())
                     .append("\n");
 

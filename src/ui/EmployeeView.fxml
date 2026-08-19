@@ -21,19 +21,19 @@
                              text="ID"/>
 
                 <TableColumn fx:id="nameColumn"
-                             text="Name"/>
+                             text="Họ tên"/>
 
                 <TableColumn fx:id="phoneColumn"
-                             text="Phone"/>
+                             text="Số điện thoại"/>
 
                 <TableColumn fx:id="positionColumn"
-                             text="Position"/>
+                             text="Chức vụ"/>
 
                 <TableColumn fx:id="salaryColumn"
-                             text="Salary"/>
+                             text="Lương"/>
 
                 <TableColumn fx:id="userIdColumn"
-                             text="User ID"/>
+                             text="Mã người dùng"/>
 
             </columns>
 
@@ -46,29 +46,29 @@
         <VBox spacing="10">
 
             <TextField fx:id="nameField"
-                       promptText="Name"/>
+                       promptText="Họ tên"/>
 
             <TextField fx:id="phoneField"
-                       promptText="Phone"/>
+                       promptText="Số điện thoại"/>
 
             <TextField fx:id="positionField"
-                       promptText="Position"/>
+                       promptText="Chức vụ"/>
 
             <TextField fx:id="salaryField"
-                       promptText="Salary"/>
+                       promptText="Lương"/>
 
             <TextField fx:id="userIdField"
-                       promptText="User ID"/>
+                       promptText="Mã người dùng"/>
 
-            <Button text="Add"
+            <Button text="Thêm"
                     onAction="#addEmployee"/>
 
-            <Button text="Update"
+            <Button text="Cập nhật"
                     onAction="#updateEmployee"/>
 
-            <Button text="Delete"
+            <Button text="Xóa"
                     onAction="#deleteEmployee"/>
-            <Button text="Back" onAction="#backToDashboard"/>
+            <Button text="Quay lại" onAction="#backToDashboard"/>
 
         </VBox>
 

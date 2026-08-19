@@ -8,7 +8,7 @@
     fx:controller="controller.PriceController">
 
     <top>
-        <Label text="Price List Management"
+        <Label text="Quản lý bảng giá"
             style="-fx-font-size: 20px; -fx-padding: 12;" />
     </top>
 
@@ -21,23 +21,23 @@
                     prefWidth="55" />
 
                 <TableColumn fx:id="serviceColumn"
-                    text="Service ID"
+                    text="Mã dịch vụ"
                     prefWidth="95" />
 
                 <TableColumn fx:id="vehicleTypeColumn"
-                    text="Vehicle Type"
+                    text="Loại xe"
                     prefWidth="125" />
 
                 <TableColumn fx:id="vehicleBrandColumn"
-                    text="Vehicle Brand"
+                    text="Hãng xe"
                     prefWidth="130" />
 
                 <TableColumn fx:id="priceColumn"
-                    text="Price"
+                    text="Giá"
                     prefWidth="120" />
 
                 <TableColumn fx:id="effectiveFromColumn"
-                    text="Effective From"
+                    text="Hiệu lực từ"
                     prefWidth="130" />
 
             </columns>
@@ -50,44 +50,44 @@
             style="-fx-padding: 12;">
 
             <TextField fx:id="serviceIdField"
-                promptText="Service ID" />
+                promptText="Mã dịch vụ" />
 
             <ComboBox fx:id="vehicleTypeComboBox"
-                promptText="Vehicle Type" />
+                promptText="Loại xe" />
 
             <ComboBox fx:id="vehicleBrandComboBox"
-                promptText="Vehicle Brand" />
+                promptText="Hãng xe" />
 
             <TextField fx:id="priceField"
-                promptText="Price" />
+                promptText="Giá" />
 
             <DatePicker fx:id="effectiveFromPicker"
-                promptText="Effective From" />
+                promptText="Hiệu lực từ" />
 
             <DatePicker fx:id="effectiveToPicker"
-                promptText="Effective To (Optional)" />
+                promptText="Hiệu lực đến (không bắt buộc)" />
 
             <TextArea fx:id="noteArea"
-                promptText="Note"
+                promptText="Ghi chú"
                 prefRowCount="3" />
 
             <HBox spacing="8">
-                <Button text="Add"
+                <Button text="Thêm"
                     onAction="#addPrice" />
 
-                <Button text="Update"
+                <Button text="Cập nhật"
                     onAction="#updatePrice" />
             </HBox>
 
             <HBox spacing="8">
-                <Button text="Delete"
+                <Button text="Xóa"
                     onAction="#deletePrice" />
 
-                <Button text="Clear"
+                <Button text="Xóa trắng"
                     onAction="#clearForm" />
             </HBox>
 
-            <Button text="Back"
+            <Button text="Quay lại"
                 onAction="#backToDashboard" />
 
         </VBox>

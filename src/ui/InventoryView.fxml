@@ -6,43 +6,43 @@
     fx:controller="controller.InventoryController">
 
     <top>
-        <Label text="Inventory Management" style="-fx-font-size: 20px; -fx-padding: 12;" />
+        <Label text="Quản lý kho phụ tùng" style="-fx-font-size: 20px; -fx-padding: 12;" />
     </top>
 
     <center>
         <TableView fx:id="partTable">
             <columns>
                 <TableColumn fx:id="idColumn" text="ID" prefWidth="50" />
-                <TableColumn fx:id="nameColumn" text="Part name" prefWidth="160" />
-                <TableColumn fx:id="unitPriceColumn" text="Unit price" prefWidth="100" />
-                <TableColumn fx:id="stockColumn" text="In stock" prefWidth="80" />
+                <TableColumn fx:id="nameColumn" text="Tên phụ tùng" prefWidth="160" />
+                <TableColumn fx:id="unitPriceColumn" text="Đơn giá" prefWidth="100" />
+                <TableColumn fx:id="stockColumn" text="Tồn kho" prefWidth="80" />
             </columns>
         </TableView>
     </center>
 
     <right>
         <VBox spacing="8" prefWidth="250" style="-fx-padding: 12;">
-            <TextField fx:id="nameField" promptText="Part name" />
-            <TextField fx:id="supplierField" promptText="Supplier" />
-            <TextField fx:id="unitPriceField" promptText="Unit price" />
-            <TextField fx:id="stockField" promptText="Stock quantity" />
-            <TextArea fx:id="descriptionArea" promptText="Description" prefRowCount="3" />
+            <TextField fx:id="nameField" promptText="Tên phụ tùng" />
+            <TextField fx:id="supplierField" promptText="Nhà cung cấp" />
+            <TextField fx:id="unitPriceField" promptText="Đơn giá" />
+            <TextField fx:id="stockField" promptText="Số lượng tồn kho" />
+            <TextArea fx:id="descriptionArea" promptText="Mô tả" prefRowCount="3" />
 
             <HBox spacing="8">
-                <Button text="Add" onAction="#addPart" />
-                <Button text="Update" onAction="#updatePart" />
+                <Button text="Thêm" onAction="#addPart" />
+                <Button text="Cập nhật" onAction="#updatePart" />
             </HBox>
 
             <HBox spacing="8">
-                <Button text="Delete" onAction="#deletePart" />
+                <Button text="Xóa" onAction="#deletePart" />
             </HBox>
 
             <HBox spacing="8">
-                <Button text="All parts" onAction="#refreshParts" />
-                <Button text="Clear" onAction="#clearForm" />
+                <Button text="Tất cả phụ tùng" onAction="#refreshParts" />
+                <Button text="Xóa trắng" onAction="#clearForm" />
             </HBox>
 
-            <Button text="Back" onAction="#backToDashboard" />
+            <Button text="Quay lại" onAction="#backToDashboard" />
         </VBox>
     </right>
 </BorderPane>

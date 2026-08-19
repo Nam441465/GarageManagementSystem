@@ -92,7 +92,7 @@ public class ServiceController {
                 if (!isOwner()) {
 
                         System.out.println(
-                                        "Employee cannot add service");
+                                        "Nhân viên không thể thêm dịch vụ");
 
                         return;
                 }
@@ -118,7 +118,7 @@ public class ServiceController {
                 if (!isOwner()) {
 
                         System.out.println(
-                                        "Employee cannot update service");
+                                        "Nhân viên không thể cập nhật dịch vụ");
 
                         return;
                 }
@@ -150,7 +150,7 @@ public class ServiceController {
                 if (!isOwner()) {
 
                         System.out.println(
-                                        "Employee cannot delete service");
+                                        "Nhân viên không thể xóa dịch vụ");
 
                         return;
                 }
