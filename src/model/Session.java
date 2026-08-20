@@ -3,7 +3,6 @@ package model;
 public class Session {
 
     private static User currentUser;
-    /* Customer portal is intentionally separate from the employee user session. */
     private static Customer currentCustomer;
 
     public static User getCurrentUser() {

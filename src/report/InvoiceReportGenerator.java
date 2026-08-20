@@ -10,164 +10,157 @@ import java.nio.file.Path;
 
 public class InvoiceReportGenerator {
 
-    private final InvoiceService invoiceService;
-    private final ReportExporter exporter;
+        private final InvoiceService invoiceService;
+        private final ReportExporter exporter;
 
-    public InvoiceReportGenerator() {
-        this(new InvoiceService(), new PdfReportExporter());
-    }
-
-    public InvoiceReportGenerator(
-            InvoiceService invoiceService,
-            ReportExporter exporter) {
-
-        this.invoiceService = invoiceService;
-        this.exporter = exporter;
-    }
-
-    public boolean generate(
-            int invoiceId,
-            String outputDirectory) {
-
-        if (invoiceId <= 0) {
-            throw new IllegalArgumentException(
-                    "Invalid invoice ID.");
+        public InvoiceReportGenerator() {
+                this(new InvoiceService(), new PdfReportExporter());
         }
 
-        if (outputDirectory == null
-                || outputDirectory.isBlank()) {
+        public InvoiceReportGenerator(
+                        InvoiceService invoiceService,
+                        ReportExporter exporter) {
 
-            throw new IllegalArgumentException(
-                    "Output directory is required.");
+                this.invoiceService = invoiceService;
+                this.exporter = exporter;
         }
 
-        Invoice invoice = invoiceService.findById(invoiceId);
+        public boolean generate(
+                        int invoiceId,
+                        String outputDirectory) {
 
-        if (invoice == null) {
-            throw new IllegalArgumentException(
-                    "Invoice not found.");
+                if (invoiceId <= 0) {
+                        throw new IllegalArgumentException(
+                                        "Invalid invoice ID.");
+                }
+
+                if (outputDirectory == null
+                                || outputDirectory.isBlank()) {
+
+                        throw new IllegalArgumentException(
+                                        "Output directory is required.");
+                }
+
+                Invoice invoice = invoiceService.findById(invoiceId);
+
+                if (invoice == null) {
+                        throw new IllegalArgumentException(
+                                        "Invoice not found.");
+                }
+
+                try {
+
+                        Path directory = createDirectory(
+                                        outputDirectory);
+
+                        Path output = directory.resolve(
+                                        "invoice-" + invoice.getId() + ".pdf");
+
+                        boolean exported = exporter.export(
+                                        output.toString(),
+                                        "GARAGE INVOICE",
+                                        buildContent(invoice));
+
+                        if (exported) {
+
+                                invoice.setPdfPath(
+                                                output.toString());
+
+                                invoiceService.updateInvoice(invoice);
+                        }
+
+                        return exported;
+
+                } catch (IOException exception) {
+
+                        throw new IllegalStateException(
+                                        "Could not create invoice PDF.",
+                                        exception);
+                }
         }
 
-        try {
+        private String buildContent(Invoice invoice) {
 
-            Path directory = createDirectory(
-                    outputDirectory);
+                StringBuilder content = new StringBuilder();
 
-            Path output = directory.resolve(
-                    "invoice-" + invoice.getId() + ".pdf");
+                content.append("GARAGE INVOICE\n");
+                content.append("============================\n");
 
-            boolean exported = exporter.export(
-                    output.toString(),
-                    "GARAGE INVOICE",
-                    buildContent(invoice));
+                content.append("Invoice ID: ")
+                                .append(invoice.getId())
+                                .append("\n");
 
-            if (exported) {
+                content.append("Customer ID: ")
+                                .append(invoice.getCustomerId())
+                                .append("\n");
 
-                invoice.setPdfPath(
-                        output.toString());
+                content.append("Employee ID: ")
+                                .append(invoice.getEmployeeId())
+                                .append("\n");
 
-                invoiceService.updateInvoice(invoice);
-            }
+                content.append("License plate: ")
+                                .append(invoice.getLicensePlate())
+                                .append("\n");
 
-            return exported;
+                content.append("Vehicle type: ")
+                                .append(invoice.getVehicleType())
+                                .append("\n");
 
-        } catch (IOException exception) {
+                content.append("Vehicle brand: ")
+                                .append(invoice.getVehicleBrand())
+                                .append("\n");
 
-            throw new IllegalStateException(
-                    "Could not create invoice PDF.",
-                    exception);
-        }
-    }
+                content.append("Issue date: ")
+                                .append(invoice.getIssueDate())
+                                .append("\n");
 
-    private String buildContent(Invoice invoice) {
+                content.append("Payment status: ")
+                                .append(invoice.getPaymentStatus())
+                                .append("\n");
 
-        StringBuilder content =
-                new StringBuilder();
-
-        content.append("GARAGE INVOICE\n");
-        content.append("============================\n");
-
-        content.append("Invoice ID: ")
-                .append(invoice.getId())
-                .append("\n");
-
-        content.append("Customer ID: ")
-                .append(invoice.getCustomerId())
-                .append("\n");
-
-        content.append("Employee ID: ")
-                .append(invoice.getEmployeeId())
-                .append("\n");
-
-        content.append("License plate: ")
-                .append(invoice.getLicensePlate())
-                .append("\n");
-
-        content.append("Vehicle type: ")
-                .append(invoice.getVehicleType())
-                .append("\n");
-
-        content.append("Vehicle brand: ")
-                .append(invoice.getVehicleBrand())
-                .append("\n");
-
-        content.append("Issue date: ")
-                .append(invoice.getIssueDate())
-                .append("\n");
-
-        content.append("Payment status: ")
-                .append(invoice.getPaymentStatus())
-                .append("\n");
-
-        content.append("\nSERVICES\n");
-        content.append("----------------------------\n");
-
-        if (invoice.getInvoiceDetails() == null
-                || invoice.getInvoiceDetails().isEmpty()) {
-
-            content.append("No services.\n");
-
-        } else {
-
-            for (InvoiceDetail detail
-                    : invoice.getInvoiceDetails()) {
-
-                content.append("Service ID: ")
-                        .append(detail.getServiceId())
-                        .append("\n");
-
-                content.append("Service: ")
-                        .append(detail.getServiceName())
-                        .append("\n");
-
-                content.append("Price: ")
-                        .append(detail.getUnitPrice())
-                        .append("\n");
-
-                content.append("Subtotal: ")
-                        .append(detail.getSubtotal())
-                        .append("\n");
-
+                content.append("\nSERVICES\n");
                 content.append("----------------------------\n");
-            }
+
+                if (invoice.getInvoiceDetails() == null
+                                || invoice.getInvoiceDetails().isEmpty()) {
+
+                        content.append("No services.\n");
+
+                } else {
+
+                        for (InvoiceDetail detail : invoice.getInvoiceDetails()) {
+
+                                content.append("Service ID: ")
+                                                .append(detail.getServiceId())
+                                                .append("\n");
+
+                                content.append("Service: ")
+                                                .append(detail.getServiceName())
+                                                .append("\n");
+
+                                content.append("Price: ")
+                                                .append(detail.getUnitPrice())
+                                                .append("\n");
+
+                                content.append("----------------------------\n");
+                        }
+                }
+
+                content.append("TOTAL: ")
+                                .append(invoice.getTotalAmount())
+                                .append("\n");
+
+                return content.toString();
         }
 
-        content.append("TOTAL: ")
-                .append(invoice.getTotalAmount())
-                .append("\n");
+        private Path createDirectory(
+                        String outputDirectory)
+                        throws IOException {
 
-        return content.toString();
-    }
+                Path directory = Path.of(outputDirectory);
 
-    private Path createDirectory(
-            String outputDirectory)
-            throws IOException {
+                Files.createDirectories(directory);
 
-        Path directory =
-                Path.of(outputDirectory);
-
-        Files.createDirectories(directory);
-
-        return directory;
-    }
+                return directory;
+        }
 }

@@ -389,7 +389,7 @@ public class CustomerAppointmentController {
 
                         boolean created = appointmentService.createAppointment(
                                         appointment,
-                                        items);
+                                        items, date, null);
 
                         if (!created) {
 

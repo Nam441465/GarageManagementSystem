@@ -39,9 +39,6 @@ public class DashboardController {
     private Button warrantyButton;
 
     @FXML
-    private Button serviceRecordButton;
-
-    @FXML
     private Button invoiceButton;
 
     @FXML
@@ -52,9 +49,6 @@ public class DashboardController {
 
     @FXML
     private Button statisticsButton;
-
-    @FXML
-    private Button serviceRecordDetailButton;
 
     @FXML
     private Button logoutButton;
@@ -157,15 +151,6 @@ public class DashboardController {
     }
 
     @FXML
-    public void showServiceRecord() {
-
-        openWindow(
-                "/ui/ServiceRecordView.fxml",
-                "Quản lý phiếu dịch vụ");
-
-    }
-
-    @FXML
     public void showInvoice() {
 
         openWindow(
@@ -191,11 +176,6 @@ public class DashboardController {
     @FXML
     public void showStatistics() {
         openWindow("/ui/StatisticsView.fxml", "Thống kê gara");
-    }
-
-    @FXML
-    public void showServiceRecordDetails() {
-        openWindow("/ui/ServiceRecordDetailView.fxml", "Chi tiết phiếu dịch vụ");
     }
 
     private void openWindow(

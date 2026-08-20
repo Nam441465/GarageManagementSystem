@@ -16,14 +16,14 @@ public class WarrantyDAO {
 
     public boolean addWarranty(Warranty obj) {
         String sql = """
-                INSERT INTO Warranty (service_record_id, warranty_code, start_date, end_date, coverage, status)
+                INSERT INTO Warranty (invoice_id, warranty_code, start_date, end_date, coverage, status)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, obj.getServiceRecordId());
+            ps.setInt(1, obj.getInvoiceId());
             ps.setString(2, obj.getWarrantyCode());
             ps.setDate(3, Date.valueOf(obj.getStartDate()));
             ps.setDate(4, Date.valueOf(obj.getEndDate()));
@@ -71,20 +71,20 @@ public class WarrantyDAO {
         return list;
     }
 
-    public List<Warranty> findByServiceRecordId(int serviceRecordId) {
+    public List<Warranty> findByInvoiceId(int invoiceId) {
         List<Warranty> list = new ArrayList<>();
-        String sql = "SELECT * FROM Warranty WHERE service_record_id = ?";
+        String sql = "SELECT * FROM Warranty WHERE invoice_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, serviceRecordId);
+            ps.setInt(1, invoiceId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(mapWarranty(rs));
                 }
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Could not find warranties by service record ID.", e);
+            throw new DatabaseException("Could not find warranties by invoice ID.", e);
         }
 
         return list;
@@ -110,7 +110,7 @@ public class WarrantyDAO {
     public boolean updateWarranty(Warranty obj) {
         String sql = """
                 UPDATE Warranty
-                SET service_record_id = ?,
+                SET invoice_id = ?,
                     warranty_code = ?,
                     start_date = ?,
                     end_date = ?,
@@ -122,7 +122,7 @@ public class WarrantyDAO {
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, obj.getServiceRecordId());
+            ps.setInt(1, obj.getInvoiceId());
             ps.setString(2, obj.getWarrantyCode());
             ps.setDate(3, Date.valueOf(obj.getStartDate()));
             ps.setDate(4, Date.valueOf(obj.getEndDate()));
@@ -154,7 +154,7 @@ public class WarrantyDAO {
     private Warranty mapWarranty(ResultSet rs) throws SQLException {
         return new Warranty(
                 rs.getInt("id"),
-                rs.getInt("service_record_id"),
+                rs.getInt("invoice_id"),
                 rs.getString("warranty_code"),
                 rs.getDate("start_date").toLocalDate(),
                 rs.getDate("end_date").toLocalDate(),

@@ -5,19 +5,19 @@ import java.time.LocalDate;
 public class Warranty {
 
     private int id;
-    private int serviceRecordId;
+    private int invoiceId;
     private String warrantyCode;
     private LocalDate startDate;
     private LocalDate endDate;
     private String coverage;
-    private String status; // ENUM('ACTIVE','EXPIRED','CLAIMED')
+    private String status; 
 
     public Warranty() {
     }
 
-    public Warranty(int serviceRecordId, String warrantyCode, LocalDate startDate,
+    public Warranty(int invoiceId, String warrantyCode, LocalDate startDate,
                    LocalDate endDate, String coverage, String status) {
-        this.serviceRecordId = serviceRecordId;
+        this.invoiceId = invoiceId;
         this.warrantyCode = warrantyCode;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -25,10 +25,10 @@ public class Warranty {
         this.status = status;
     }
 
-    public Warranty(int id, int serviceRecordId, String warrantyCode, LocalDate startDate,
+    public Warranty(int id, int invoiceId, String warrantyCode, LocalDate startDate,
                    LocalDate endDate, String coverage, String status) {
         this.id = id;
-        this.serviceRecordId = serviceRecordId;
+        this.invoiceId = invoiceId;
         this.warrantyCode = warrantyCode;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -40,8 +40,8 @@ public class Warranty {
         return id;
     }
 
-    public int getServiceRecordId() {
-        return serviceRecordId;
+    public int getInvoiceId() {
+        return invoiceId;
     }
 
     public String getWarrantyCode() {
@@ -68,8 +68,8 @@ public class Warranty {
         this.id = id;
     }
 
-    public void setServiceRecordId(int serviceRecordId) {
-        this.serviceRecordId = serviceRecordId;
+    public void setInvoiceId(int invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     public void setWarrantyCode(String warrantyCode) {
@@ -96,7 +96,7 @@ public class Warranty {
     public String toString() {
         return "Warranty{" +
                 "id=" + id +
-                ", serviceRecordId=" + serviceRecordId +
+                ", invoiceId=" + invoiceId +
                 ", warrantyCode='" + warrantyCode + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +

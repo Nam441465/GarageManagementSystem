@@ -16,6 +16,7 @@ public class Invoice {
     private String licensePlate;
     private String vehicleType;
     private String vehicleBrand;
+    private String employeeName;
 
     private BigDecimal totalAmount;
 
@@ -33,6 +34,7 @@ public class Invoice {
     public Invoice(
             int customerId,
             int employeeId,
+            String employeeName,
             String licensePlate,
             String vehicleType,
             String vehicleBrand,
@@ -42,6 +44,7 @@ public class Invoice {
 
         this.customerId = customerId;
         this.employeeId = employeeId;
+        this.employeeName = employeeName;
         this.licensePlate = licensePlate;
         this.vehicleType = vehicleType;
         this.vehicleBrand = vehicleBrand;
@@ -57,6 +60,7 @@ public class Invoice {
             int id,
             int customerId,
             int employeeId,
+            String employeeName,
             String licensePlate,
             String vehicleType,
             String vehicleBrand,
@@ -68,6 +72,7 @@ public class Invoice {
         this.id = id;
         this.customerId = customerId;
         this.employeeId = employeeId;
+        this.employeeName = employeeName;
         this.licensePlate = licensePlate;
         this.vehicleType = vehicleType;
         this.vehicleBrand = vehicleBrand;
@@ -131,6 +136,14 @@ public class Invoice {
         return totalAmount;
     }
 
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
@@ -178,7 +191,7 @@ public class Invoice {
 
         if (detail == null) {
             throw new IllegalArgumentException(
-                    "Invoice detail cannot be null.");
+                    "Chi tiết hóa đơn không được để trống.");
         }
 
         invoiceDetails.add(detail);
@@ -201,15 +214,14 @@ public class Invoice {
 
         for (InvoiceDetail detail : invoiceDetails) {
 
-            if (detail == null) {
+            if (detail == null || detail.getUnitPrice() == null) {
                 continue;
             }
 
-            total = total.add(
-                    detail.calculateSubtotal());
+            total = total.add(detail.getUnitPrice());
         }
 
-        totalAmount = total;
+        this.totalAmount = total;
 
         return total;
     }
@@ -241,6 +253,7 @@ public class Invoice {
                 "id=" + id +
                 ", customerId=" + customerId +
                 ", employeeId=" + employeeId +
+                ", employeeName='" + employeeName + '\'' +
                 ", licensePlate='" + licensePlate + '\'' +
                 ", vehicleType='" + vehicleType + '\'' +
                 ", vehicleBrand='" + vehicleBrand + '\'' +

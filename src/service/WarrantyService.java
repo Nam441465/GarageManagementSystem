@@ -18,9 +18,9 @@ public class WarrantyService {
         this.warrantyDAO = java.util.Objects.requireNonNull(warrantyDAO, "warrantyDAO is required");
     }
 
-    public boolean createWarranty(int serviceRecordId, String warrantyCode, LocalDate startDate, LocalDate endDate,
+    public boolean createWarranty(int invoiceId, String warrantyCode, LocalDate startDate, LocalDate endDate,
             String coverage) {
-        Warranty warranty = new Warranty(serviceRecordId, warrantyCode, startDate, endDate, coverage, "ACTIVE");
+        Warranty warranty = new Warranty(invoiceId, warrantyCode, startDate, endDate, coverage, "ACTIVE");
         return warrantyDAO.addWarranty(warranty);
     }
 
@@ -32,8 +32,8 @@ public class WarrantyService {
         return warrantyDAO.findAll();
     }
 
-    public List<Warranty> getWarrantiesByServiceRecord(int serviceRecordId) {
-        return warrantyDAO.findByServiceRecordId(serviceRecordId);
+    public List<Warranty> getWarrantiesByInvoice(int invoiceId) {
+        return warrantyDAO.findByInvoiceId(invoiceId);
     }
 
     public Warranty getWarrantyByCode(String warrantyCode) {

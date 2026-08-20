@@ -40,30 +40,22 @@ service_name    VARCHAR(50)
 price           DOUBLE
 description     VARCHAR(250)
 
-ServiceRecord
----------
-id              INT                 PK
-vehicle_id      INT                 FK Vehicle.id
-recordDate      DATE
-notes           VARCHAR(250)
-total_cost      DOUBLE
-created_by      INT                 FK Users.id
-
-ServiceRecordDetail
----------
-id                  INT             PK
-service_record_id   INT             FK ServiceRecord.id
-service_id          INT             FK Service.id
-quantity            INT
-price               DOUBLE
-subtotal            DOUBLE
-
 Invoice
 ---------
 id              INT                 PK
-record_id       INT                 FK ServiceRecord.id
+customer_id     INT                 FK Customer.id
+employee_id     INT                 FK Employee.id
 total_amount    DOUBLE
 issueDate       DATE
+
+InvoiceDetail
+---------
+id              INT                 PK
+invoice_id      INT                 FK Invoice.id
+service_id      INT                 FK Service.id
+service_name    VARCHAR(100)
+unit_price      DOUBLE
+subtotal        DOUBLE
 
 EmployeeInvite
 ---------

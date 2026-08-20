@@ -9,7 +9,6 @@ public class InvoiceDetail {
     private int serviceId;
     private String serviceName;
     private BigDecimal unitPrice;
-    private BigDecimal subtotal;
 
     public InvoiceDetail() {
     }
@@ -24,7 +23,6 @@ public class InvoiceDetail {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.unitPrice = unitPrice;
-        calculateSubtotal();
     }
 
     public InvoiceDetail(
@@ -32,15 +30,13 @@ public class InvoiceDetail {
             int invoiceId,
             int serviceId,
             String serviceName,
-            BigDecimal unitPrice,
-            BigDecimal subtotal) {
+            BigDecimal unitPrice) {
 
         this.id = id;
         this.invoiceId = invoiceId;
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.unitPrice = unitPrice;
-        this.subtotal = subtotal;
     }
 
     public int getId() {
@@ -80,29 +76,17 @@ public class InvoiceDetail {
     }
 
     public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-        calculateSubtotal();
-    }
-
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
-
-    public BigDecimal calculateSubtotal() {
-
         if (unitPrice == null) {
             throw new IllegalArgumentException(
-                    "Unit price is required.");
+                    "Đơn giá không được để trống.");
         }
 
         if (unitPrice.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException(
-                    "Unit price cannot be negative.");
+                    "Đơn giá không được âm.");
         }
 
-        subtotal = unitPrice;
-
-        return subtotal;
+        this.unitPrice = unitPrice;
     }
 
     @Override
@@ -113,7 +97,6 @@ public class InvoiceDetail {
                 ", serviceId=" + serviceId +
                 ", serviceName='" + serviceName + '\'' +
                 ", unitPrice=" + unitPrice +
-                ", subtotal=" + subtotal +
                 '}';
     }
 }

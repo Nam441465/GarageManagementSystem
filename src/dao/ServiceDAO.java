@@ -165,9 +165,6 @@ public class ServiceDAO {
         String serviceName = rs.getString("service_name");
         String description = rs.getString("description");
 
-        return new Service(
-                id,
-                description,
-                serviceName);
+        return new Service(id, serviceName, description);
     }
 }

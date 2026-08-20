@@ -85,18 +85,6 @@
                                 prefHeight="40"
                                 onAction="#showWarranty" />
 
-                        <Button fx:id="serviceRecordButton"
-                                text="Quản lý phiếu dịch vụ"
-                                prefWidth="300"
-                                prefHeight="40"
-                                onAction="#showServiceRecord" />
-
-                        <Button fx:id="serviceRecordDetailButton"
-                                text="Chi tiết phiếu dịch vụ"
-                                prefWidth="300"
-                                prefHeight="40"
-                                onAction="#showServiceRecordDetails" />
-
                         <Button fx:id="invoiceButton"
                                 text="Quản lý hóa đơn"
                                 prefWidth="300"

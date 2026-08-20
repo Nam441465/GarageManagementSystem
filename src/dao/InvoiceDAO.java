@@ -2,12 +2,14 @@ package dao;
 
 import database.DatabaseConnection;
 import model.Invoice;
+import model.InvoiceDetail;
 import enums.PaymentStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ public class InvoiceDAO {
 
     public boolean addInvoice(Invoice invoice) {
 
-        String sql = """
+        String invoiceSql = """
                 INSERT INTO Invoice (
                     customer_id,
                     employee_id,
@@ -32,50 +34,117 @@ public class InvoiceDAO {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
+        String detailSql = """
+                INSERT INTO InvoiceDetail (
+                    invoice_id,
+                    service_id,
+                    service_name,
+                    unit_price,
+                    subtotal
+                )
+                VALUES (?, ?, ?, ?, ?)
+                """;
+
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(
-                        sql,
-                        java.sql.Statement.RETURN_GENERATED_KEYS)) {
+                        invoiceSql,
+                        Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setInt(1, invoice.getCustomerId());
-            ps.setInt(2, invoice.getEmployeeId());
-            ps.setString(3, invoice.getLicensePlate());
-            ps.setString(4, invoice.getVehicleType());
-            ps.setString(5, invoice.getVehicleBrand());
-            ps.setBigDecimal(6, invoice.getTotalAmount());
-            ps.setString(7, invoice.getPaymentStatus().name());
+            conn.setAutoCommit(false);
 
-            if (invoice.getIssueDate() != null) {
-                ps.setTimestamp(
-                        8,
-                        Timestamp.valueOf(invoice.getIssueDate()));
-            } else {
-                ps.setTimestamp(8, null);
-            }
+            try {
 
-            ps.setString(9, invoice.getPdfPath());
+                ps.setInt(1, invoice.getCustomerId());
+                ps.setInt(2, invoice.getEmployeeId());
+                ps.setString(3, invoice.getLicensePlate());
+                ps.setString(4, invoice.getVehicleType());
+                ps.setString(5, invoice.getVehicleBrand());
+                ps.setBigDecimal(6, invoice.getTotalAmount());
+                ps.setString(7, invoice.getPaymentStatus().name());
 
-            int affectedRows = ps.executeUpdate();
+                if (invoice.getIssueDate() != null) {
+                    ps.setTimestamp(
+                            8,
+                            Timestamp.valueOf(invoice.getIssueDate()));
+                } else {
+                    ps.setTimestamp(8, null);
+                }
 
-            if (affectedRows == 0) {
-                return false;
-            }
+                ps.setString(9, invoice.getPdfPath());
 
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
+                int affectedRows = ps.executeUpdate();
+
+                if (affectedRows == 0) {
+                    conn.rollback();
+                    return false;
+                }
+
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+
+                    if (!rs.next()) {
+                        throw new SQLException(
+                                "Database did not return the invoice ID.");
+                    }
+
                     invoice.setId(rs.getInt(1));
                 }
+
+                try (PreparedStatement detailPs = conn.prepareStatement(detailSql)) {
+
+                    for (InvoiceDetail detail : invoice.getInvoiceDetails()) {
+
+                        detail.setInvoiceId(invoice.getId());
+
+                        detailPs.setInt(
+                                1,
+                                invoice.getId());
+
+                        detailPs.setInt(
+                                2,
+                                detail.getServiceId());
+
+                        detailPs.setString(
+                                3,
+                                detail.getServiceName());
+
+                        detailPs.setBigDecimal(
+                                4,
+                                detail.getUnitPrice());
+
+                        detailPs.setBigDecimal(
+                                5,
+                                detail.getUnitPrice());
+
+                        detailPs.addBatch();
+                    }
+
+                    detailPs.executeBatch();
+                }
+
+                conn.commit();
+
+                return true;
+
+            } catch (Exception e) {
+
+                try {
+                    conn.rollback();
+                } catch (SQLException rollbackException) {
+                    e.addSuppressed(rollbackException);
+                }
+
+                throw e;
             }
 
-            return true;
+        } catch (SQLException | RuntimeException e) {
 
-        } catch (SQLException e) {
             throw new RuntimeException(
-                    "Error adding invoice",
+                    "or adding invoice",
                     e);
         }
     }
 
+    // SỬA: Thêm cập nhật InvoiceDetail
     public boolean updateInvoice(Invoice invoice) {
 
         String sql = """
@@ -94,6 +163,7 @@ public class InvoiceDAO {
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
+            conn.setAutoCommit(false);
 
             ps.setInt(1, invoice.getCustomerId());
             ps.setInt(2, invoice.getEmployeeId());
@@ -104,9 +174,7 @@ public class InvoiceDAO {
             ps.setString(7, invoice.getPaymentStatus().name());
 
             if (invoice.getIssueDate() != null) {
-                ps.setTimestamp(
-                        8,
-                        Timestamp.valueOf(invoice.getIssueDate()));
+                ps.setTimestamp(8, Timestamp.valueOf(invoice.getIssueDate()));
             } else {
                 ps.setTimestamp(8, null);
             }
@@ -114,33 +182,46 @@ public class InvoiceDAO {
             ps.setString(9, invoice.getPdfPath());
             ps.setInt(10, invoice.getId());
 
-            return ps.executeUpdate() > 0;
+            boolean updated = ps.executeUpdate() > 0;
 
-        } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Error updating invoice",
-                    e);
+            if (updated) {
+                InvoiceDetailDAO detailDAO = new InvoiceDetailDAO();
+                detailDAO.deleteByInvoiceId(conn, invoice.getId());
+                for (InvoiceDetail detail : invoice.getInvoiceDetails()) {
+                    detail.setInvoiceId(invoice.getId());
+                    if (!detailDAO.addInvoiceDetail(conn, detail)) {
+                        throw new RuntimeException("Failed to update invoice detail: " + detail.getServiceName());
+                    }
+                }
+                conn.commit();
+            }
+
+            return updated;
+
+        } catch (SQLException | RuntimeException e) {
+            throw new RuntimeException("Error updating invoice", e);
         }
     }
 
+    // SỬA: Xóa cả InvoiceDetail
     public boolean deleteInvoice(int id) {
 
         String sql = "DELETE FROM Invoice WHERE id = ?";
-
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
-
+            conn.setAutoCommit(false);
             ps.setInt(1, id);
 
-            return ps.executeUpdate() > 0;
+            boolean deleted = ps.executeUpdate() > 0;
+            conn.commit();
+            return deleted;
 
-        } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Error deleting invoice",
-                    e);
+        } catch (SQLException | RuntimeException e) {
+            throw new RuntimeException("Error deleting invoice", e);
         }
     }
 
+    // SỬA: Load cả InvoiceDetail
     public Invoice findById(int id) {
 
         String sql = "SELECT * FROM Invoice WHERE id = ?";
@@ -153,14 +234,17 @@ public class InvoiceDAO {
             try (ResultSet rs = ps.executeQuery()) {
 
                 if (rs.next()) {
-                    return mapInvoice(rs);
+                    Invoice invoice = mapInvoice(rs);
+                    // THÊM: Load chi tiết hóa đơn
+                    InvoiceDetailDAO detailDAO = new InvoiceDetailDAO();
+                    List<InvoiceDetail> details = detailDAO.findByInvoiceId(id);
+                    invoice.setInvoiceDetails(details);
+                    return invoice;
                 }
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Error finding invoice by ID",
-                    e);
+            throw new RuntimeException("Error finding invoice by ID", e);
         }
 
         return null;
@@ -177,13 +261,16 @@ public class InvoiceDAO {
                 ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                list.add(mapInvoice(rs));
+                Invoice invoice = mapInvoice(rs);
+                // THÊM: Load chi tiết cho từng invoice
+                InvoiceDetailDAO detailDAO = new InvoiceDetailDAO();
+                List<InvoiceDetail> details = detailDAO.findByInvoiceId(invoice.getId());
+                invoice.setInvoiceDetails(details);
+                list.add(invoice);
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Error finding all invoices",
-                    e);
+            throw new RuntimeException("Error finding all invoices", e);
         }
 
         return list;
@@ -203,14 +290,11 @@ public class InvoiceDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Error checking invoice existence",
-                    e);
+            throw new RuntimeException("Error checking invoice existence", e);
         }
     }
 
-    private Invoice mapInvoice(ResultSet rs)
-            throws SQLException {
+    private Invoice mapInvoice(ResultSet rs) throws SQLException {
 
         Timestamp issueDateSql = rs.getTimestamp("issue_date");
 
@@ -222,40 +306,20 @@ public class InvoiceDAO {
 
         PaymentStatus paymentStatus = paymentStatusValue == null
                 ? null
-                : PaymentStatus.valueOf(
-                        paymentStatusValue);
+                : PaymentStatus.valueOf(paymentStatusValue);
 
         Invoice invoice = new Invoice();
 
-        invoice.setId(
-                rs.getInt("id"));
-
-        invoice.setCustomerId(
-                rs.getInt("customer_id"));
-
-        invoice.setEmployeeId(
-                rs.getInt("employee_id"));
-
-        invoice.setLicensePlate(
-                rs.getString("license_plate"));
-
-        invoice.setVehicleType(
-                rs.getString("vehicle_type"));
-
-        invoice.setVehicleBrand(
-                rs.getString("vehicle_brand"));
-
-        invoice.setTotalAmount(
-                rs.getBigDecimal("total_amount"));
-
-        invoice.setPaymentStatus(
-                paymentStatus);
-
-        invoice.setIssueDate(
-                issueDate);
-
-        invoice.setPdfPath(
-                rs.getString("pdf_path"));
+        invoice.setId(rs.getInt("id"));
+        invoice.setCustomerId(rs.getInt("customer_id"));
+        invoice.setEmployeeId(rs.getInt("employee_id"));
+        invoice.setLicensePlate(rs.getString("license_plate"));
+        invoice.setVehicleType(rs.getString("vehicle_type"));
+        invoice.setVehicleBrand(rs.getString("vehicle_brand"));
+        invoice.setTotalAmount(rs.getBigDecimal("total_amount"));
+        invoice.setPaymentStatus(paymentStatus);
+        invoice.setIssueDate(issueDate);
+        invoice.setPdfPath(rs.getString("pdf_path"));
 
         return invoice;
     }

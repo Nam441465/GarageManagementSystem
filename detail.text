@@ -13,8 +13,6 @@ Navigation.java                     // Chuyển đổi giữa các màn hình
 PriceController.java                // Hiển thị dịch vụ và giá theo loại xe
 RegisterController.java             // Đăng ký tài khoản
 ServiceController.java              // Quản lý dịch vụ
-ServiceRecordController.java        // Quản lý phiếu sửa chữa
-ServiceRecordDetailController.java  // Chi tiết từng dịch vụ trong phiếu sửa chữa
 StatisticsController.java           // Thống kê doanh thu, dịch vụ...
 VehicleController.java              // Quản lý xe
 WarrantyController.java             // Quản lý bảo hành
@@ -40,10 +38,6 @@ PartDAO.java                        // CRUD linh kiện
 PriceListDAO.java                   // Giá dịch vụ theo loại xe
 
 ServiceDAO.java                     // CRUD dịch vụ
-
-ServiceRecordDAO.java               // CRUD phiếu sửa chữa
-
-ServiceRecordDetailDAO.java         // CRUD chi tiết phiếu sửa chữa
 
 UserDAO.java                        // CRUD tài khoản
 
@@ -123,10 +117,6 @@ Part.java                           // Linh kiện
 
 PriceList.java                      // Giá theo loại xe
 
-ServiceRecord.java                  // Phiếu sửa chữa
-
-ServiceRecordDetail.java            // Chi tiết từng dịch vụ
-
 Session.java                        // Người dùng hiện tại
 
 User.java                           // Tài khoản
@@ -189,10 +179,6 @@ PdfService.java                     // Xuất PDF
 
 PriceListService.java               // Lấy bảng giá theo loại xe
 
-ServiceRecordDetailService.java     // Nghiệp vụ chi tiết sửa chữa
-
-ServiceRecordService.java           // Nghiệp vụ phiếu sửa chữa
-
 ServiceService.java                 // Nghiệp vụ dịch vụ
 
 UserService.java                    // Nghiệp vụ tài khoản
@@ -238,10 +224,6 @@ InvoiceView.fxml                    // Quản lý hóa đơn
 LoginView.fxml                      // Đăng nhập
 
 PriceView.fxml                      // Hiển thị dịch vụ và giá
-
-ServiceRecordDetailView.fxml        // Chi tiết phiếu sửa
-
-ServiceRecordView.fxml              // Phiếu sửa
 
 ServiceView.fxml                    // Dịch vụ
 

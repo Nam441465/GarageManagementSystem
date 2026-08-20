@@ -135,6 +135,7 @@ CREATE TABLE Invoice (
 
     customer_id INT NOT NULL,
     employee_id INT NOT NULL,
+    employee_name String NOT NULL,
 
     license_plate VARCHAR(20) NOT NULL,
     vehicle_type ENUM(
@@ -191,11 +192,7 @@ CREATE TABLE InvoiceDetail (
 
     service_name VARCHAR(100) NOT NULL,
 
-    quantity INT NOT NULL DEFAULT 1,
-
     unit_price DECIMAL(12,2) NOT NULL,
-
-    subtotal DECIMAL(12,2) NOT NULL,
 
     FOREIGN KEY (invoice_id)
         REFERENCES Invoice(id)
@@ -221,13 +218,13 @@ CREATE TABLE Part (
 );
 CREATE TABLE Warranty (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    service_record_id INT NOT NULL,
+    invoice_id INT NOT NULL,
     warranty_code VARCHAR(50) NOT NULL UNIQUE,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     coverage TEXT NULL,
     status ENUM('ACTIVE', 'EXPIRED', 'CLAIMED') NOT NULL DEFAULT 'ACTIVE',
-    FOREIGN KEY (service_record_id) REFERENCES ServiceRecord(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (invoice_id) REFERENCES Invoice(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE AuditLog (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -250,9 +247,7 @@ CREATE INDEX idx_service_name ON Service(service_name);
 CREATE INDEX idx_price_list_service_id ON PriceList(service_id);
 CREATE INDEX idx_appointment_customer_id ON Appointment(customer_id);
 CREATE INDEX idx_appointment_date ON Appointment(appointment_date);
-CREATE INDEX idx_service_record_vehicle_id ON ServiceRecord(vehicle_id);
-CREATE INDEX idx_service_record_appointment_id ON ServiceRecord(appointment_id);
-CREATE INDEX idx_invoice_record_id ON Invoice(record_id);
+CREATE INDEX idx_invoice_customer_id ON Invoice(customer_id);
 CREATE INDEX idx_auditlog_user_id ON AuditLog(user_id);
 INSERT INTO Users(role, username, password, status)
 SELECT 'OWNER',
@@ -264,20 +259,42 @@ WHERE NOT EXISTS (
         FROM Users
         WHERE role = 'OWNER'
     );
-DELIMITER // CREATE TRIGGER prevent_extra_owner BEFORE
-INSERT ON Users FOR EACH ROW BEGIN IF NEW.role = 'OWNER'
-    AND EXISTS (
-        SELECT 1
-        FROM Users
-        WHERE role = 'OWNER'
-    ) THEN SIGNAL SQLSTATE '45000'
-SET MESSAGE_TEXT = 'Only one OWNER account is allowed';
-END IF;
-END // CREATE TRIGGER prevent_owner_update BEFORE
-UPDATE ON Users FOR EACH ROW BEGIN IF OLD.role = 'OWNER' THEN SIGNAL SQLSTATE '45000'
-SET MESSAGE_TEXT = 'OWNER account cannot be modified';
-END IF;
-END // CREATE TRIGGER prevent_owner_delete BEFORE DELETE ON Users FOR EACH ROW BEGIN IF OLD.role = 'OWNER' THEN SIGNAL SQLSTATE '45000'
-SET MESSAGE_TEXT = 'OWNER account cannot be deleted';
-END IF;
-END // DELIMITER;
+DELIMITER //
+
+CREATE TRIGGER prevent_extra_owner
+BEFORE INSERT ON Users
+FOR EACH ROW
+BEGIN
+    IF NEW.role = 'OWNER'
+       AND EXISTS (
+           SELECT 1
+           FROM Users
+           WHERE role = 'OWNER'
+       )
+    THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Only one OWNER account is allowed';
+    END IF;
+END //
+
+CREATE TRIGGER prevent_owner_update
+BEFORE UPDATE ON Users
+FOR EACH ROW
+BEGIN
+    IF OLD.role = 'OWNER' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'OWNER account cannot be modified';
+    END IF;
+END //
+
+CREATE TRIGGER prevent_owner_delete
+BEFORE DELETE ON Users
+FOR EACH ROW
+BEGIN
+    IF OLD.role = 'OWNER' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'OWNER account cannot be deleted';
+    END IF;
+END //
+
+DELIMITER ;

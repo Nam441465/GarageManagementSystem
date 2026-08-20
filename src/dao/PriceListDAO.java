@@ -90,6 +90,10 @@ public class PriceListDAO {
                 WHERE service_id = ?
                   AND vehicle_type = ?
                   AND vehicle_brand = ?
+                  AND effective_from <= CURRENT_DATE
+                  AND (effective_to IS NULL OR effective_to >= CURRENT_DATE)
+                ORDER BY effective_from DESC
+                LIMIT 1
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
