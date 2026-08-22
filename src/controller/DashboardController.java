@@ -132,7 +132,26 @@ public class DashboardController {
 
     @FXML
     public void showAppointment() {
-        openWindow("/ui/CustomerAppointmentView.fxml", "Quản lý lịch hẹn");
+
+        User user = Session.getCurrentUser();
+
+        if (user == null) {
+            return;
+        }
+
+        if (user.getRole() == UserRole.OWNER
+                || user.getRole() == UserRole.EMPLOYEE) {
+
+            openWindow(
+                    "/ui/AppointmentManagementView.fxml",
+                    "Lịch hẹn đã đặt");
+
+        } else {
+
+            openWindow(
+                    "/ui/CustomerAppointmentView.fxml",
+                    "Đặt lịch hẹn");
+        }
     }
 
     @FXML

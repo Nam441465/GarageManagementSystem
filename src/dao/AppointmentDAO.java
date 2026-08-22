@@ -18,16 +18,15 @@ public class AppointmentDAO {
     public boolean addAppointment(Appointment appointment) {
 
         String sql = """
-                INSERT INTO Appointment
-                (
-                    customer_id,
+                INSERT INTO Appointment (
                     customer_name,
                     customer_phone,
                     license_plate,
-                    vehicle_brand,
-                    vehicle_type,
                     appointment_date,
-                    notes
+                    appointment_time,
+                    vehicle_type,
+                    vehicle_brand,
+                    created_at
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """;
@@ -37,29 +36,55 @@ public class AppointmentDAO {
                         sql,
                         Statement.RETURN_GENERATED_KEYS)) {
 
-            if (appointment.getCustomerId() == null) {
-                ps.setNull(1, java.sql.Types.INTEGER);
+            ps.setString(1, appointment.getCustomerName());
+            ps.setString(2, appointment.getCustomerPhone());
+            ps.setString(3, appointment.getLicensePlate());
+
+            // Lưu NGÀY riêng
+            if (appointment.getAppointmentDate() != null) {
+                ps.setTimestamp(
+                        4,
+                        Timestamp.valueOf(
+                                appointment.getAppointmentDate()));
             } else {
-                ps.setInt(1, appointment.getCustomerId());
+                ps.setTimestamp(4, null);
             }
 
-            ps.setString(2, appointment.getCustomerName());
-            ps.setString(3, appointment.getCustomerPhone());
-            ps.setString(4, appointment.getLicensePlate());
-            ps.setString(5, appointment.getVehicleBrand());
-            ps.setString(6, appointment.getVehicleType());
+            // Lưu GIỜ riêng
+            if (appointment.getAppointmentTime() != null) {
+                ps.setTimestamp(
+                        5,
+                        Timestamp.valueOf(
+                                appointment.getAppointmentTime()));
+            } else {
+                ps.setTimestamp(5, null);
+            }
 
-            ps.setTimestamp(
+            ps.setString(
+                    6,
+                    appointment.getVehicleType().name());
+
+            ps.setString(
                     7,
-                    Timestamp.valueOf(appointment.getAppointmentDate()));
+                    appointment.getVehicleBrand().name());
 
-            ps.setString(8, appointment.getNotes());
+            if (appointment.getCreatedAt() != null) {
+                ps.setTimestamp(
+                        8,
+                        Timestamp.valueOf(
+                                appointment.getCreatedAt()));
+            } else {
+                ps.setTimestamp(
+                        8,
+                        Timestamp.valueOf(LocalDateTime.now()));
+            }
 
             if (ps.executeUpdate() == 0) {
                 return false;
             }
 
             try (ResultSet keys = ps.getGeneratedKeys()) {
+
                 if (keys.next()) {
                     appointment.setId(keys.getInt(1));
                 }
@@ -68,8 +93,8 @@ public class AppointmentDAO {
             return true;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException(
+                    "Error adding appointment", e);
         }
     }
 
@@ -94,7 +119,8 @@ public class AppointmentDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(
+                    "Error finding appointment by ID", e);
         }
 
         return null;
@@ -107,7 +133,8 @@ public class AppointmentDAO {
         String sql = """
                 SELECT *
                 FROM Appointment
-                ORDER BY appointment_date DESC
+                ORDER BY appointment_date DESC,
+                         appointment_time DESC
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -119,112 +146,110 @@ public class AppointmentDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(
+                    "Error finding all appointments", e);
         }
 
         return list;
     }
 
-    private Appointment mapResultSetToObject(ResultSet rs)
-            throws SQLException {
-
-        Timestamp appointmentDateTs = rs.getTimestamp("appointment_date");
-
-        LocalDateTime appointmentDate = appointmentDateTs != null
-                ? appointmentDateTs.toLocalDateTime()
-                : null;
-
-        int customerIdValue = rs.getInt("customer_id");
-
-        Integer customerId = rs.wasNull()
-                ? null
-                : customerIdValue;
-
-        return new Appointment(
-                rs.getInt("id"),
-                customerId,
-                rs.getString("customer_name"),
-                rs.getString("customer_phone"),
-                rs.getString("license_plate"),
-                rs.getString("vehicle_brand"),
-                rs.getString("vehicle_type"),
-                appointmentDate,
-                rs.getString("notes"));
-    }
-
-    public List<Appointment> findByCustomerId(int customerId) {
-
-        List<Appointment> list = new ArrayList<>();
+    /**
+     * Đếm số appointment đang chiếm slot
+     * tại cùng NGÀY và cùng GIỜ.
+     */
+    public int countAppointmentsAtTime(
+            LocalDateTime appointmentDate,
+            LocalDateTime appointmentTime) {
 
         String sql = """
-                SELECT *
+                SELECT COUNT(*)
                 FROM Appointment
-                WHERE customer_id = ?
-                ORDER BY appointment_date DESC
+                WHERE appointment_date = ?
+                  AND appointment_time = ?
+                  AND status IN ('PENDING', 'CONFIRMED')
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, customerId);
+            ps.setTimestamp(
+                    1,
+                    Timestamp.valueOf(appointmentDate));
+
+            ps.setTimestamp(
+                    2,
+                    Timestamp.valueOf(appointmentTime));
 
             try (ResultSet rs = ps.executeQuery()) {
 
-                while (rs.next()) {
-                    list.add(mapResultSetToObject(rs));
+                if (rs.next()) {
+                    return rs.getInt(1);
                 }
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(
+                    "Error counting appointments at time", e);
         }
 
-        return list;
+        return 0;
     }
 
-    public boolean updateAppointment(Appointment appointment) {
+    public boolean updateAppointment(
+            Appointment appointment) {
 
         String sql = """
                 UPDATE Appointment
-                SET customer_id = ?,
-                    customer_name = ?,
+                SET customer_name = ?,
                     customer_phone = ?,
                     license_plate = ?,
-                    vehicle_brand = ?,
-                    vehicle_type = ?,
                     appointment_date = ?,
-                    notes = ?
+                    appointment_time = ?,
+                    vehicle_type = ?,
+                    vehicle_brand = ?
                 WHERE id = ?
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            if (appointment.getCustomerId() == null) {
-                ps.setNull(1, java.sql.Types.INTEGER);
+            ps.setString(1, appointment.getCustomerName());
+            ps.setString(2, appointment.getCustomerPhone());
+            ps.setString(3, appointment.getLicensePlate());
+
+            if (appointment.getAppointmentDate() != null) {
+                ps.setTimestamp(
+                        4,
+                        Timestamp.valueOf(
+                                appointment.getAppointmentDate()));
             } else {
-                ps.setInt(1, appointment.getCustomerId());
+                ps.setTimestamp(4, null);
             }
 
-            ps.setString(2, appointment.getCustomerName());
-            ps.setString(3, appointment.getCustomerPhone());
-            ps.setString(4, appointment.getLicensePlate());
-            ps.setString(5, appointment.getVehicleBrand());
-            ps.setString(6, appointment.getVehicleType());
+            if (appointment.getAppointmentTime() != null) {
+                ps.setTimestamp(
+                        5,
+                        Timestamp.valueOf(
+                                appointment.getAppointmentTime()));
+            } else {
+                ps.setTimestamp(5, null);
+            }
 
-            ps.setTimestamp(
+            ps.setString(
+                    6,
+                    appointment.getVehicleType().name());
+
+            ps.setString(
                     7,
-                    Timestamp.valueOf(appointment.getAppointmentDate()));
+                    appointment.getVehicleBrand().name());
 
-            ps.setString(8, appointment.getNotes());
-
-            ps.setInt(9, appointment.getId());
+            ps.setInt(8, appointment.getId());
 
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException(
+                    "Error updating appointment", e);
         }
     }
 
@@ -243,39 +268,62 @@ public class AppointmentDAO {
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException(
+                    "Error deleting appointment", e);
         }
     }
 
-    public boolean existsConflict(LocalDateTime appointmentDate) {
+    private Appointment mapResultSetToObject(
+            ResultSet rs) throws SQLException {
 
-        String sql = """
-                SELECT 1
-                FROM Appointment
-                WHERE appointment_date = ?
-                LIMIT 1
-                """;
+        Appointment appointment = new Appointment();
 
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        appointment.setId(
+                rs.getInt("id"));
 
-            ps.setTimestamp(
-                    1,
-                    Timestamp.valueOf(appointmentDate));
+        appointment.setCustomerName(
+                rs.getString("customer_name"));
 
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
-            }
+        appointment.setCustomerPhone(
+                rs.getString("customer_phone"));
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        appointment.setLicensePlate(
+                rs.getString("license_plate"));
+
+        Timestamp appointmentDateTs = rs.getTimestamp("appointment_date");
+
+        if (appointmentDateTs != null) {
+            appointment.setAppointmentDate(
+                    appointmentDateTs.toLocalDateTime());
         }
+
+        Timestamp appointmentTimeTs = rs.getTimestamp("appointment_time");
+
+        if (appointmentTimeTs != null) {
+            appointment.setAppointmentTime(
+                    appointmentTimeTs.toLocalDateTime());
+        }
+
+        appointment.setVehicleType(
+                enums.VehicleType.valueOf(
+                        rs.getString("vehicle_type")));
+
+        appointment.setVehicleBrand(
+                enums.VehicleBrand.valueOf(
+                        rs.getString("vehicle_brand")));
+
+        Timestamp createdAtTs = rs.getTimestamp("created_at");
+
+        if (createdAtTs != null) {
+            appointment.setCreatedAt(
+                    createdAtTs.toLocalDateTime());
+        }
+
+        return appointment;
     }
 
-    public boolean create(Appointment obj) {
-        return addAppointment(obj);
+    public boolean create(Appointment appointment) {
+        return addAppointment(appointment);
     }
 
     public Appointment read(int id) {
@@ -286,8 +334,8 @@ public class AppointmentDAO {
         return findAll();
     }
 
-    public boolean update(Appointment obj) {
-        return updateAppointment(obj);
+    public boolean update(Appointment appointment) {
+        return updateAppointment(appointment);
     }
 
     public boolean delete(int id) {

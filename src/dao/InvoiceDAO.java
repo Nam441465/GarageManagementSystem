@@ -19,10 +19,17 @@ public class InvoiceDAO {
 
     public boolean addInvoice(Invoice invoice) {
 
+        String employeeNameSql = """
+                SELECT name
+                FROM Employee
+                WHERE id = ?
+                """;
+
         String invoiceSql = """
                 INSERT INTO Invoice (
                     customer_id,
                     employee_id,
+                    employee_name,
                     license_plate,
                     vehicle_type,
                     vehicle_brand,
@@ -31,7 +38,7 @@ public class InvoiceDAO {
                     issue_date,
                     pdf_path
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         String detailSql = """
@@ -39,84 +46,100 @@ public class InvoiceDAO {
                     invoice_id,
                     service_id,
                     service_name,
-                    unit_price,
-                    subtotal
+                    unit_price
                 )
-                VALUES (?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?)
                 """;
 
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(
-                        invoiceSql,
-                        Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
 
             conn.setAutoCommit(false);
 
             try {
 
-                ps.setInt(1, invoice.getCustomerId());
-                ps.setInt(2, invoice.getEmployeeId());
-                ps.setString(3, invoice.getLicensePlate());
-                ps.setString(4, invoice.getVehicleType());
-                ps.setString(5, invoice.getVehicleBrand());
-                ps.setBigDecimal(6, invoice.getTotalAmount());
-                ps.setString(7, invoice.getPaymentStatus().name());
+                // Get employee name from employee_id
+                String employeeName;
 
-                if (invoice.getIssueDate() != null) {
-                    ps.setTimestamp(
-                            8,
-                            Timestamp.valueOf(invoice.getIssueDate()));
-                } else {
-                    ps.setTimestamp(8, null);
+                try (PreparedStatement employeePs = conn.prepareStatement(employeeNameSql)) {
+
+                    employeePs.setInt(1, invoice.getEmployeeId());
+
+                    try (ResultSet rs = employeePs.executeQuery()) {
+
+                        if (!rs.next()) {
+                            throw new SQLException(
+                                    "Employee not found with ID: "
+                                            + invoice.getEmployeeId());
+                        }
+
+                        employeeName = rs.getString("name");
+                    }
                 }
 
-                ps.setString(9, invoice.getPdfPath());
+                // Insert invoice
+                try (PreparedStatement ps = conn.prepareStatement(
+                        invoiceSql,
+                        Statement.RETURN_GENERATED_KEYS)) {
 
-                int affectedRows = ps.executeUpdate();
+                    ps.setInt(1, invoice.getCustomerId());
+                    ps.setInt(2, invoice.getEmployeeId());
+                    ps.setString(3, employeeName);
+                    ps.setString(4, invoice.getLicensePlate());
+                    ps.setString(5, invoice.getVehicleType());
+                    ps.setString(6, invoice.getVehicleBrand());
+                    ps.setBigDecimal(7, invoice.getTotalAmount());
+                    ps.setString(8, invoice.getPaymentStatus().name());
 
-                if (affectedRows == 0) {
-                    conn.rollback();
-                    return false;
-                }
-
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-
-                    if (!rs.next()) {
-                        throw new SQLException(
-                                "Database did not return the invoice ID.");
+                    if (invoice.getIssueDate() != null) {
+                        ps.setTimestamp(
+                                9,
+                                Timestamp.valueOf(invoice.getIssueDate()));
+                    } else {
+                        ps.setTimestamp(9, null);
                     }
 
-                    invoice.setId(rs.getInt(1));
+                    ps.setString(10, invoice.getPdfPath());
+
+                    int affectedRows = ps.executeUpdate();
+
+                    if (affectedRows == 0) {
+                        conn.rollback();
+                        return false;
+                    }
+
+                    try (ResultSet rs = ps.getGeneratedKeys()) {
+
+                        if (!rs.next()) {
+                            throw new SQLException(
+                                    "Database did not return the invoice ID.");
+                        }
+
+                        invoice.setId(rs.getInt(1));
+                    }
                 }
 
                 try (PreparedStatement detailPs = conn.prepareStatement(detailSql)) {
 
-                    for (InvoiceDetail detail : invoice.getInvoiceDetails()) {
+for (InvoiceDetail detail : invoice.getInvoiceDetails()) {
 
-                        detail.setInvoiceId(invoice.getId());
+    detailPs.setInt(
+            1,
+            invoice.getId());
 
-                        detailPs.setInt(
-                                1,
-                                invoice.getId());
+    detailPs.setInt(
+            2,
+            detail.getServiceId());
 
-                        detailPs.setInt(
-                                2,
-                                detail.getServiceId());
+    detailPs.setString(
+            3,
+            detail.getServiceName());
 
-                        detailPs.setString(
-                                3,
-                                detail.getServiceName());
+    detailPs.setBigDecimal(
+            4,
+            detail.getUnitPrice());
 
-                        detailPs.setBigDecimal(
-                                4,
-                                detail.getUnitPrice());
-
-                        detailPs.setBigDecimal(
-                                5,
-                                detail.getUnitPrice());
-
-                        detailPs.addBatch();
-                    }
+    detailPs.addBatch();
+}
 
                     detailPs.executeBatch();
                 }
@@ -139,12 +162,11 @@ public class InvoiceDAO {
         } catch (SQLException | RuntimeException e) {
 
             throw new RuntimeException(
-                    "or adding invoice",
+                    "Error adding invoice",
                     e);
         }
     }
 
-    // SỬA: Thêm cập nhật InvoiceDetail
     public boolean updateInvoice(Invoice invoice) {
 
         String sql = """

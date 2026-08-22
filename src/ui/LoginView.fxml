@@ -7,39 +7,33 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controller.LoginController"
-      alignment="CENTER"
-      spacing="15"
-      prefWidth="400"
-      prefHeight="300">
-
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.LoginController"
+    alignment="CENTER"
+    spacing="15"
+    prefWidth="400"
+    prefHeight="300">
 
     <Label text="Hệ thống quản lý gara"
-           style="-fx-font-size: 20px;"/>
-
+        style="-fx-font-size: 20px;" />
 
     <TextField fx:id="usernameField"
-               promptText="Tên đăng nhập"
-               prefWidth="250"/>
-
+        promptText="Tên đăng nhập"
+        prefWidth="250" />
 
     <PasswordField fx:id="passwordField"
-                   promptText="Mật khẩu"
-                   prefWidth="250"/>
-
+        promptText="Mật khẩu"
+        prefWidth="250" />
 
     <Button text="Đăng nhập"
-            prefWidth="150"
-            onAction="#handleLogin"/>
-            
-    <Button text="Tra cứu khách hàng"
-        onAction="#customerLogin"
-        prefWidth="200"/>
+        prefWidth="150"
+        onAction="#handleLogin" />
 
     <Button text="Đăng ký nhân viên"
         onAction="#showRegistration"
-        prefWidth="200"/>
-
+        prefWidth="200" />
+    <Button text="Quay lại"
+        prefWidth="200"
+        onAction="#backToHome" />
 
 </VBox>

@@ -1,24 +1,36 @@
 package model;
 
+import enums.VehicleBrand;
+import enums.VehicleStatus;
+import enums.VehicleType;
+
 public class Vehicle {
 
     private int id;
     private int customerId;
-    private String brand; // hãng xe
-    private String vehicleType;   // loại xe
-    private String status; // trạng thái xe
-    private String licensePlate; //biển số xe
-    private String model;  // tên xe cụ thể dòng xe
+
+    private VehicleBrand vehicleBrand;
+    private VehicleType vehicleType;
+    private VehicleStatus status;
+
+    private String licensePlate;
+    private String model;
 
     public Vehicle() {
     }
 
-    public Vehicle(int id, int customerId, String brand,
-                   String vehicleType, String status,
-                   String licensePlate, String model) {
+    public Vehicle(
+            int id,
+            int customerId,
+            VehicleBrand brand,
+            VehicleType vehicleType,
+            VehicleStatus status,
+            String licensePlate,
+            String model) {
+
         this.id = id;
         this.customerId = customerId;
-        this.brand = brand;
+        this.vehicleBrand = brand;
         this.vehicleType = vehicleType;
         this.status = status;
         this.licensePlate = licensePlate;
@@ -33,15 +45,15 @@ public class Vehicle {
         return customerId;
     }
 
-    public String getBrand() {
-        return brand;
+    public VehicleBrand getVehicleBrand() {
+        return vehicleBrand;
     }
 
-    public String getVehicleType() {
+    public VehicleType getVehicleType() {
         return vehicleType;
     }
 
-    public String getStatus() {
+    public VehicleStatus getStatus() {
         return status;
     }
 
@@ -61,15 +73,15 @@ public class Vehicle {
         this.customerId = customerId;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
+    public void setVehicleBrand(VehicleBrand vehicleBrand) {
+        this.vehicleBrand = vehicleBrand;
     }
 
-    public void setVehicleType(String vehicleType) {
+    public void setVehicleType(VehicleType vehicleType) {
         this.vehicleType = vehicleType;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(VehicleStatus status) {
         this.status = status;
     }
 
@@ -86,9 +98,9 @@ public class Vehicle {
         return "Vehicle{" +
                 "id=" + id +
                 ", customerId=" + customerId +
-                ", brand='" + brand + '\'' +
-                ", vehicleType='" + vehicleType + '\'' +
-                ", status='" + status + '\'' +
+                ", brand=" + vehicleBrand +
+                ", vehicleType=" + vehicleType +
+                ", status=" + status +
                 ", licensePlate='" + licensePlate + '\'' +
                 ", model='" + model + '\'' +
                 '}';

@@ -1,6 +1,10 @@
 package controller;
 
 import enums.UserRole;
+import enums.VehicleBrand;
+import enums.VehicleStatus;
+import enums.VehicleType;
+
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -9,12 +13,13 @@ import javafx.collections.ObservableList;
 
 import javafx.fxml.FXML;
 
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-import model.Vehicle;
 import model.Session;
+import model.Vehicle;
 
 import service.VehicleService;
 
@@ -48,13 +53,13 @@ public class VehicleController {
         private TextField customerIdField;
 
         @FXML
-        private TextField brandField;
+        private ComboBox<VehicleBrand> brandComboBox;
 
         @FXML
-        private TextField vehicleTypeField;
+        private ComboBox<VehicleType> vehicleTypeComboBox;
 
         @FXML
-        private TextField statusField;
+        private ComboBox<VehicleStatus> statusComboBox;
 
         @FXML
         private TextField licensePlateField;
@@ -71,6 +76,24 @@ public class VehicleController {
 
                 vehicleList = FXCollections.observableArrayList();
 
+                /*
+                 * Initialize ComboBox
+                 */
+                brandComboBox.setItems(
+                                FXCollections.observableArrayList(
+                                                VehicleBrand.values()));
+
+                vehicleTypeComboBox.setItems(
+                                FXCollections.observableArrayList(
+                                                VehicleType.values()));
+
+                statusComboBox.setItems(
+                                FXCollections.observableArrayList(
+                                                VehicleStatus.values()));
+
+                /*
+                 * Table columns
+                 */
                 idColumn.setCellValueFactory(
                                 data -> new SimpleIntegerProperty(
                                                 data.getValue().getId()).asObject());
@@ -81,15 +104,21 @@ public class VehicleController {
 
                 brandColumn.setCellValueFactory(
                                 data -> new SimpleStringProperty(
-                                                data.getValue().getBrand()));
+                                                data.getValue().getVehicleBrand() != null
+                                                                ? data.getValue().getVehicleBrand().name()
+                                                                : ""));
 
                 vehicleTypeColumn.setCellValueFactory(
                                 data -> new SimpleStringProperty(
-                                                data.getValue().getVehicleType()));
+                                                data.getValue().getVehicleType() != null
+                                                                ? data.getValue().getVehicleType().name()
+                                                                : ""));
 
                 statusColumn.setCellValueFactory(
                                 data -> new SimpleStringProperty(
-                                                data.getValue().getStatus()));
+                                                data.getValue().getStatus() != null
+                                                                ? data.getValue().getStatus().name()
+                                                                : ""));
 
                 licensePlateColumn.setCellValueFactory(
                                 data -> new SimpleStringProperty(
@@ -99,19 +128,40 @@ public class VehicleController {
                                 data -> new SimpleStringProperty(
                                                 data.getValue().getModel()));
 
+                /*
+                 * Load vehicles
+                 */
                 loadVehicles();
 
-                vehicleTable.getSelectionModel().selectedItemProperty().addListener((obs, old, vehicle) -> {
-                        if (vehicle != null) {
-                                customerIdField.setText(String.valueOf(vehicle.getCustomerId()));
-                                brandField.setText(vehicle.getBrand());
-                                vehicleTypeField.setText(vehicle.getVehicleType());
-                                statusField.setText(vehicle.getStatus());
-                                licensePlateField.setText(vehicle.getLicensePlate());
-                                modelField.setText(vehicle.getModel());
-                        }
-                });
+                /*
+                 * When selecting a vehicle
+                 */
+                vehicleTable.getSelectionModel()
+                                .selectedItemProperty()
+                                .addListener((obs, oldVehicle, vehicle) -> {
 
+                                        if (vehicle != null) {
+
+                                                customerIdField.setText(
+                                                                String.valueOf(
+                                                                                vehicle.getCustomerId()));
+
+                                                brandComboBox.setValue(
+                                                                vehicle.getVehicleBrand());
+
+                                                vehicleTypeComboBox.setValue(
+                                                                vehicle.getVehicleType());
+
+                                                statusComboBox.setValue(
+                                                                vehicle.getStatus());
+
+                                                licensePlateField.setText(
+                                                                vehicle.getLicensePlate());
+
+                                                modelField.setText(
+                                                                vehicle.getModel());
+                                        }
+                                });
         }
 
         private void loadVehicles() {
@@ -122,7 +172,6 @@ public class VehicleController {
                                 vehicleService.findAll());
 
                 vehicleTable.setItems(vehicleList);
-
         }
 
         @FXML
@@ -132,29 +181,28 @@ public class VehicleController {
 
                 vehicle.setCustomerId(
                                 Integer.parseInt(
-                                                customerIdField.getText()));
+                                                customerIdField.getText().trim()));
 
-                vehicle.setBrand(
-                                brandField.getText());
+                vehicle.setVehicleBrand(
+                                brandComboBox.getValue());
 
                 vehicle.setVehicleType(
-                                vehicleTypeField.getText());
+                                vehicleTypeComboBox.getValue());
 
                 vehicle.setStatus(
-                                statusField.getText());
+                                statusComboBox.getValue());
 
                 vehicle.setLicensePlate(
-                                licensePlateField.getText());
+                                licensePlateField.getText().trim());
 
                 vehicle.setModel(
-                                modelField.getText());
+                                modelField.getText().trim());
 
                 vehicleService.addVehicle(vehicle);
 
                 loadVehicles();
 
                 clearFields();
-
         }
 
         @FXML
@@ -170,45 +218,41 @@ public class VehicleController {
 
                 vehicle.setCustomerId(
                                 Integer.parseInt(
-                                                customerIdField.getText()));
+                                                customerIdField.getText().trim()));
 
-                vehicle.setBrand(
-                                brandField.getText());
+                vehicle.setVehicleBrand(
+                                brandComboBox.getValue());
 
                 vehicle.setVehicleType(
-                                vehicleTypeField.getText());
+                                vehicleTypeComboBox.getValue());
 
                 vehicle.setStatus(
-                                statusField.getText());
+                                statusComboBox.getValue());
 
                 vehicle.setLicensePlate(
-                                licensePlateField.getText());
+                                licensePlateField.getText().trim());
 
                 vehicle.setModel(
-                                modelField.getText());
+                                modelField.getText().trim());
 
                 vehicleService.updateVehicle(vehicle);
 
                 loadVehicles();
-
         }
 
         @FXML
         public void deleteVehicle() {
 
                 if (Session.getCurrentUser() == null) {
-
                         return;
-
                 }
 
-                if (!(Session.getCurrentUser().getRole() == UserRole.OWNER)) {
+                if (Session.getCurrentUser().getRole() != UserRole.OWNER) {
 
                         System.out.println(
                                         "Nhân viên không thể xóa xe");
 
                         return;
-
                 }
 
                 Vehicle vehicle = vehicleTable
@@ -216,9 +260,7 @@ public class VehicleController {
                                 .getSelectedItem();
 
                 if (vehicle == null) {
-
                         return;
-
                 }
 
                 vehicleService.deleteVehicle(
@@ -226,35 +268,33 @@ public class VehicleController {
 
                 loadVehicles();
 
+                clearFields();
         }
-
-        // private boolean isOwner() {
-
-        //         return Session.getCurrentUser() != null
-        //                         &&
-        //                         Session.getCurrentUser().getRole() == UserRole.OWNER;
-
-        // }
 
         private void clearFields() {
 
                 customerIdField.clear();
 
-                brandField.clear();
+                brandComboBox.getSelectionModel().clearSelection();
 
-                vehicleTypeField.clear();
+                vehicleTypeComboBox.getSelectionModel().clearSelection();
 
-                statusField.clear();
+                statusComboBox.getSelectionModel().clearSelection();
 
                 licensePlateField.clear();
 
                 modelField.clear();
 
+                vehicleTable.getSelectionModel().clearSelection();
         }
 
         @FXML
         public void backToDashboard() {
-                Navigation.changeScene(vehicleTable, "/ui/DashboardView.fxml", 650, 650);
-        }
 
+                Navigation.changeScene(
+                                vehicleTable,
+                                "/ui/DashboardView.fxml",
+                                650,
+                                650);
+        }
 }

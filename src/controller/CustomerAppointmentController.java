@@ -1,27 +1,30 @@
 package controller;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import enums.VehicleBrand;
+import enums.VehicleType;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 import model.Appointment;
-import model.AppointmentServiceItem;
-import model.PriceList;
+import model.AppointmentItem;
 import model.Service;
 
 import service.AppointmentService;
-import service.PriceListService;
 import service.ServiceService;
-
-import util.AlertUtil;
-
-import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import service.CustomerLookupService;
 
 public class CustomerAppointmentController {
 
@@ -29,236 +32,114 @@ public class CustomerAppointmentController {
         private TextField customerNameField;
 
         @FXML
-        private TextField customerPhoneField;
+        private TextField phoneField;
 
         @FXML
         private TextField licensePlateField;
 
         @FXML
-        private ComboBox<String> vehicleBrandComboBox;
+        private ComboBox<VehicleBrand> vehicleBrandComboBox;
 
         @FXML
-        private ComboBox<String> vehicleTypeComboBox;
+        private ComboBox<VehicleType> vehicleTypeComboBox;
 
         @FXML
         private DatePicker appointmentDatePicker;
 
         @FXML
-        private ComboBox<Integer> appointmentHourComboBox;
+        private ComboBox<LocalTime> appointmentTimeComboBox;
 
         @FXML
-        private ListView<Service> serviceListView;
+        private VBox serviceCheckBoxContainer;
 
-        @FXML
-        private TextArea notesArea;
+        private final AppointmentService appointmentService;
+        private final ServiceService serviceService;
+        private final CustomerLookupService customerLookupService;
 
-        @FXML
-        private Label totalLabel;
-
-        @FXML
-        private TableView<Appointment> appointmentTable;
-
-        @FXML
-        private TableColumn<Appointment, Integer> idColumn;
-
-        @FXML
-        private TableColumn<Appointment, String> customerNameColumn;
-
-        @FXML
-        private TableColumn<Appointment, String> customerPhoneColumn;
-
-        @FXML
-        private TableColumn<Appointment, String> licensePlateColumn;
-
-        @FXML
-        private TableColumn<Appointment, String> vehicleTypeColumn;
-
-        @FXML
-        private TableColumn<Appointment, LocalDateTime> dateColumn;
-
-        private final AppointmentService appointmentService = new AppointmentService();
-
-        private final ServiceService serviceService = new ServiceService();
-
-        private final PriceListService priceListService = new PriceListService();
+        public CustomerAppointmentController() {
+                appointmentService = new AppointmentService();
+                serviceService = new ServiceService();
+                this.customerLookupService = new CustomerLookupService();
+        }
 
         @FXML
         public void initialize() {
+                loadVehicleBrands();
+                loadVehicleTypes();
+                loadAppointmentTimes();
+                loadServices();
+        }
 
+        private void loadVehicleBrands() {
                 vehicleBrandComboBox.setItems(
                                 FXCollections.observableArrayList(
-                                                "Toyota",
-                                                "Honda",
-                                                "Ford",
-                                                "Hyundai",
-                                                "Kia",
-                                                "Mazda",
-                                                "Mercedes",
-                                                "BMW",
-                                                "Audi",
-                                                "VinFast",
-                                                "Mitsubishi",
-                                                "Nissan"));
+                                                VehicleBrand.values()));
+        }
 
+        private void loadVehicleTypes() {
                 vehicleTypeComboBox.setItems(
                                 FXCollections.observableArrayList(
-                                                "SEDAN",
-                                                "SUV",
-                                                "HATCHBACK",
-                                                "PICKUP",
-                                                "TRUCK",
-                                                "MOTORBIKE"));
-
-                appointmentHourComboBox.setItems(
-                                FXCollections.observableArrayList(
-                                                7,
-                                                8,
-                                                9,
-                                                10,
-                                                11,
-                                                12,
-                                                14,
-                                                15,
-                                                16,
-                                                17,
-                                                18));
-
-                appointmentDatePicker.setValue(
-                                LocalDate.now());
-
-                appointmentDatePicker.setDayCellFactory(
-                                picker -> new DateCell() {
-
-                                        @Override
-                                        public void updateItem(
-                                                        LocalDate date,
-                                                        boolean empty) {
-
-                                                super.updateItem(date, empty);
-
-                                                setDisable(empty || date.isBefore(LocalDate.now()));
-                                        }
-                                });
-
-                serviceListView.setItems(
-                                FXCollections.observableArrayList(
-                                                serviceService.findAll()));
-
-                serviceListView.getSelectionModel()
-                                .setSelectionMode(
-                                                SelectionMode.MULTIPLE);
-
-                serviceListView.setCellFactory(
-                                listView -> {
-
-                                        ListCell<Service> cell = new ListCell<>() {
-
-                                                @Override
-                                                protected void updateItem(
-                                                                Service service,
-                                                                boolean empty) {
-
-                                                        super.updateItem(
-                                                                        service,
-                                                                        empty);
-
-                                                        if (empty || service == null) {
-                                                                setText(null);
-                                                        } else {
-                                                                setText(service.getServiceName());
-                                                        }
-                                                }
-                                        };
-
-                                        cell.setOnMousePressed(event -> {
-
-                                                if (!event.isPrimaryButtonDown()) {
-                                                        return;
-                                                }
-
-                                                int index = cell.getIndex();
-
-                                                if (index < 0) {
-                                                        return;
-                                                }
-
-                                                event.consume();
-
-                                                if (serviceListView
-                                                                .getSelectionModel()
-                                                                .isSelected(index)) {
-
-                                                        serviceListView
-                                                                        .getSelectionModel()
-                                                                        .clearSelection(index);
-
-                                                } else {
-
-                                                        serviceListView
-                                                                        .getSelectionModel()
-                                                                        .select(index);
-                                                }
-
-                                                updateSummary();
-                                        });
-
-                                        return cell;
-                                });
-
-                vehicleBrandComboBox.valueProperty()
-                                .addListener(
-                                                (obs, oldValue, newValue) -> updateSummary());
-
-                vehicleTypeComboBox.valueProperty()
-                                .addListener(
-                                                (obs, oldValue, newValue) -> updateSummary());
-
-                serviceListView
-                                .getSelectionModel()
-                                .getSelectedItems()
-                                .addListener(
-                                                (javafx.collections.ListChangeListener<Service>) change -> updateSummary());
-
-                totalLabel.setText(
-                                "Chưa chọn dịch vụ.");
-
-                setupAppointmentTable();
-
-                loadAppointments();
+                                                VehicleType.values()));
         }
 
-        private void setupAppointmentTable() {
-
-                idColumn.setCellValueFactory(
-                                cellData -> new javafx.beans.property.SimpleObjectProperty<>(
-                                                cellData.getValue().getId()));
-
-                customerNameColumn.setCellValueFactory(
-                                cellData -> new javafx.beans.property.SimpleStringProperty(
-                                                cellData.getValue().getCustomerName()));
-
-                customerPhoneColumn.setCellValueFactory(
-                                cellData -> new javafx.beans.property.SimpleStringProperty(
-                                                cellData.getValue().getCustomerPhone()));
-
-                licensePlateColumn.setCellValueFactory(
-                                cellData -> new javafx.beans.property.SimpleStringProperty(
-                                                cellData.getValue().getLicensePlate()));
-
-                vehicleTypeColumn.setCellValueFactory(
-                                cellData -> new javafx.beans.property.SimpleStringProperty(
-                                                cellData.getValue().getVehicleType()));
-
-                dateColumn.setCellValueFactory(
-                                cellData -> new javafx.beans.property.SimpleObjectProperty<>(
-                                                cellData.getValue().getAppointmentDate()));
+        private void loadAppointmentTimes() {
+                appointmentTimeComboBox.setItems(
+                                FXCollections.observableArrayList(
+                                                LocalTime.of(7, 0),
+                                                LocalTime.of(8, 0),
+                                                LocalTime.of(9, 0),
+                                                LocalTime.of(10, 0),
+                                                LocalTime.of(11, 0),
+                                                LocalTime.of(12, 0),
+                                                LocalTime.of(14, 0),
+                                                LocalTime.of(15, 0),
+                                                LocalTime.of(16, 0),
+                                                LocalTime.of(17, 0),
+                                                LocalTime.of(18, 0)));
         }
 
-        private void loadAppointments() {
+        private void loadServices() {
 
-                appointmentTable.setItems(
-                                FXCollections.observableArrayList(
-                                                appointmentService.getAllAppointments()));
+                serviceCheckBoxContainer
+                                .getChildren()
+                                .clear();
+
+                List<Service> services = serviceService.findAll();
+
+                for (Service service : services) {
+
+                        if (service == null || service.getId() <= 0) {
+                                continue;
+                        }
+
+                        CheckBox checkBox = new CheckBox(service.getServiceName());
+
+                        checkBox.setUserData(service);
+
+                        serviceCheckBoxContainer
+                                        .getChildren()
+                                        .add(checkBox);
+                }
+        }
+
+        private List<Service> getSelectedServices() {
+
+                List<Service> selectedServices = new ArrayList<>();
+
+                for (Node node : serviceCheckBoxContainer.getChildren()) {
+
+                        if (node instanceof CheckBox checkBox
+                                        && checkBox.isSelected()) {
+
+                                Service service = (Service) checkBox.getUserData();
+
+                                if (service != null) {
+                                        selectedServices.add(service);
+                                }
+                        }
+                }
+
+                return selectedServices;
         }
 
         @FXML
@@ -268,220 +149,78 @@ public class CustomerAppointmentController {
 
                         String customerName = customerNameField.getText().trim();
 
-                        if (customerName.isEmpty()) {
-                                throw new IllegalArgumentException(
-                                                "Vui lòng nhập tên khách hàng.");
-                        }
-
-                        String customerPhone = customerPhoneField.getText().trim();
-
-                        if (customerPhone.isEmpty()) {
-                                throw new IllegalArgumentException(
-                                                "Vui lòng nhập số điện thoại.");
-                        }
+                        String phone = phoneField.getText().trim();
 
                         String licensePlate = licensePlateField.getText().trim();
 
-                        if (licensePlate.isEmpty()) {
-                                throw new IllegalArgumentException(
-                                                "Vui lòng nhập biển số xe.");
-                        }
+                        VehicleBrand vehicleBrand = vehicleBrandComboBox.getValue();
 
-                        String vehicleBrand = vehicleBrandComboBox.getValue();
+                        VehicleType vehicleType = vehicleTypeComboBox.getValue();
 
-                        if (vehicleBrand == null) {
-                                throw new IllegalArgumentException(
-                                                "Vui lòng chọn hãng xe.");
-                        }
+                        LocalDate appointmentDate = appointmentDatePicker.getValue();
 
-                        String vehicleType = vehicleTypeComboBox.getValue();
+                        LocalTime appointmentTime = appointmentTimeComboBox.getValue();
 
-                        if (vehicleType == null) {
-                                throw new IllegalArgumentException(
-                                                "Vui lòng chọn loại xe.");
-                        }
-
-                        LocalDate date = appointmentDatePicker.getValue();
-
-                        if (date == null) {
-                                throw new IllegalArgumentException(
-                                                "Vui lòng chọn ngày.");
-                        }
-
-                        Integer hour = appointmentHourComboBox.getValue();
-
-                        if (hour == null) {
-                                throw new IllegalArgumentException(
-                                                "Vui lòng chọn giờ.");
-                        }
-
-                        LocalDateTime appointmentDate = date.atTime(hour, 0);
-
-                        if (appointmentDate.isBefore(
-                                        LocalDateTime.now())) {
-
-                                throw new IllegalArgumentException(
-                                                "Không thể đặt lịch trong quá khứ.");
-                        }
-
-                        List<Service> selectedServices = new ArrayList<>(
-                                        serviceListView
-                                                        .getSelectionModel()
-                                                        .getSelectedItems());
-
-                        if (selectedServices.isEmpty()) {
-
-                                throw new IllegalArgumentException(
-                                                "Vui lòng chọn ít nhất một dịch vụ.");
-                        }
+                        List<Service> selectedServices = getSelectedServices();
 
                         Appointment appointment = new Appointment();
 
                         appointment.setCustomerName(customerName);
-
-                        appointment.setCustomerPhone(customerPhone);
-
+                        appointment.setCustomerPhone(phone);
                         appointment.setLicensePlate(licensePlate);
-
                         appointment.setVehicleBrand(vehicleBrand);
-
                         appointment.setVehicleType(vehicleType);
 
-                        appointment.setAppointmentDate(appointmentDate);
+                        List<AppointmentItem> items = new ArrayList<>();
 
-                        appointment.setNotes(notesArea.getText().trim());
-
-                        List<AppointmentServiceItem> items = new ArrayList<>();
+                        List<CustomerLookupService.ServicePriceResult> priceResults = customerLookupService
+                                        .findServicesByVehicle(
+                                                        vehicleType.name(),
+                                                        vehicleBrand.name());
 
                         for (Service service : selectedServices) {
 
-                                PriceList price = priceListService
-                                                .getPriceByServiceVehicleAndBrand(
-                                                                service.getId(),
-                                                                vehicleType,
-                                                                vehicleBrand);
+                                CustomerLookupService.ServicePriceResult priceResult = priceResults.stream()
+                                                .filter(result -> result.getServiceId() == service.getId())
+                                                .findFirst()
+                                                .orElseThrow(() -> new IllegalArgumentException(
+                                                                "Không tìm thấy bảng giá cho dịch vụ: "
+                                                                                + service.getServiceName()));
 
-                                if (price == null
-                                                || price.getPrice() == null) {
+                                AppointmentItem item = new AppointmentItem();
 
-                                        throw new IllegalArgumentException(
-                                                        "Chưa có bảng giá cho dịch vụ "
-                                                                        + service.getServiceName()
-                                                                        + " của "
-                                                                        + vehicleBrand
-                                                                        + " "
-                                                                        + vehicleType
-                                                                        + ".");
-                                }
-
-                                AppointmentServiceItem item = new AppointmentServiceItem();
-
-                                item.setServiceId(
-                                                service.getId());
-
-                                item.setQuantity(1);
-
-                                item.setUnitPrice(
-                                                price.getPrice());
+                                item.setServiceId(service.getId());
+                                item.setUnitPrice(priceResult.getPrice());
 
                                 items.add(item);
                         }
 
-                        boolean created = appointmentService.createAppointment(
+                        appointmentService.createAppointment(
                                         appointment,
-                                        items, date, null);
+                                        items,
+                                        appointmentDate,
+                                        appointmentTime);
 
-                        if (!created) {
+                        showInfo(
+                                        "Đặt lịch thành công",
+                                        "Lịch hẹn của bạn đã được tạo.");
 
-                                throw new IllegalStateException(
-                                                "Không thể tạo lịch hẹn.");
-                        }
+                        clearFields();
 
-                        loadAppointments();
+                } catch (Exception e) {
 
-                        AlertUtil.showInfo(
-                                        "Đặt lịch",
-                                        "Đặt lịch thành công.");
-
-                        clearForm();
-
-                } catch (Exception exception) {
-
-                        AlertUtil.showError(
-                                        "Đặt lịch thất bại",
-                                        exception.getMessage() == null
-                                                        ? "Không thể đặt lịch."
-                                                        : exception.getMessage());
+                        showError(
+                                        "Không thể đặt lịch",
+                                        e.getMessage());
                 }
-        }
-
-        private void updateSummary() {
-
-                String vehicleBrand = vehicleBrandComboBox.getValue();
-
-                String vehicleType = vehicleTypeComboBox.getValue();
-
-                List<Service> selected = new ArrayList<>(
-                                serviceListView
-                                                .getSelectionModel()
-                                                .getSelectedItems());
-
-                if (selected.isEmpty()) {
-
-                        totalLabel.setText(
-                                        "Chưa chọn dịch vụ.");
-
-                        return;
-                }
-
-                if (vehicleBrand == null
-                                || vehicleType == null) {
-
-                        totalLabel.setText(
-                                        "Chọn hãng xe và loại xe để xem giá.");
-
-                        return;
-                }
-
-                BigDecimal total = BigDecimal.ZERO;
-
-                for (Service service : selected) {
-
-                        PriceList price = priceListService
-                                        .getPriceByServiceVehicleAndBrand(
-                                                        service.getId(),
-                                                        vehicleType,
-                                                        vehicleBrand);
-
-                        if (price == null
-                                        || price.getPrice() == null) {
-
-                                totalLabel.setText(
-                                                "Chưa có giá cho "
-                                                                + service.getServiceName()
-                                                                + " - "
-                                                                + vehicleBrand
-                                                                + " - "
-                                                                + vehicleType);
-
-                                return;
-                        }
-
-                        total = total.add(
-                                        price.getPrice());
-                }
-
-                totalLabel.setText(
-                                "Tổng dự kiến: "
-                                                + money(total));
         }
 
         @FXML
-        public void clearForm() {
+        public void clearFields() {
 
                 customerNameField.clear();
 
-                customerPhoneField.clear();
+                phoneField.clear();
 
                 licensePlateField.clear();
 
@@ -493,38 +232,56 @@ public class CustomerAppointmentController {
                                 .getSelectionModel()
                                 .clearSelection();
 
-                appointmentDatePicker.setValue(
-                                LocalDate.now());
+                appointmentDatePicker.setValue(null);
 
-                appointmentHourComboBox
+                appointmentTimeComboBox
                                 .getSelectionModel()
                                 .clearSelection();
 
-                serviceListView
-                                .getSelectionModel()
-                                .clearSelection();
+                for (Node node : serviceCheckBoxContainer.getChildren()) {
 
-                notesArea.clear();
-
-                totalLabel.setText(
-                                "Chưa chọn dịch vụ.");
-        }
-
-        private String money(BigDecimal amount) {
-
-                return NumberFormat
-                                .getCurrencyInstance(
-                                                Locale.forLanguageTag("vi-VN"))
-                                .format(amount);
+                        if (node instanceof CheckBox checkBox) {
+                                checkBox.setSelected(false);
+                        }
+                }
         }
 
         @FXML
-        public void backToDashboard() {
-
+        public void backToLogin() {
                 Navigation.changeScene(
                                 customerNameField,
-                                "/ui/LoginView.fxml",
-                                420,
-                                500);
+                                "/ui/HomeView.fxml",
+                                600,
+                                400);
+        }
+
+        private void showInfo(
+                        String title,
+                        String message) {
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+                alert.setTitle(title);
+                alert.setHeaderText(null);
+                alert.setContentText(message);
+
+                alert.showAndWait();
+        }
+
+        private void showError(
+                        String title,
+                        String message) {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+
+                alert.setTitle(title);
+                alert.setHeaderText(null);
+
+                alert.setContentText(
+                                message == null
+                                                ? "Đã xảy ra lỗi."
+                                                : message);
+
+                alert.showAndWait();
         }
 }

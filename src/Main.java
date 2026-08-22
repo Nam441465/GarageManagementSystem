@@ -2,40 +2,27 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
 import database.DatabaseInitializer;
 
-
 public class Main extends Application {
-
 
     @Override
     public void start(Stage stage) throws Exception {
 
         DatabaseInitializer.initialize();
 
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("ui/HomeView.fxml"));
 
-        FXMLLoader loader =
-                new FXMLLoader(
-                        getClass().getResource("ui/LoginView.fxml")
-                );
+        Scene scene = new Scene(loader.load(), 500, 500);
 
-
-        Scene scene = new Scene(loader.load(),400,300);
-
-
-        stage.setTitle("Đăng nhập");
-
+        stage.setTitle("Hệ thống quản lý gara");
         stage.setScene(scene);
-
         stage.show();
-
     }
 
-
-    public static void main(String[] args){
-
+    public static void main(String[] args) {
         launch(args);
-
     }
-
 }

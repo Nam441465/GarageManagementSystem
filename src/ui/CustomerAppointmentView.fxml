@@ -1,172 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
-  xmlns:fx="http://javafx.com/fxml"
-  fx:controller="controller.CustomerAppointmentController">
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.CustomerAppointmentController">
 
-  <top>
-    <VBox spacing="5"
-      style="-fx-padding: 15;">
+    <top>
+        <VBox spacing="8"
+              alignment="CENTER"
+              style="-fx-padding:20;">
 
-      <Label text="ĐẶT LỊCH BẢO DƯỠNG"
-        style="-fx-font-size: 22px; -fx-font-weight: bold;" />
+            <Label text="ĐẶT LỊCH HẸN"
+                   style="
+                   -fx-font-size:24px;
+                   -fx-font-weight:bold;" />
 
-      <Label text="Thông tin khách hàng"
-        style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Label text="Vui lòng nhập thông tin để đặt lịch"
+                   style="-fx-font-size:14px;" />
 
-      <HBox spacing="10">
+        </VBox>
+    </top>
 
-        <Label text="Họ tên:"
-          prefWidth="70" />
 
-        <TextField fx:id="customerNameField"
-          promptText="Nhập họ tên"
-          prefWidth="220" />
+    <center>
 
-        <Label text="Số điện thoại:"
-          prefWidth="100" />
+        <VBox spacing="12"
+              style="-fx-padding:20;">
 
-        <TextField fx:id="customerPhoneField"
-          promptText="Nhập số điện thoại"
-          prefWidth="180" />
+            <!-- THÔNG TIN KHÁCH -->
 
-      </HBox>
+            <Label text="Thông tin khách hàng"
+                   style="-fx-font-size:17px; -fx-font-weight:bold;" />
 
-    </VBox>
-  </top>
+            <TextField fx:id="customerNameField"
+                       promptText="Họ và tên" />
 
-  <center>
+            <TextField fx:id="phoneField"
+                       promptText="Số điện thoại" />
 
-    <SplitPane dividerPositions="0.5">
+            <!-- THÔNG TIN XE -->
 
-      <!-- ========================= -->
-      <!-- THÔNG TIN ĐẶT LỊCH -->
-      <!-- ========================= -->
+            <Label text="Thông tin xe"
+                   style="-fx-font-size:17px; -fx-font-weight:bold;" />
 
-      <VBox spacing="10"
-        style="-fx-padding: 15;">
+            <TextField fx:id="licensePlateField"
+                       promptText="Biển số xe" />
 
-        <Label text="Thông tin xe"
-          style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <ComboBox fx:id="vehicleBrandComboBox"
+                      promptText="Hãng xe"
+                      maxWidth="Infinity" />
 
-        <Label text="Biển số xe:" />
+            <ComboBox fx:id="vehicleTypeComboBox"
+                      promptText="Loại xe"
+                      maxWidth="Infinity" />
 
-        <TextField fx:id="licensePlateField"
-          promptText="Ví dụ: 30A-12345" />
+            <!-- THỜI GIAN -->
 
-        <Label text="Hãng xe:" />
+            <Label text="Thời gian đặt lịch"
+                   style="-fx-font-size:17px; -fx-font-weight:bold;" />
 
-        <ComboBox fx:id="vehicleBrandComboBox"
-          promptText="Chọn hãng xe"
-          maxWidth="Infinity" />
+            <DatePicker fx:id="appointmentDatePicker"
+                        promptText="Ngày đặt lịch"
+                        maxWidth="Infinity" />
 
-        <Label text="Loại xe:" />
+            <ComboBox fx:id="appointmentTimeComboBox"
+                      promptText="Giờ đặt lịch"
+                      maxWidth="Infinity" />
 
-        <ComboBox fx:id="vehicleTypeComboBox"
-          promptText="Chọn loại xe"
-          maxWidth="Infinity" />
+            <!-- DỊCH VỤ -->
 
-        <Separator />
+            <Label text="Chọn dịch vụ"
+                   style="-fx-font-size:17px; -fx-font-weight:bold;" />
 
-        <Label text="Chọn dịch vụ"
-          style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <ScrollPane fitToWidth="true"
+                        prefHeight="180">
 
-        <Label text="Click từng dịch vụ để chọn/bỏ chọn nhiều dịch vụ." />
+                <content>
 
-        <ListView fx:id="serviceListView"
-          prefHeight="180"
-          VBox.vgrow="ALWAYS" />
+                    <VBox fx:id="serviceCheckBoxContainer"
+                          spacing="7"
+                          style="-fx-padding:8;" />
 
-        <Label fx:id="totalLabel"
-          wrapText="true" />
+                </content>
 
-        <Separator />
+            </ScrollPane>
 
-        <Label text="Ngày hẹn:" />
+        </VBox>
 
-        <DatePicker fx:id="appointmentDatePicker"
-          promptText="Chọn ngày"
-          maxWidth="Infinity" />
+    </center>
 
-        <Label text="Giờ hẹn:" />
 
-        <ComboBox fx:id="appointmentHourComboBox"
-          promptText="Chọn giờ"
-          maxWidth="Infinity" />
+    <bottom>
 
-        <Label text="Ghi chú:" />
+        <HBox spacing="15"
+              alignment="CENTER"
+              style="-fx-padding:20;">
 
-        <TextArea fx:id="notesArea"
-          promptText="Nhập yêu cầu nếu có..."
-          prefRowCount="3"
-          wrapText="true" />
+            <Button text="Đặt lịch"
+                    prefWidth="140"
+                    prefHeight="35"
+                    onAction="#createAppointment" />
 
-        <HBox spacing="10">
+            <Button text="Làm mới"
+                    prefWidth="120"
+                    prefHeight="35"
+                    onAction="#clearFields" />
 
-          <Button text="Đặt lịch"
-            onAction="#createAppointment" />
-
-          <Button text="Xóa trắng"
-            onAction="#clearForm" />
-
-          <Button text="Quay lại"
-            onAction="#backToDashboard" />
+            <Button text="Quay lại"
+                    prefWidth="120"
+                    prefHeight="35"
+                    onAction="#backToLogin" />
 
         </HBox>
 
-      </VBox>
-
-
-      <!-- ========================= -->
-      <!-- DANH SÁCH LỊCH ĐÃ ĐẶT -->
-      <!-- ========================= -->
-
-      <VBox spacing="10"
-        style="-fx-padding: 15;">
-
-        <Label text="Lịch hẹn đã đặt"
-          style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-
-        <TableView fx:id="appointmentTable"
-          VBox.vgrow="ALWAYS">
-
-          <columns>
-
-            <TableColumn fx:id="idColumn"
-              text="Mã lịch"
-              prefWidth="70" />
-
-            <TableColumn fx:id="customerNameColumn"
-              text="Khách hàng"
-              prefWidth="130" />
-
-            <TableColumn fx:id="customerPhoneColumn"
-              text="Số điện thoại"
-              prefWidth="120" />
-
-            <TableColumn fx:id="licensePlateColumn"
-              text="Biển số"
-              prefWidth="100" />
-
-            <TableColumn fx:id="vehicleTypeColumn"
-              text="Loại xe"
-              prefWidth="100" />
-
-            <TableColumn fx:id="dateColumn"
-              text="Ngày giờ"
-              prefWidth="150" />
-
-          </columns>
-
-        </TableView>
-
-      </VBox>
-
-    </SplitPane>
-
-  </center>
+    </bottom>
 
 </BorderPane>

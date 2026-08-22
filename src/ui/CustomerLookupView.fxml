@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="controller.CustomerLookupController"
+    spacing="15"
+    alignment="TOP_CENTER"
+    prefWidth="800"
+    prefHeight="600">
+
+    <padding>
+        <Insets top="20"
+            right="30"
+            bottom="20"
+            left="30" />
+    </padding>
+
+    <Label text="TRA CỨU KHÁCH HÀNG"
+        style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+    <Label text="1. Tra cứu dịch vụ và giá"
+        style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <HBox spacing="10"
+        alignment="CENTER">
+
+        <ComboBox fx:id="vehicleTypeComboBox"
+            promptText="Loại xe"
+            prefWidth="180" />
+
+        <ComboBox fx:id="vehicleBrandComboBox"
+            promptText="Hãng xe"
+            prefWidth="180" />
+
+        <Button text="Tra cứu dịch vụ"
+            onAction="#searchServices"
+            prefWidth="160" />
+    </HBox>
+
+    <TextArea fx:id="serviceResultArea"
+        editable="false"
+        wrapText="true"
+        prefHeight="220"
+        prefWidth="700" />
+
+
+    <!-- =============================== -->
+    <!-- TRA CỨU XE -->
+    <!-- =============================== -->
+
+    <Label text="2. Tra cứu tình trạng xe"
+        style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <HBox spacing="10"
+        alignment="CENTER">
+
+        <TextField fx:id="licensePlateField"
+            promptText="Nhập biển số xe"
+            prefWidth="250" />
+
+        <Button text="Tra cứu xe"
+            onAction="#searchVehicle"
+            prefWidth="140" />
+    </HBox>
+
+    <Label fx:id="vehicleResultLabel"
+        text="Nhập biển số xe để tra cứu."
+        wrapText="true"
+        prefWidth="700" />
+
+
+    <!-- =============================== -->
+    <!-- QUAY LẠI -->
+    <!-- =============================== -->
+
+    <Button text="Quay lại Home"
+        onAction="#backToHome"
+        prefWidth="150" />
+
+</VBox>

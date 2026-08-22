@@ -1,150 +1,152 @@
 package model;
 
+import enums.VehicleBrand;
+import enums.VehicleType;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Appointment {
 
     private int id;
 
-    private Integer customerId;
-
     private String customerName;
     private String customerPhone;
-
     private String licensePlate;
-    private String vehicleBrand;
-    private String vehicleType;
+
+    private VehicleType vehicleType;
+    private VehicleBrand vehicleBrand;
 
     private LocalDateTime appointmentDate;
-    private String notes;
+    private LocalDateTime appointmentTime;
+    private LocalDateTime createdAt;
 
-    public Appointment() {
-    }
-
-    public Appointment(
-            String customerName,
-            String customerPhone,
-            String licensePlate,
-            String vehicleBrand,
-            String vehicleType,
-            LocalDateTime appointmentDate,
-            String notes) {
-
-        this.customerName = customerName;
-        this.customerPhone = customerPhone;
-        this.licensePlate = licensePlate;
-        this.vehicleBrand = vehicleBrand;
-        this.vehicleType = vehicleType;
-        this.appointmentDate = appointmentDate;
-        this.notes = notes;
-    }
-
-    public Appointment(
-            int id,
-            Integer customerId,
-            String customerName,
-            String customerPhone,
-            String licensePlate,
-            String vehicleBrand,
-            String vehicleType,
-            LocalDateTime appointmentDate,
-            String notes) {
-
-        this.id = id;
-        this.customerId = customerId;
-        this.customerName = customerName;
-        this.customerPhone = customerPhone;
-        this.licensePlate = licensePlate;
-        this.vehicleBrand = vehicleBrand;
-        this.vehicleType = vehicleType;
-        this.appointmentDate = appointmentDate;
-        this.notes = notes;
-    }
+    private List<AppointmentItem> serviceItems;
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Integer getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
     }
 
     public String getCustomerName() {
         return customerName;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
     public String getCustomerPhone() {
         return customerPhone;
-    }
-
-    public void setCustomerPhone(String customerPhone) {
-        this.customerPhone = customerPhone;
     }
 
     public String getLicensePlate() {
         return licensePlate;
     }
 
-    public void setLicensePlate(String licensePlate) {
-        this.licensePlate = licensePlate;
-    }
-
-    public String getVehicleBrand() {
-        return vehicleBrand;
-    }
-
-    public void setVehicleBrand(String vehicleBrand) {
-        this.vehicleBrand = vehicleBrand;
-    }
-
-    public String getVehicleType() {
+    public VehicleType getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
+    public VehicleBrand getVehicleBrand() {
+        return vehicleBrand;
     }
 
     public LocalDateTime getAppointmentDate() {
         return appointmentDate;
     }
 
-    public void setAppointmentDate(LocalDateTime appointmentDate) {
+    public LocalDateTime getAppointmentTime() {
+        return appointmentTime;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public List<AppointmentItem> getServiceItems() {
+        return serviceItems;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
+    }
+
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
+    }
+
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public void setVehicleBrand(VehicleBrand vehicleBrand) {
+        this.vehicleBrand = vehicleBrand;
+    }
+
+    public void setAppointmentDate(
+            LocalDateTime appointmentDate) {
+
         this.appointmentDate = appointmentDate;
     }
 
-    public String getNotes() {
-        return notes;
+    public void setAppointmentTime(
+            LocalDateTime appointmentTime) {
+
+        this.appointmentTime = appointmentTime;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setCreatedAt(
+            LocalDateTime createdAt) {
+
+        this.createdAt = createdAt;
+    }
+
+    public void setServiceItems(
+            List<AppointmentItem> serviceItems) {
+
+        this.serviceItems = serviceItems;
+    }
+
+    public BigDecimal calculateTotal() {
+
+        if (serviceItems == null
+                || serviceItems.isEmpty()) {
+
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (AppointmentItem item : serviceItems) {
+
+            if (item != null) {
+                total = total.add(
+                        item.calculateTotal());
+            }
+        }
+
+        return total;
     }
 
     @Override
     public String toString() {
+
         return "Appointment{" +
                 "id=" + id +
-                ", customerId=" + customerId +
                 ", customerName='" + customerName + '\'' +
                 ", customerPhone='" + customerPhone + '\'' +
                 ", licensePlate='" + licensePlate + '\'' +
-                ", vehicleBrand='" + vehicleBrand + '\'' +
-                ", vehicleType='" + vehicleType + '\'' +
+                ", vehicleType=" + vehicleType +
+                ", vehicleBrand=" + vehicleBrand +
                 ", appointmentDate=" + appointmentDate +
-                ", notes='" + notes + '\'' +
+                ", appointmentTime=" + appointmentTime +
+                ", createdAt=" + createdAt +
+                ", serviceItems=" + serviceItems +
                 '}';
     }
 }

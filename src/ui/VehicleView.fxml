@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -56,14 +57,14 @@
             <TextField fx:id="customerIdField"
                        promptText="Mã khách hàng"/>
 
-            <TextField fx:id="brandField"
-                       promptText="Hãng xe"/>
+            <ComboBox fx:id="brandComboBox"
+                      promptText="Chọn hãng xe"/>
 
-            <TextField fx:id="vehicleTypeField"
-                       promptText="Loại xe"/>
+            <ComboBox fx:id="vehicleTypeComboBox"
+                      promptText="Chọn loại xe"/>
 
-            <TextField fx:id="statusField"
-                       promptText="Trạng thái"/>
+            <ComboBox fx:id="statusComboBox"
+                      promptText="Chọn trạng thái"/>
 
             <TextField fx:id="licensePlateField"
                        promptText="Biển số xe"/>
@@ -79,7 +80,9 @@
 
             <Button text="Xóa"
                     onAction="#deleteVehicle"/>
-            <Button text="Quay lại" onAction="#backToDashboard"/>
+
+            <Button text="Quay lại"
+                    onAction="#backToDashboard"/>
 
         </VBox>
 

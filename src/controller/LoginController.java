@@ -88,12 +88,10 @@ public class LoginController {
 
         @FXML
         public void customerLogin() {
-
                 try {
-
                         FXMLLoader loader = new FXMLLoader(
-                                        getClass()
-                                                        .getResource("/ui/CustomerSearchView.fxml"));
+                                        getClass().getResource(
+                                                        "/ui/CustomerAppointmentView.fxml"));
 
                         Parent root = loader.load();
 
@@ -102,16 +100,49 @@ public class LoginController {
                                         .getWindow();
 
                         stage.setScene(
-                                        new Scene(root, 900, 500));
+                                        new Scene(root, 900, 650));
 
                         stage.show();
 
                 } catch (Exception e) {
-
                         e.printStackTrace();
 
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Lỗi");
+                        alert.setHeaderText("Không thể mở màn hình đặt lịch");
+                        alert.setContentText(
+                                        e.getMessage() == null
+                                                        ? "Không thể mở màn hình đặt lịch."
+                                                        : e.getMessage());
+                        alert.showAndWait();
                 }
+        }
 
+        @FXML
+        public void backToHome() {
+                try {
+                        FXMLLoader loader = new FXMLLoader(
+                                        getClass().getResource("/ui/HomeView.fxml"));
+
+                        Parent root = loader.load();
+
+                        Stage stage = (Stage) usernameField
+                                        .getScene()
+                                        .getWindow();
+
+                        stage.setScene(new Scene(root, 500, 500));
+                        stage.setTitle("Hệ thống quản lý gara");
+                        stage.show();
+
+                } catch (Exception e) {
+                        e.printStackTrace();
+
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Lỗi");
+                        alert.setHeaderText("Không thể quay lại trang chủ");
+                        alert.setContentText(e.getMessage());
+                        alert.showAndWait();
+                }
         }
 
         @FXML
