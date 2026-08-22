@@ -62,38 +62,38 @@
                                style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
 
                         <VBox spacing="4">
-                            <Label text="Họ và tên:" style="-fx-font-weight: bold; -fx-text-fill: #455a64;" />
+                            <Label text="Họ và tên:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                             <TextField fx:id="customerNameField"
                                        promptText="Nhập họ và tên khách hàng"
                                        maxWidth="Infinity"
                                        prefHeight="36"
-                                       style="-fx-font-size: 13px;" />
+                                       style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
                         </VBox>
 
                         <VBox spacing="4">
-                            <Label text="Số điện thoại liên hệ:" style="-fx-font-weight: bold; -fx-text-fill: #455a64;" />
+                            <Label text="Số điện thoại liên hệ:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                             <TextField fx:id="phoneField"
                                        promptText="Nhập số điện thoại"
                                        maxWidth="Infinity"
                                        prefHeight="36"
-                                       style="-fx-font-size: 13px;" />
+                                       style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
                         </VBox>
 
                         <Label text="2. THÔNG TIN PHƯƠNG TIỆN"
                                style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a237e; -fx-padding: 6 0 0 0;" />
 
                         <VBox spacing="4">
-                            <Label text="Biển số xe:" style="-fx-font-weight: bold; -fx-text-fill: #455a64;" />
+                            <Label text="Biển số xe:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                             <TextField fx:id="licensePlateField"
                                        promptText="VD: 29A-123.45"
                                        maxWidth="Infinity"
                                        prefHeight="36"
-                                       style="-fx-font-size: 13px;" />
+                                       style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
                         </VBox>
 
                         <HBox spacing="12" maxWidth="Infinity">
                             <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                <Label text="Hãng xe:" style="-fx-font-weight: bold; -fx-text-fill: #455a64;" />
+                                <Label text="Hãng xe:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                                 <ComboBox fx:id="vehicleBrandComboBox"
                                           promptText="Chọn hãng xe"
                                           maxWidth="Infinity"
@@ -102,7 +102,7 @@
                             </VBox>
 
                             <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                <Label text="Loại xe:" style="-fx-font-weight: bold; -fx-text-fill: #455a64;" />
+                                <Label text="Loại xe:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                                 <ComboBox fx:id="vehicleTypeComboBox"
                                           promptText="Chọn loại xe"
                                           maxWidth="Infinity"
@@ -124,7 +124,7 @@
 
                         <HBox spacing="12" maxWidth="Infinity">
                             <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                <Label text="Ngày hẹn:" style="-fx-font-weight: bold; -fx-text-fill: #455a64;" />
+                                <Label text="Ngày hẹn:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                                 <DatePicker fx:id="appointmentDatePicker"
                                             promptText="Chọn ngày"
                                             maxWidth="Infinity"
@@ -133,7 +133,7 @@
                             </VBox>
 
                             <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                <Label text="Giờ hẹn:" style="-fx-font-weight: bold; -fx-text-fill: #455a64;" />
+                                <Label text="Giờ hẹn:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                                 <ComboBox fx:id="appointmentTimeComboBox"
                                           promptText="Chọn giờ"
                                           maxWidth="Infinity"
@@ -146,13 +146,13 @@
                                style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a237e; -fx-padding: 6 0 0 0;" />
 
                         <ScrollPane fitToWidth="true"
-                                    prefHeight="120"
+                                    prefHeight="130"
                                     VBox.vgrow="ALWAYS"
-                                    style="-fx-border-color: #cfd8dc; -fx-border-radius: 6;">
+                                    style="-fx-background: #ffffff; -fx-background-color: #ffffff; -fx-border-color: #90caf9; -fx-border-radius: 6; -fx-border-width: 1.5;">
                             <content>
                                 <VBox fx:id="serviceCheckBoxContainer"
-                                      spacing="8"
-                                      style="-fx-padding: 10;" />
+                                      spacing="10"
+                                      style="-fx-background-color: #ffffff; -fx-padding: 12;" />
                             </content>
                         </ScrollPane>
 
@@ -172,19 +172,19 @@
             <Button text="XÁC NHẬN ĐẶT LỊCH"
                     prefWidth="200"
                     prefHeight="40"
-                    style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: white; -fx-background-radius: 6;"
+                    style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: #ffffff; -fx-background-radius: 6;"
                     onAction="#createAppointment" />
 
             <Button text="Làm mới thông tin"
-                    prefWidth="150"
+                    prefWidth="160"
                     prefHeight="40"
-                    style="-fx-font-size: 13px; -fx-cursor: hand;"
+                    style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #e8eaf6; -fx-text-fill: #1a237e; -fx-border-color: #9fa8da; -fx-border-radius: 4;"
                     onAction="#clearFields" />
 
             <Button text="Quay lại Trang trước"
                     prefWidth="170"
                     prefHeight="40"
-                    style="-fx-font-size: 13px; -fx-cursor: hand;"
+                    style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #eceff1; -fx-text-fill: #263238; -fx-border-color: #cfd8dc; -fx-border-radius: 4;"
                     onAction="#backToLogin" />
 
         </HBox>

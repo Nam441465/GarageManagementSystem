@@ -20,10 +20,10 @@
 
     <top>
         <VBox style="-fx-background-color: #ffffff; -fx-padding: 14 20 14 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
-            <Label text="QUẢN LÝ HÓA ĐƠN"
+            <Label text="QUẢN LÝ HÓA ĐƠN DỊCH VỤ"
                    style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
-            <Label text="Lập và quản lý hóa đơn thanh toán dịch vụ sửa chữa"
-                   style="-fx-font-size: 13px; -fx-text-fill: #666666;" />
+            <Label text="Lập và quản lý hóa đơn thanh toán, tính chiết khấu và xuất báo cáo PDF"
+                   style="-fx-font-size: 13px; -fx-text-fill: #546e7a; -fx-font-weight: bold;" />
         </VBox>
     </top>
 
@@ -76,58 +76,64 @@
                   style="-fx-padding: 14 16 18 16;">
 
                 <Label text="Thông tin hóa đơn"
-                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
 
-                <VBox spacing="6">
+                <VBox spacing="5">
+                    <Label text="Mã khách hàng:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <TextField fx:id="customerIdField"
-                               promptText="Mã khách hàng"
+                               promptText="Mã khách hàng (ID)"
                                maxWidth="Infinity"
                                prefHeight="30"
-                               style="-fx-font-size: 13px;" />
+                               style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
 
+                    <Label text="Biển số xe:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <TextField fx:id="licensePlateField"
                                promptText="Biển số xe"
                                maxWidth="Infinity"
                                prefHeight="30"
-                               style="-fx-font-size: 13px;" />
+                               style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
 
+                    <Label text="Loại xe:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <ComboBox fx:id="vehicleTypeComboBox"
-                              promptText="Loại xe"
+                              promptText="Chọn loại xe"
                               maxWidth="Infinity"
                               prefHeight="30"
                               style="-fx-font-size: 13px;" />
 
+                    <Label text="Hãng xe:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <ComboBox fx:id="vehicleBrandComboBox"
-                              promptText="Hãng xe"
+                              promptText="Chọn hãng xe"
                               maxWidth="Infinity"
                               prefHeight="30"
                               style="-fx-font-size: 13px;" />
 
-                    <Label text="Chọn dịch vụ sử dụng:"
-                           style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555555;" />
+                    <Label text="Hạng mục dịch vụ sử dụng:"
+                           style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
 
                     <ScrollPane fitToWidth="true"
                                 prefHeight="95"
-                                style="-fx-border-color: #e0e0e0; -fx-border-radius: 4;">
+                                style="-fx-background: #ffffff; -fx-background-color: #ffffff; -fx-border-color: #90caf9; -fx-border-radius: 4;">
                         <content>
                             <VBox fx:id="serviceCheckBoxContainer"
                                   spacing="5"
-                                  style="-fx-padding: 5;" />
+                                  style="-fx-background-color: #ffffff; -fx-padding: 6;" />
                         </content>
                     </ScrollPane>
 
+                    <Label text="Trạng thái thanh toán:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <ComboBox fx:id="paymentStatusComboBox"
                               promptText="Trạng thái thanh toán"
                               maxWidth="Infinity"
                               prefHeight="30"
                               style="-fx-font-size: 13px;" />
 
+                    <Label text="Thư mục xuất file PDF:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <TextField fx:id="outputDirectoryField"
                                text="exports"
                                promptText="Thư mục xuất PDF"
                                maxWidth="Infinity"
                                prefHeight="30"
-                               style="-fx-font-size: 13px;" />
+                               style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
                 </VBox>
 
                 <Separator />
@@ -138,15 +144,15 @@
                                 onAction="#addInvoice"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
-                                prefHeight="32"
-                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                                prefHeight="34"
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
 
-                        <Button text="Xóa"
+                        <Button text="Xóa HĐ"
                                 onAction="#deleteInvoice"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
-                                prefHeight="32"
-                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                                prefHeight="34"
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #ffebee; -fx-text-fill: #c62828; -fx-border-color: #ef9a9a; -fx-border-radius: 4;" />
                     </HBox>
 
                     <HBox spacing="6">
@@ -154,22 +160,22 @@
                                 onAction="#exportInvoicePdf"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
-                                prefHeight="32"
-                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand;" />
+                                prefHeight="34"
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #00695c; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
 
                         <Button text="Làm mới"
                                 onAction="#clearFields"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
-                                prefHeight="32"
-                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                                prefHeight="34"
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #e8eaf6; -fx-text-fill: #1a237e; -fx-border-color: #9fa8da; -fx-border-radius: 4;" />
                     </HBox>
 
                     <Button text="Quay lại"
                             onAction="#backToDashboard"
                             maxWidth="Infinity"
-                            prefHeight="32"
-                            style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                            prefHeight="34"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #eceff1; -fx-text-fill: #263238; -fx-border-color: #cfd8dc; -fx-border-radius: 4;" />
                 </VBox>
             </VBox>
         </ScrollPane>

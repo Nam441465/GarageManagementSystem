@@ -22,10 +22,10 @@
 
     <top>
         <VBox style="-fx-background-color: #ffffff; -fx-padding: 14 20 14 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
-            <Label text="QUẢN LÝ BẢO HÀNH"
+            <Label text="QUẢN LÝ PHIẾU BẢO HÀNH"
                    style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
-            <Label text="Theo dõi và quản lý phiếu bảo hành dịch vụ, phụ tùng"
-                   style="-fx-font-size: 13px; -fx-text-fill: #666666;" />
+            <Label text="Theo dõi và quản lý phiếu bảo hành dịch vụ, phụ tùng sau sửa chữa"
+                   style="-fx-font-size: 13px; -fx-text-fill: #546e7a; -fx-font-weight: bold;" />
         </VBox>
     </top>
 
@@ -69,63 +69,69 @@
                   style="-fx-padding: 14 16 18 16;">
 
                 <Label text="Thông tin phiếu bảo hành"
-                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
 
-                <VBox spacing="6">
+                <VBox spacing="5">
+                    <Label text="Mã hóa đơn (Invoice ID):" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <TextField fx:id="invoiceIdField"
-                               promptText="Mã hóa đơn"
+                               promptText="Nhập mã hóa đơn"
                                maxWidth="Infinity"
                                prefHeight="32"
-                               style="-fx-font-size: 13px;" />
+                               style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
 
+                    <Label text="Mã bảo hành:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <TextField fx:id="warrantyCodeField"
-                               promptText="Mã bảo hành"
+                               promptText="VD: BH-2026-001"
                                maxWidth="Infinity"
                                prefHeight="32"
-                               style="-fx-font-size: 13px;" />
+                               style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
 
+                    <Label text="Ngày bắt đầu bảo hành:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <DatePicker fx:id="startDatePicker"
-                                promptText="Ngày bắt đầu"
+                                promptText="Chọn ngày bắt đầu"
                                 maxWidth="Infinity"
                                 prefHeight="32"
                                 style="-fx-font-size: 13px;" />
 
+                    <Label text="Ngày kết thúc bảo hành:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <DatePicker fx:id="endDatePicker"
-                                promptText="Ngày kết thúc"
+                                promptText="Chọn ngày hết hạn"
                                 maxWidth="Infinity"
                                 prefHeight="32"
                                 style="-fx-font-size: 13px;" />
 
+                    <Label text="Trạng thái bảo hành:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <ComboBox fx:id="statusComboBox"
-                              promptText="Trạng thái"
+                              promptText="Chọn trạng thái"
                               maxWidth="Infinity"
                               prefHeight="32"
                               style="-fx-font-size: 13px;" />
 
+                    <Label text="Phạm vi bảo hành:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <TextArea fx:id="coverageArea"
-                              promptText="Phạm vi bảo hành"
+                              promptText="Mô tả các hạng mục được bảo hành"
                               prefRowCount="2"
                               maxWidth="Infinity"
-                              style="-fx-font-size: 13px;" />
+                              style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
                 </VBox>
 
                 <Separator />
 
                 <VBox spacing="6">
                     <HBox spacing="6">
-                        <Button text="Thêm"
+                        <Button text="Thêm mới"
                                 onAction="#addWarranty"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
-                                prefHeight="32"
-                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                                prefHeight="34"
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
 
                         <Button text="Cập nhật"
                                 onAction="#updateWarranty"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
-                                prefHeight="32"
-                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                                prefHeight="34"
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #00695c; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
                     </HBox>
 
                     <HBox spacing="6">
@@ -133,22 +139,22 @@
                                 onAction="#deleteWarranty"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
-                                prefHeight="32"
-                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                                prefHeight="34"
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #ffebee; -fx-text-fill: #c62828; -fx-border-color: #ef9a9a; -fx-border-radius: 4;" />
 
                         <Button text="Xóa trắng"
                                 onAction="#clearForm"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
-                                prefHeight="32"
-                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                                prefHeight="34"
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #e8eaf6; -fx-text-fill: #1a237e; -fx-border-color: #9fa8da; -fx-border-radius: 4;" />
                     </HBox>
 
                     <Button text="Quay lại"
                             onAction="#backToDashboard"
                             maxWidth="Infinity"
-                            prefHeight="32"
-                            style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                            prefHeight="34"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #eceff1; -fx-text-fill: #263238; -fx-border-color: #cfd8dc; -fx-border-radius: 4;" />
                 </VBox>
             </VBox>
         </ScrollPane>

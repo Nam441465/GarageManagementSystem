@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
@@ -16,16 +17,16 @@
             style="-fx-background-color: #f8f9fa;">
 
     <top>
-        <VBox style="-fx-background-color: #ffffff; -fx-padding: 16 24 16 24; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+        <VBox style="-fx-background-color: #ffffff; -fx-padding: 14 20 14 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
             <Label text="QUẢN LÝ KHÁCH HÀNG"
                    style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
-            <Label text="Quản lý danh sách khách hàng và thông tin liên hệ"
-                   style="-fx-font-size: 13px; -fx-text-fill: #666666;" />
+            <Label text="Danh sách khách hàng và quản lý thông tin liên hệ"
+                   style="-fx-font-size: 13px; -fx-text-fill: #546e7a; -fx-font-weight: bold;" />
         </VBox>
     </top>
 
     <center>
-        <VBox style="-fx-padding: 16;" spacing="10">
+        <VBox style="-fx-padding: 12 16 12 16;" spacing="8">
             <TableView fx:id="customerTable"
                        VBox.vgrow="ALWAYS"
                        style="-fx-font-size: 13px;">
@@ -35,76 +36,85 @@
                 <columns>
                     <TableColumn fx:id="idColumn"
                                  text="ID"
-                                 prefWidth="80" />
+                                 prefWidth="60" />
                     <TableColumn fx:id="nameColumn"
-                                 text="Họ tên"
+                                 text="Họ và tên"
                                  prefWidth="220" />
                     <TableColumn fx:id="phoneColumn"
                                  text="Số điện thoại"
-                                 prefWidth="160" />
+                                 prefWidth="140" />
                     <TableColumn fx:id="addressColumn"
                                  text="Địa chỉ"
-                                 prefWidth="320" />
+                                 prefWidth="280" />
                 </columns>
             </TableView>
         </VBox>
     </center>
 
     <right>
-        <VBox spacing="14"
-              prefWidth="320"
-              style="-fx-background-color: #ffffff; -fx-padding: 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;">
+        <VBox spacing="10"
+              prefWidth="340"
+              style="-fx-background-color: #ffffff; -fx-padding: 16 20 18 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;">
 
             <Label text="Thông tin khách hàng"
-                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
 
-            <VBox spacing="10">
+            <VBox spacing="6">
+                <Label text="Họ và tên:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                 <TextField fx:id="nameField"
-                           promptText="Họ tên"
-                           maxWidth="Infinity"
-                           prefHeight="36"
-                           style="-fx-font-size: 13px;" />
+                           promptText="Nhập tên khách hàng"
+                           prefHeight="34"
+                           style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
 
+                <Label text="Số điện thoại:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                 <TextField fx:id="phoneField"
-                           promptText="Số điện thoại"
-                           maxWidth="Infinity"
-                           prefHeight="36"
-                           style="-fx-font-size: 13px;" />
+                           promptText="Nhập số điện thoại"
+                           prefHeight="34"
+                           style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
 
+                <Label text="Địa chỉ:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                 <TextField fx:id="addressField"
-                           promptText="Địa chỉ"
-                           maxWidth="Infinity"
-                           prefHeight="36"
-                           style="-fx-font-size: 13px;" />
+                           promptText="Nhập địa chỉ"
+                           prefHeight="34"
+                           style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
             </VBox>
 
             <Separator />
 
-            <VBox spacing="10">
-                <Button text="Thêm"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;"
-                        onAction="#addCustomer" />
+            <VBox spacing="8">
+                <HBox spacing="8">
+                    <Button text="Thêm mới"
+                            onAction="#addCustomer"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="36"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
 
-                <Button text="Cập nhật"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;"
-                        onAction="#updateCustomer" />
+                    <Button text="Cập nhật"
+                            onAction="#updateCustomer"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="36"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #00695c; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
+                </HBox>
 
-                <Button text="Xóa"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;"
-                        onAction="#deleteCustomer" />
+                <HBox spacing="8">
+                    <Button text="Xóa"
+                            onAction="#deleteCustomer"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="36"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #ffebee; -fx-text-fill: #c62828; -fx-border-color: #ef9a9a; -fx-border-radius: 4;" />
 
-                <Button text="Quay lại"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;"
-                        onAction="#backToDashboard" />
+                    <Button text="Quay lại"
+                            onAction="#backToDashboard"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="36"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #eceff1; -fx-text-fill: #263238; -fx-border-color: #cfd8dc; -fx-border-radius: 4;" />
+                </HBox>
             </VBox>
+
         </VBox>
     </right>
 

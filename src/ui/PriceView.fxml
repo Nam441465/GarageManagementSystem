@@ -22,10 +22,10 @@
 
     <top>
         <VBox style="-fx-background-color: #ffffff; -fx-padding: 14 20 14 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
-            <Label text="QUẢN LÝ BẢNG GIÁ"
+            <Label text="QUẢN LÝ BẢNG GIÁ DỊCH VỤ"
                    style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
-            <Label text="Bảng giá dịch vụ theo từng loại xe và hãng xe"
-                   style="-fx-font-size: 13px; -fx-text-fill: #666666;" />
+            <Label text="Bảng giá niêm yết theo từng dòng xe, hãng xe và ngày hiệu lực"
+                   style="-fx-font-size: 13px; -fx-text-fill: #546e7a; -fx-font-weight: bold;" />
         </VBox>
     </top>
 
@@ -65,96 +65,103 @@
         <ScrollPane fitToWidth="true"
                     prefWidth="350"
                     style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;">
-            <VBox spacing="10"
-                  style="-fx-padding: 15 18 18 18;">
+            <VBox spacing="8"
+                  style="-fx-padding: 14 16 18 16;">
 
                 <Label text="Thiết lập giá dịch vụ"
-                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
 
-                <VBox spacing="6">
+                <VBox spacing="5">
+                    <Label text="Mã dịch vụ:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <TextField fx:id="serviceIdField"
-                               promptText="Mã dịch vụ"
+                               promptText="Mã dịch vụ (ID)"
                                maxWidth="Infinity"
                                prefHeight="32"
-                               style="-fx-font-size: 13px;" />
+                               style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
 
+                    <Label text="Loại xe:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <ComboBox fx:id="vehicleTypeComboBox"
-                              promptText="Loại xe"
+                              promptText="Chọn loại xe"
                               maxWidth="Infinity"
                               prefHeight="32"
                               style="-fx-font-size: 13px;" />
 
+                    <Label text="Hãng xe:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <ComboBox fx:id="vehicleBrandComboBox"
-                              promptText="Hãng xe"
+                              promptText="Chọn hãng xe"
                               maxWidth="Infinity"
                               prefHeight="32"
                               style="-fx-font-size: 13px;" />
 
+                    <Label text="Mức giá (VNĐ):" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <TextField fx:id="priceField"
-                               promptText="Giá"
+                               promptText="VD: 500000"
                                maxWidth="Infinity"
                                prefHeight="32"
-                               style="-fx-font-size: 13px;" />
+                               style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
 
+                    <Label text="Ngày bắt đầu hiệu lực:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <DatePicker fx:id="effectiveFromPicker"
-                                promptText="Hiệu lực từ"
+                                promptText="Chọn ngày hiệu lực"
                                 maxWidth="Infinity"
                                 prefHeight="32"
                                 style="-fx-font-size: 13px;" />
 
+                    <Label text="Ngày kết thúc hiệu lực:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <DatePicker fx:id="effectiveToPicker"
-                                promptText="Hiệu lực đến (không bắt buộc)"
+                                promptText="Không bắt buộc"
                                 maxWidth="Infinity"
                                 prefHeight="32"
                                 style="-fx-font-size: 13px;" />
 
+                    <Label text="Ghi chú:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <TextArea fx:id="noteArea"
-                              promptText="Ghi chú"
+                              promptText="Ghi chú áp dụng"
                               prefRowCount="2"
                               maxWidth="Infinity"
-                              style="-fx-font-size: 13px;" />
+                              style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
                 </VBox>
 
                 <Separator />
 
                 <VBox spacing="6">
                     <HBox spacing="6">
-                        <Button text="Thêm"
+                        <Button text="Thêm giá"
                                 onAction="#addPrice"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
                                 prefHeight="34"
-                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
 
                         <Button text="Cập nhật"
                                 onAction="#updatePrice"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
                                 prefHeight="34"
-                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #00695c; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
                     </HBox>
 
                     <HBox spacing="6">
-                        <Button text="Xóa"
+                        <Button text="Xóa giá"
                                 onAction="#deletePrice"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
                                 prefHeight="34"
-                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #ffebee; -fx-text-fill: #c62828; -fx-border-color: #ef9a9a; -fx-border-radius: 4;" />
 
                         <Button text="Xóa trắng"
                                 onAction="#clearForm"
                                 HBox.hgrow="ALWAYS"
                                 maxWidth="Infinity"
                                 prefHeight="34"
-                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #e8eaf6; -fx-text-fill: #1a237e; -fx-border-color: #9fa8da; -fx-border-radius: 4;" />
                     </HBox>
 
                     <Button text="Quay lại"
                             onAction="#backToDashboard"
                             maxWidth="Infinity"
                             prefHeight="34"
-                            style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #eceff1; -fx-text-fill: #263238; -fx-border-color: #cfd8dc; -fx-border-radius: 4;" />
                 </VBox>
             </VBox>
         </ScrollPane>

@@ -113,6 +113,7 @@ public class CustomerAppointmentController {
                         }
 
                         CheckBox checkBox = new CheckBox(service.getServiceName());
+                        checkBox.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #0d47a1; -fx-cursor: hand;");
 
                         checkBox.setUserData(service);
 

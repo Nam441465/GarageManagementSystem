@@ -6,11 +6,15 @@ import dao.PriceListDAO;
 
 import enums.UserRole;
 
+import model.Customer;
 import model.Employee;
 import model.Invoice;
 import model.InvoiceDetail;
 import model.PriceList;
 import model.Session;
+import service.export.InvoiceExporter;
+import service.export.PdfInvoiceExporter;
+import service.policy.DiscountPolicy;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -170,6 +174,10 @@ public class InvoiceService {
     }
 
     public void addInvoice(Invoice invoice) {
+        addInvoiceWithDiscount(invoice, null, null);
+    }
+
+    public void addInvoiceWithDiscount(Invoice invoice, DiscountPolicy discountPolicy, Customer customer) {
 
         validateInvoice(invoice);
 
@@ -186,6 +194,15 @@ public class InvoiceService {
         }
 
         invoice.calculateTotal();
+
+        if (discountPolicy != null && customer != null) {
+            BigDecimal discount = discountPolicy.calculateDiscount(invoice.getTotalAmount(), customer);
+            BigDecimal finalAmount = invoice.getTotalAmount().subtract(discount);
+            if (finalAmount.compareTo(BigDecimal.ZERO) < 0) {
+                finalAmount = BigDecimal.ZERO;
+            }
+            invoice.setTotalAmount(finalAmount);
+        }
 
         if (invoice.getTotalAmount() == null) {
             throw new IllegalStateException(
@@ -284,5 +301,13 @@ public class InvoiceService {
     public void validateExportDirectory(String outputDirectory) {
 
         validateOutputDirectory(outputDirectory);
+    }
+
+    public String exportInvoice(Invoice invoice, String outputDirectory, InvoiceExporter exporter) throws Exception {
+        validateExportDirectory(outputDirectory);
+        if (exporter == null) {
+            exporter = new PdfInvoiceExporter();
+        }
+        return exporter.export(invoice, outputDirectory);
     }
 }

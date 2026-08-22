@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseDAO<T> {
+public abstract class BaseDAO<T> implements GenericDAO<T> {
 
     protected abstract T mapResultSet(ResultSet rs)
             throws SQLException;
@@ -32,6 +32,7 @@ public abstract class BaseDAO<T> {
             PreparedStatement ps,
             T entity) throws SQLException;
 
+    @Override
     public void add(T entity) {
         try (
                 Connection conn = DatabaseConnection.getConnection();
@@ -45,6 +46,7 @@ public abstract class BaseDAO<T> {
         }
     }
 
+    @Override
     public void update(T entity) {
         try (
                 Connection conn = DatabaseConnection.getConnection();
@@ -58,6 +60,7 @@ public abstract class BaseDAO<T> {
         }
     }
 
+    @Override
     public void delete(int id) {
         String sql = getDeleteSQL();
 
@@ -73,6 +76,7 @@ public abstract class BaseDAO<T> {
         }
     }
 
+    @Override
     public T findById(int id) {
         String sql = "SELECT * FROM "
                 + getTableName()
@@ -102,6 +106,7 @@ public abstract class BaseDAO<T> {
         return null;
     }
 
+    @Override
     public List<T> findAll() {
         List<T> list = new ArrayList<>();
 
@@ -125,6 +130,7 @@ public abstract class BaseDAO<T> {
         return list;
     }
 
+    @Override
     public boolean existsById(int id) {
         String sql = "SELECT 1 FROM "
                 + getTableName()

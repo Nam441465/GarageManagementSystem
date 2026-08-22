@@ -6,8 +6,10 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
@@ -16,16 +18,16 @@
             style="-fx-background-color: #f8f9fa;">
 
     <top>
-        <VBox style="-fx-background-color: #ffffff; -fx-padding: 16 24 16 24; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
-            <Label text="QUẢN LÝ DỊCH VỤ"
+        <VBox style="-fx-background-color: #ffffff; -fx-padding: 14 20 14 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+            <Label text="QUẢN LÝ DANH MỤC DỊCH VỤ"
                    style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
-            <Label text="Danh mục dịch vụ sửa chữa và bảo dưỡng xe"
-                   style="-fx-font-size: 13px; -fx-text-fill: #666666;" />
+            <Label text="Danh sách các gói dịch vụ bảo dưỡng, sửa chữa và thay thế phụ tùng"
+                   style="-fx-font-size: 13px; -fx-text-fill: #546e7a; -fx-font-weight: bold;" />
         </VBox>
     </top>
 
     <center>
-        <VBox style="-fx-padding: 16;" spacing="10">
+        <VBox style="-fx-padding: 12 16 12 16;" spacing="8">
             <TableView fx:id="serviceTable"
                        VBox.vgrow="ALWAYS"
                        style="-fx-font-size: 13px;">
@@ -35,67 +37,76 @@
                 <columns>
                     <TableColumn fx:id="idColumn"
                                  text="ID"
-                                 prefWidth="80" />
+                                 prefWidth="60" />
                     <TableColumn fx:id="serviceNameColumn"
-                                 text="Tên dịch vụ"
-                                 prefWidth="250" />
+                                 text="Tên gói dịch vụ"
+                                 prefWidth="260" />
                     <TableColumn fx:id="descriptionColumn"
-                                 text="Mô tả"
-                                 prefWidth="450" />
+                                 text="Mô tả chi tiết hạng mục"
+                                 prefWidth="400" />
                 </columns>
             </TableView>
         </VBox>
     </center>
 
     <right>
-        <VBox spacing="14"
-              prefWidth="320"
-              style="-fx-background-color: #ffffff; -fx-padding: 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;">
+        <VBox spacing="10"
+              prefWidth="340"
+              style="-fx-background-color: #ffffff; -fx-padding: 16 20 18 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;">
 
             <Label text="Thông tin dịch vụ"
-                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
 
-            <VBox spacing="10">
+            <VBox spacing="6">
+                <Label text="Tên dịch vụ:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                 <TextField fx:id="serviceNameField"
-                           promptText="Tên dịch vụ"
-                           maxWidth="Infinity"
-                           prefHeight="36"
-                           style="-fx-font-size: 13px;" />
+                           promptText="Nhập tên dịch vụ"
+                           prefHeight="34"
+                           style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
 
-                <TextField fx:id="descriptionField"
-                           promptText="Mô tả"
-                           maxWidth="Infinity"
-                           prefHeight="36"
-                           style="-fx-font-size: 13px;" />
+                <Label text="Mô tả dịch vụ:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
+                <TextArea fx:id="descriptionField"
+                          promptText="Nhập mô tả quy trình thực hiện"
+                          prefRowCount="4"
+                          style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
             </VBox>
 
             <Separator />
 
-            <VBox spacing="10">
-                <Button text="Thêm"
-                        onAction="#addService"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;" />
+            <VBox spacing="8">
+                <HBox spacing="8">
+                    <Button text="Thêm dịch vụ"
+                            onAction="#addService"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="36"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
 
-                <Button text="Cập nhật"
-                        onAction="#updateService"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                    <Button text="Cập nhật"
+                            onAction="#updateService"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="36"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #00695c; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
+                </HBox>
 
-                <Button text="Xóa"
-                        onAction="#deleteService"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                <HBox spacing="8">
+                    <Button text="Xóa"
+                            onAction="#deleteService"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="36"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #ffebee; -fx-text-fill: #c62828; -fx-border-color: #ef9a9a; -fx-border-radius: 4;" />
 
-                <Button text="Quay lại"
-                        onAction="#backToDashboard"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                    <Button text="Quay lại"
+                            onAction="#backToDashboard"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="36"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #eceff1; -fx-text-fill: #263238; -fx-border-color: #cfd8dc; -fx-border-radius: 4;" />
+                </HBox>
             </VBox>
+
         </VBox>
     </right>
 

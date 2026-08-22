@@ -7,6 +7,7 @@ public class Employee extends Person {
     private String position;
     private double salary;
     private int userId;
+    private double commissionRate = 0.05;
 
     public Employee() {
     }
@@ -59,15 +60,16 @@ public class Employee extends Person {
         this.userId = userId;
     }
 
+    public double getCommissionRate() {
+        return commissionRate;
+    }
+
+    public void setCommissionRate(double commissionRate) {
+        this.commissionRate = commissionRate;
+    }
+
     @Override
     public String toString() {
-        return "Employee{" +
-                "id=" + getId() +
-                ", name='" + getName() + '\'' +
-                ", phone='" + getPhone() + '\'' +
-                ", position='" + position + '\'' +
-                ", salary=" + salary +
-                ", userId=" + userId +
-                '}';
+        return "Employee{id=" + getId() + ", name=" + getName() + ", phone=" + getPhone() + ", position=" + position + ", salary=" + salary + ", userId=" + userId + ", commissionRate=" + commissionRate + "}";
     }
 }

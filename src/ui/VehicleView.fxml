@@ -9,6 +9,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
@@ -17,16 +18,16 @@
             style="-fx-background-color: #f8f9fa;">
 
     <top>
-        <VBox style="-fx-background-color: #ffffff; -fx-padding: 16 24 16 24; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
-            <Label text="QUẢN LÝ XE"
+        <VBox style="-fx-background-color: #ffffff; -fx-padding: 14 20 14 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+            <Label text="QUẢN LÝ PHƯƠNG TIỆN"
                    style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
-            <Label text="Quản lý danh sách phương tiện và trạng thái sửa chữa"
-                   style="-fx-font-size: 13px; -fx-text-fill: #666666;" />
+            <Label text="Theo dõi danh sách xe, hãng xe, loại xe và trạng thái bảo dưỡng"
+                   style="-fx-font-size: 13px; -fx-text-fill: #546e7a; -fx-font-weight: bold;" />
         </VBox>
     </top>
 
     <center>
-        <VBox style="-fx-padding: 16;" spacing="10">
+        <VBox style="-fx-padding: 12 16 12 16;" spacing="8">
             <TableView fx:id="vehicleTable"
                        VBox.vgrow="ALWAYS"
                        style="-fx-font-size: 13px;">
@@ -38,101 +39,113 @@
                                  text="ID"
                                  prefWidth="50" />
                     <TableColumn fx:id="customerIdColumn"
-                                 text="Mã khách hàng"
-                                 prefWidth="90" />
+                                 text="Mã KH"
+                                 prefWidth="70" />
                     <TableColumn fx:id="brandColumn"
                                  text="Hãng xe"
                                  prefWidth="110" />
                     <TableColumn fx:id="vehicleTypeColumn"
                                  text="Loại xe"
-                                 prefWidth="110" />
+                                 prefWidth="100" />
                     <TableColumn fx:id="statusColumn"
                                  text="Trạng thái"
-                                 prefWidth="110" />
+                                 prefWidth="120" />
                     <TableColumn fx:id="licensePlateColumn"
                                  text="Biển số xe"
-                                 prefWidth="120" />
+                                 prefWidth="130" />
                     <TableColumn fx:id="modelColumn"
-                                 text="Dòng xe"
-                                 prefWidth="120" />
+                                 text="Dòng xe / Model"
+                                 prefWidth="150" />
                 </columns>
             </TableView>
         </VBox>
     </center>
 
     <right>
-        <VBox spacing="14"
-              prefWidth="320"
-              style="-fx-background-color: #ffffff; -fx-padding: 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;">
+        <VBox spacing="8"
+              prefWidth="340"
+              style="-fx-background-color: #ffffff; -fx-padding: 14 18 16 18; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;">
 
             <Label text="Thông tin phương tiện"
-                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
 
-            <VBox spacing="10">
+            <VBox spacing="5">
+                <Label text="Mã khách hàng sở hữu:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                 <TextField fx:id="customerIdField"
-                           promptText="Mã khách hàng"
-                           maxWidth="Infinity"
-                           prefHeight="36"
-                           style="-fx-font-size: 13px;" />
+                           promptText="Mã khách hàng (ID)"
+                           prefHeight="32"
+                           style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
 
+                <Label text="Biển số xe:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
+                <TextField fx:id="licensePlateField"
+                           promptText="VD: 29A-123.45"
+                           prefHeight="32"
+                           style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
+
+                <Label text="Dòng xe (Model):" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
+                <TextField fx:id="modelField"
+                           promptText="VD: Camry 2.5Q"
+                           prefHeight="32"
+                           style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
+
+                <Label text="Hãng xe:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                 <ComboBox fx:id="brandComboBox"
                           promptText="Chọn hãng xe"
                           maxWidth="Infinity"
-                          prefHeight="36"
+                          prefHeight="32"
                           style="-fx-font-size: 13px;" />
 
+                <Label text="Loại xe:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                 <ComboBox fx:id="vehicleTypeComboBox"
                           promptText="Chọn loại xe"
                           maxWidth="Infinity"
-                          prefHeight="36"
+                          prefHeight="32"
                           style="-fx-font-size: 13px;" />
 
+                <Label text="Trạng thái tại xưởng:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                 <ComboBox fx:id="statusComboBox"
                           promptText="Chọn trạng thái"
                           maxWidth="Infinity"
-                          prefHeight="36"
+                          prefHeight="32"
                           style="-fx-font-size: 13px;" />
-
-                <TextField fx:id="licensePlateField"
-                           promptText="Biển số xe"
-                           maxWidth="Infinity"
-                           prefHeight="36"
-                           style="-fx-font-size: 13px;" />
-
-                <TextField fx:id="modelField"
-                           promptText="Dòng xe"
-                           maxWidth="Infinity"
-                           prefHeight="36"
-                           style="-fx-font-size: 13px;" />
             </VBox>
 
             <Separator />
 
-            <VBox spacing="10">
-                <Button text="Thêm"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;"
-                        onAction="#addVehicle" />
+            <VBox spacing="6">
+                <HBox spacing="6">
+                    <Button text="Thêm xe"
+                            onAction="#addVehicle"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="34"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
 
-                <Button text="Cập nhật"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;"
-                        onAction="#updateVehicle" />
+                    <Button text="Cập nhật"
+                            onAction="#updateVehicle"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="34"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #00695c; -fx-text-fill: #ffffff; -fx-background-radius: 4;" />
+                </HBox>
 
-                <Button text="Xóa"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;"
-                        onAction="#deleteVehicle" />
+                <HBox spacing="6">
+                    <Button text="Xóa xe"
+                            onAction="#deleteVehicle"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="34"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #ffebee; -fx-text-fill: #c62828; -fx-border-color: #ef9a9a; -fx-border-radius: 4;" />
 
-                <Button text="Quay lại"
-                        maxWidth="Infinity"
-                        prefHeight="36"
-                        style="-fx-font-size: 13px; -fx-cursor: hand;"
-                        onAction="#backToDashboard" />
+                    <Button text="Quay lại"
+                            onAction="#backToDashboard"
+                            HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"
+                            prefHeight="34"
+                            style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #eceff1; -fx-text-fill: #263238; -fx-border-color: #cfd8dc; -fx-border-radius: 4;" />
+                </HBox>
             </VBox>
+
         </VBox>
     </right>
 
