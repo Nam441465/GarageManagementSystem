@@ -32,14 +32,14 @@ public class ServiceService {
                 || service.getServiceName().isBlank()) {
 
             throw new IllegalArgumentException(
-                    "Service name cannot be empty");
+                    "Tên dịch vụ không được để trống.");
         }
 
         if (serviceDAO.existsByName(
                 service.getServiceName().trim())) {
 
             throw new IllegalArgumentException(
-                    "Service name already exists");
+                    "Tên dịch vụ này đã tồn tại.");
         }
 
         service.setServiceName(
@@ -63,7 +63,7 @@ public class ServiceService {
                 service.getServiceName().trim())) {
 
             throw new IllegalArgumentException(
-                    "Service name already exists");
+                    "Tên dịch vụ này đã tồn tại.");
         }
 
         service.setServiceName(
@@ -81,14 +81,14 @@ public class ServiceService {
 
         if (service.getId() <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid service id");
+                    "Mã dịch vụ không hợp lệ.");
         }
 
         if (service.getServiceName() == null
                 || service.getServiceName().isBlank()) {
 
             throw new IllegalArgumentException(
-                    "Service name cannot be empty");
+                    "Tên dịch vụ không được để trống.");
         }
 
         Service existing = serviceDAO.findById(
@@ -96,7 +96,7 @@ public class ServiceService {
 
         if (existing == null) {
             throw new IllegalArgumentException(
-                    "Service not found");
+                    "Không tìm thấy dịch vụ tương ứng.");
         }
 
         String newName = service.getServiceName().trim();
@@ -106,7 +106,7 @@ public class ServiceService {
                 && serviceDAO.existsByName(newName)) {
 
             throw new IllegalArgumentException(
-                    "Service name already exists");
+                    "Tên dịch vụ này đã tồn tại.");
         }
 
         // PHẢN TRÁCH: Authorization check moved from Controller to Service
@@ -127,12 +127,12 @@ public class ServiceService {
 
         if (id <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid service id");
+                    "Mã dịch vụ không hợp lệ.");
         }
 
         if (!serviceDAO.existsById(id)) {
             throw new IllegalArgumentException(
-                    "Service not found");
+                    "Không tìm thấy dịch vụ tương ứng.");
         }
 
         // PHẢN TRÁCH: Authorization check moved from Controller to Service
@@ -151,7 +151,7 @@ public class ServiceService {
 
         if (id <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid service id");
+                    "Mã dịch vụ không hợp lệ.");
         }
 
         return serviceDAO.findById(id);
@@ -166,7 +166,7 @@ public class ServiceService {
 
         if (id <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid service id");
+                    "Mã dịch vụ không hợp lệ.");
         }
 
         return serviceDAO.existsById(id);
@@ -176,7 +176,7 @@ public class ServiceService {
 
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException(
-                    "Service name cannot be empty");
+                    "Tên dịch vụ không được để trống.");
         }
 
         return serviceDAO.existsByName(name.trim());

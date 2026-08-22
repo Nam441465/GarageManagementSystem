@@ -184,14 +184,13 @@ public class Invoice {
             this.invoiceDetails = invoiceDetails;
         }
 
-        calculateTotal();
     }
 
     public void addDetail(InvoiceDetail detail) {
 
         if (detail == null) {
             throw new IllegalArgumentException(
-                    "Chi tiết hóa đơn không được để trống.");
+                    "Chi tiß║┐t h├│a ─æ╞ín kh├┤ng ─æ╞░ß╗úc ─æß╗â trß╗æng.");
         }
 
         invoiceDetails.add(detail);

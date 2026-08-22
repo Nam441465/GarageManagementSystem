@@ -72,7 +72,7 @@ public class AppointmentService {
 
         if (!created) {
             throw new IllegalStateException(
-                    "Cannot create appointment.");
+                    "Không thể tạo lịch hẹn.");
         }
 
         for (AppointmentItem item : items) {
@@ -87,7 +87,7 @@ public class AppointmentService {
 
             if (!itemCreated) {
                 throw new IllegalStateException(
-                        "Cannot create appointment service item.");
+                        "Không thể lưu hạng mục dịch vụ của lịch hẹn.");
             }
         }
 
@@ -99,7 +99,7 @@ public class AppointmentService {
 
         if (appointmentDateTime == null) {
             throw new IllegalArgumentException(
-                    "Appointment date and time are required.");
+                    "Ngày và giờ hẹn không được để trống.");
         }
 
         int employeeCount = employeeDAO.countEmployees();
@@ -120,7 +120,7 @@ public class AppointmentService {
 
         if (appointmentDateTime == null) {
             throw new IllegalArgumentException(
-                    "Appointment date and time are required.");
+                    "Ngày và giờ hẹn không được để trống.");
         }
 
         return appointmentDAO.countAppointmentsAtTime(
@@ -137,7 +137,7 @@ public class AppointmentService {
 
         if (appointment == null) {
             throw new IllegalArgumentException(
-                    "Appointment not found.");
+                    "Không tìm thấy lịch hẹn.");
         }
 
         return appointment;
@@ -149,7 +149,7 @@ public class AppointmentService {
 
         if (appointments == null) {
             throw new IllegalStateException(
-                    "Cannot load appointments.");
+                    "Không thể tải danh sách lịch hẹn.");
         }
 
         return appointments;
@@ -160,7 +160,7 @@ public class AppointmentService {
 
         if (appointment == null) {
             throw new IllegalArgumentException(
-                    "Appointment is required.");
+                    "Thông tin lịch hẹn không được để trống.");
         }
 
         validateAppointmentId(
@@ -188,38 +188,38 @@ public class AppointmentService {
 
         if (appointment == null) {
             throw new IllegalArgumentException(
-                    "Appointment is required.");
+                    "Thông tin lịch hẹn không được để trống.");
         }
 
         if (appointment.getCustomerName() == null
                 || appointment.getCustomerName().isBlank()) {
 
             throw new IllegalArgumentException(
-                    "Customer name is required.");
+                    "Tên khách hàng không được để trống.");
         }
 
         if (appointment.getCustomerPhone() == null
                 || appointment.getCustomerPhone().isBlank()) {
 
             throw new IllegalArgumentException(
-                    "Customer phone is required.");
+                    "Số điện thoại khách hàng không được để trống.");
         }
 
         if (appointment.getLicensePlate() == null
                 || appointment.getLicensePlate().isBlank()) {
 
             throw new IllegalArgumentException(
-                    "License plate is required.");
+                    "Biển số xe không được để trống.");
         }
 
         if (appointment.getVehicleBrand() == null) {
             throw new IllegalArgumentException(
-                    "Vehicle brand must be selected.");
+                    "Vui lòng chọn hãng xe.");
         }
 
         if (appointment.getVehicleType() == null) {
             throw new IllegalArgumentException(
-                    "Vehicle type must be selected.");
+                    "Vui lòng chọn loại xe.");
         }
     }
 
@@ -228,7 +228,7 @@ public class AppointmentService {
 
         if (items == null || items.isEmpty()) {
             throw new IllegalArgumentException(
-                    "At least one service must be selected.");
+                    "Vui lòng chọn ít nhất một dịch vụ.");
         }
 
         for (AppointmentItem item : items) {
@@ -241,12 +241,12 @@ public class AppointmentService {
 
         if (item == null) {
             throw new IllegalArgumentException(
-                    "Service item cannot be null.");
+                    "Hạng mục dịch vụ không hợp lệ.");
         }
 
         if (item.getServiceId() <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid service ID.");
+                    "Mã dịch vụ không hợp lệ.");
         }
     }
 
@@ -256,12 +256,12 @@ public class AppointmentService {
 
         if (date == null) {
             throw new IllegalArgumentException(
-                    "Please select an appointment date.");
+                    "Vui lòng chọn ngày hẹn.");
         }
 
         if (time == null) {
             throw new IllegalArgumentException(
-                    "Please select an appointment time.");
+                    "Vui lòng chọn giờ hẹn.");
         }
 
         LocalDateTime dateTime = LocalDateTime.of(date, time);
@@ -270,7 +270,7 @@ public class AppointmentService {
                 LocalDateTime.now())) {
 
             throw new IllegalArgumentException(
-                    "Cannot book an appointment in the past.");
+                    "Không thể đặt lịch hẹn trong quá khứ.");
         }
 
         return dateTime;
@@ -281,7 +281,7 @@ public class AppointmentService {
 
         if (appointmentId <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid appointment ID.");
+                    "Mã lịch hẹn không hợp lệ.");
         }
     }
 }

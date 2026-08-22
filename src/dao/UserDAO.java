@@ -85,7 +85,7 @@ public class UserDAO extends BaseDAO<User> {
             super.delete(id);
             return true;
         } catch (Exception e) {
-            throw new DatabaseException("Could not delete user.", e);
+            throw new DatabaseException("Không thể xóa tài khoản.", e);
         }
     }
 

@@ -135,7 +135,7 @@ public class VehicleDAO extends BaseDAO<Vehicle> {
             return true;
         } catch (Exception e) {
             throw new DatabaseException(
-                    "Could not delete vehicle.", e);
+                    "Không thể xóa phương tiện.", e);
         }
     }
 

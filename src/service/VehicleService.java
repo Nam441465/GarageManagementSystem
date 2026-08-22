@@ -30,36 +30,36 @@ public class VehicleService {
 
         if (vehicle.getCustomerId() <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid customer id");
+                    "Mã khách hàng không hợp lệ.");
         }
 
         if (vehicle.getVehicleBrand() == null) {
             throw new IllegalArgumentException(
-                    "Vehicle brand is required");
+                    "Hãng xe không được để trống.");
         }
 
         if (vehicle.getVehicleType() == null) {
             throw new IllegalArgumentException(
-                    "Vehicle type is required");
+                    "Loại xe không được để trống.");
         }
 
         if (vehicle.getStatus() == null) {
             throw new IllegalArgumentException(
-                    "Vehicle status is required");
+                    "Trạng thái xe không được để trống.");
         }
 
         if (vehicle.getLicensePlate() == null
                 || vehicle.getLicensePlate().trim().isEmpty()) {
 
             throw new IllegalArgumentException(
-                    "License plate can not be empty");
+                    "Biển số xe không được để trống.");
         }
 
         if (vehicle.getModel() == null
                 || vehicle.getModel().trim().isEmpty()) {
 
             throw new IllegalArgumentException(
-                    "Vehicle model can not be empty");
+                    "Dòng xe (model) không được để trống.");
         }
     }
 
@@ -80,7 +80,7 @@ public class VehicleService {
                 vehicle.getLicensePlate())) {
 
             throw new IllegalArgumentException(
-                    "License plate already exists");
+                    "Biển số xe này đã tồn tại trong hệ thống.");
         }
 
         vehicleDao.addVehicle(vehicle);
@@ -92,12 +92,12 @@ public class VehicleService {
 
         if (vehicle.getId() <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid vehicle id");
+                    "Mã phương tiện không hợp lệ.");
         }
 
         if (!vehicleDao.existsById(vehicle.getId())) {
             throw new IllegalArgumentException(
-                    "Vehicle not found");
+                    "Không tìm thấy phương tiện.");
         }
 
         Vehicle existing = vehicleDao.findByLicensePlate(
@@ -107,7 +107,7 @@ public class VehicleService {
                 && existing.getId() != vehicle.getId()) {
 
             throw new IllegalArgumentException(
-                    "License plate already exists");
+                    "Biển số xe này đã tồn tại trong hệ thống.");
         }
 
         // PHẢN TRÁCH: Authorization check moved from Controller to Service
@@ -126,12 +126,12 @@ public class VehicleService {
 
         if (id <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid vehicle id");
+                    "Mã phương tiện không hợp lệ.");
         }
 
         if (!vehicleDao.existsById(id)) {
             throw new IllegalArgumentException(
-                    "Vehicle not found");
+                    "Không tìm thấy phương tiện.");
         }
 
         // PHẢN TRÁCH: Authorization check moved from Controller to Service
@@ -150,7 +150,7 @@ public class VehicleService {
 
         if (id <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid vehicle id");
+                    "Mã phương tiện không hợp lệ.");
         }
 
         return vehicleDao.findById(id);
@@ -167,7 +167,7 @@ public class VehicleService {
                 || licensePlate.trim().isEmpty()) {
 
             throw new IllegalArgumentException(
-                    "License plate can not be empty");
+                    "Biển số xe không được để trống.");
         }
 
         return vehicleDao.findByLicensePlate(
@@ -178,7 +178,7 @@ public class VehicleService {
 
         if (id <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid vehicle id");
+                    "Mã phương tiện không hợp lệ.");
         }
 
         return vehicleDao.existsById(id);
@@ -191,7 +191,7 @@ public class VehicleService {
                 || licensePlate.trim().isEmpty()) {
 
             throw new IllegalArgumentException(
-                    "License plate can not be empty");
+                    "Biển số xe không được để trống.");
         }
 
         return vehicleDao.existsByLicensePlate(
@@ -207,7 +207,7 @@ public class VehicleService {
 
         if (customerId <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid customer id");
+                    "Mã khách hàng không hợp lệ.");
         }
 
         return vehicleDao.findAll()

@@ -1,181 +1,197 @@
 package controller;
 
+import enums.CustomerTier;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.fxml.FXML;
-
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-
 import model.Customer;
-
 import service.CustomerService;
+import util.AlertUtil;
 
 public class CustomerController {
 
-        @FXML
-        private TableView<Customer> customerTable;
+    @FXML
+    private TableView<Customer> customerTable;
 
-        @FXML
-        private TableColumn<Customer, Integer> idColumn;
+    @FXML
+    private TableColumn<Customer, Integer> idColumn;
 
-        @FXML
-        private TableColumn<Customer, String> nameColumn;
+    @FXML
+    private TableColumn<Customer, String> nameColumn;
 
-        @FXML
-        private TableColumn<Customer, String> phoneColumn;
+    @FXML
+    private TableColumn<Customer, String> phoneColumn;
 
-        @FXML
-        private TableColumn<Customer, String> addressColumn;
+    @FXML
+    private TableColumn<Customer, String> addressColumn;
 
-        @FXML
-        private TextField nameField;
+    @FXML
+    private TableColumn<Customer, String> tierColumn;
 
-        @FXML
-        private TextField phoneField;
+    @FXML
+    private TextField nameField;
 
-        @FXML
-        private TextField addressField;
+    @FXML
+    private TextField phoneField;
 
-        private final CustomerService customerService = new CustomerService();
+    @FXML
+    private TextField addressField;
 
-        private ObservableList<Customer> customerList;
+    @FXML
+    private ComboBox<CustomerTier> tierComboBox;
 
-        @FXML
-        public void initialize() {
+    private final CustomerService customerService = new CustomerService();
 
-                customerList = FXCollections.observableArrayList();
+    private ObservableList<Customer> customerList;
 
-                idColumn.setCellValueFactory(
-                                data -> new SimpleIntegerProperty(
-                                                data.getValue().getId()).asObject());
+    @FXML
+    public void initialize() {
 
-                nameColumn.setCellValueFactory(
-                                data -> new SimpleStringProperty(
-                                                data.getValue().getName()));
+        customerList = FXCollections.observableArrayList();
 
-                phoneColumn.setCellValueFactory(
-                                data -> new SimpleStringProperty(
-                                                data.getValue().getPhone()));
+        idColumn.setCellValueFactory(
+                data -> new SimpleIntegerProperty(
+                        data.getValue().getId()).asObject());
 
-                addressColumn.setCellValueFactory(
-                                data -> new SimpleStringProperty(
-                                                data.getValue().getAddress()));
+        nameColumn.setCellValueFactory(
+                data -> new SimpleStringProperty(
+                        data.getValue().getName()));
 
-                loadCustomers();
+        phoneColumn.setCellValueFactory(
+                data -> new SimpleStringProperty(
+                        data.getValue().getPhone()));
 
-                customerTable.getSelectionModel().selectedItemProperty().addListener((obs, old, customer) -> {
-                        if (customer != null) {
-                                nameField.setText(customer.getName());
-                                phoneField.setText(customer.getPhone());
-                                addressField.setText(customer.getAddress());
-                        }
-                });
+        addressColumn.setCellValueFactory(
+                data -> new SimpleStringProperty(
+                        data.getValue().getAddress()));
 
+        tierColumn.setCellValueFactory(
+                data -> new SimpleStringProperty(
+                        data.getValue().getTier() != null ? data.getValue().getTier().getDisplayName() : CustomerTier.STANDARD.getDisplayName()));
+
+        tierComboBox.setItems(
+                FXCollections.observableArrayList(CustomerTier.values()));
+        tierComboBox.setValue(CustomerTier.STANDARD);
+
+        loadCustomers();
+
+        customerTable.getSelectionModel().selectedItemProperty().addListener((obs, old, customer) -> {
+            if (customer != null) {
+                nameField.setText(customer.getName());
+                phoneField.setText(customer.getPhone());
+                addressField.setText(customer.getAddress());
+                tierComboBox.setValue(customer.getTier() != null ? customer.getTier() : CustomerTier.STANDARD);
+            }
+        });
+    }
+
+    private void loadCustomers() {
+
+        customerList.clear();
+        customerList.addAll(customerService.findAll());
+        customerTable.setItems(customerList);
+    }
+
+    @FXML
+    public void addCustomer() {
+
+        try {
+            String name = nameField.getText().trim();
+            String phone = phoneField.getText().trim();
+            String address = addressField.getText().trim();
+
+            if (name.isEmpty() || phone.isEmpty()) {
+                AlertUtil.showWarning("Cảnh báo", "Tên và số điện thoại khách hàng không được để trống!");
+                return;
+            }
+
+            Customer customer = new Customer();
+            customer.setName(name);
+            customer.setPhone(phone);
+            customer.setAddress(address);
+            customer.setTier(tierComboBox.getValue() != null ? tierComboBox.getValue() : CustomerTier.STANDARD);
+
+            customerService.addCustomer(customer);
+
+            loadCustomers();
+            clearField();
+            AlertUtil.showInfo("Thành công", "Thêm khách hàng thành công với hạng: " + customer.getTier().getDisplayName());
+        } catch (Exception e) {
+            AlertUtil.showError("Lỗi", e.getMessage() != null ? e.getMessage() : "Không thể thêm khách hàng.");
+        }
+    }
+
+    @FXML
+    public void updateCustomer() {
+
+        Customer customer = customerTable.getSelectionModel().getSelectedItem();
+        if (customer == null) {
+            AlertUtil.showWarning("Cảnh báo", "Vui lòng chọn khách hàng cần cập nhật!");
+            return;
         }
 
-        private void loadCustomers() {
+        try {
+            String name = nameField.getText().trim();
+            String phone = phoneField.getText().trim();
+            String address = addressField.getText().trim();
 
-                customerList.clear();
+            if (name.isEmpty() || phone.isEmpty()) {
+                AlertUtil.showWarning("Cảnh báo", "Tên và số điện thoại khách hàng không được để trống!");
+                return;
+            }
 
-                customerList.addAll(
-                                customerService.findAll());
+            customer.setName(name);
+            customer.setPhone(phone);
+            customer.setAddress(address);
+            customer.setTier(tierComboBox.getValue() != null ? tierComboBox.getValue() : CustomerTier.STANDARD);
 
-                customerTable.setItems(
-                                customerList);
+            customerService.updateCustomer(customer);
 
+            loadCustomers();
+            AlertUtil.showInfo("Thành công", "Cập nhật thông tin khách hàng thành công!");
+        } catch (Exception e) {
+            AlertUtil.showError("Lỗi", e.getMessage() != null ? e.getMessage() : "Không thể cập nhật khách hàng.");
+        }
+    }
+
+    @FXML
+    public void deleteCustomer() {
+
+        Customer customer = customerTable.getSelectionModel().getSelectedItem();
+        if (customer == null) {
+            AlertUtil.showWarning("Cảnh báo", "Vui lòng chọn khách hàng cần xóa!");
+            return;
         }
 
-        @FXML
-        public void addCustomer() {
-
-                Customer customer = new Customer();
-
-                customer.setName(
-                                nameField.getText());
-
-                customer.setPhone(
-                                phoneField.getText());
-
-                customer.setAddress(
-                                addressField.getText());
-
-                customerService.addCustomer(
-                                customer);
-
+        if (AlertUtil.showConfirmation("Xác nhận", "Bạn có chắc chắn muốn xóa khách hàng: " + customer.getName() + "?")) {
+            try {
+                customerService.deleteCustomer(customer.getId());
                 loadCustomers();
-
                 clearField();
-
+                AlertUtil.showInfo("Thành công", "Xóa khách hàng thành công!");
+            } catch (Exception e) {
+                AlertUtil.showError("Lỗi", e.getMessage() != null ? e.getMessage() : "Không thể xóa khách hàng.");
+            }
         }
+    }
 
-        @FXML
-        public void updateCustomer() {
+    private void clearField() {
 
-                Customer customer = customerTable
-                                .getSelectionModel()
-                                .getSelectedItem();
+        nameField.clear();
+        phoneField.clear();
+        addressField.clear();
+        tierComboBox.setValue(CustomerTier.STANDARD);
+        customerTable.getSelectionModel().clearSelection();
+    }
 
-                if (customer == null) {
-
-                        return;
-
-                }
-
-                customer.setName(
-                                nameField.getText());
-
-                customer.setPhone(
-                                phoneField.getText());
-
-                customer.setAddress(
-                                addressField.getText());
-
-                customerService.updateCustomer(
-                                customer);
-
-                loadCustomers();
-
-        }
-
-        @FXML
-        public void deleteCustomer() {
-
-                Customer customer = customerTable
-                                .getSelectionModel()
-                                .getSelectedItem();
-
-                if (customer == null) {
-
-                        return;
-
-                }
-
-                customerService.deleteCustomer(
-                                customer.getId());
-
-                loadCustomers();
-
-        }
-
-        private void clearField() {
-
-                nameField.clear();
-
-                phoneField.clear();
-
-                addressField.clear();
-
-        }
-
-        @FXML
-        public void backToDashboard() {
-                Navigation.changeScene(customerTable, "/ui/DashboardView.fxml", 650, 650);
-        }
-
+    @FXML
+    public void backToDashboard() {
+        Navigation.changeScene(customerTable, "/ui/DashboardView.fxml", "Bảng điều khiển trung tâm");
+    }
 }

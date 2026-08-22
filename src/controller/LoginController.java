@@ -29,13 +29,13 @@ public class LoginController {
                         User user = userService.login(username, password);
 
                         if (user == null) {
-                                System.out.println("Login failed");
+                                System.out.println("Đăng nhập thất bại");
                                 return;
                         }
 
                         Session.setCurrentUser(user);
 
-                        System.out.println("Login success");
+                        System.out.println("Đăng nhập thành công");
                         System.out.println("Role: " + user.getRole());
 
                         Navigation.changeScene(usernameField, "/ui/DashboardView.fxml", "Bảng điều khiển trung tâm");

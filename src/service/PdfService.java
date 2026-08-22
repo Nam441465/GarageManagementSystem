@@ -6,6 +6,7 @@ import model.InvoiceDetail;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 public class PdfService {
 
@@ -27,12 +28,12 @@ public class PdfService {
 
         if (invoiceId <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid invoice ID.");
+                    "Mã hóa đơn không hợp lệ.");
         }
 
         if (outputPath == null || outputPath.isBlank()) {
             throw new IllegalArgumentException(
-                    "Output path is required.");
+                    "Đường dẫn xuất file không được để trống.");
         }
 
         try {
@@ -47,13 +48,13 @@ public class PdfService {
                     || invoice.getInvoiceDetails().isEmpty()) {
 
                 throw new IllegalStateException(
-                        "Invoice has no service details.");
+                        "Hóa đơn không có chi tiết dịch vụ nào.");
             }
 
             StringBuilder content = new StringBuilder();
 
             content.append("HÓA ĐƠN DỊCH VỤ\n");
-            content.append("==============================\n");
+            content.append("========================================\n");
 
             content.append("Mã hóa đơn: ")
                     .append(invoice.getId())
@@ -88,9 +89,10 @@ public class PdfService {
                     .append("\n");
 
             content.append("\n");
-            content.append("DỊCH VỤ\n");
-            content.append("==============================\n");
+            content.append("CHI TIẾT DỊCH VỤ\n");
+            content.append("========================================\n");
 
+            BigDecimal subtotal = BigDecimal.ZERO;
             for (InvoiceDetail detail : invoice.getInvoiceDetails()) {
 
                 if (detail == null) {
@@ -106,16 +108,31 @@ public class PdfService {
                         .append("\n");
 
                 content.append("Đơn giá: ")
-                        .append(detail.getUnitPrice())
+                        .append(String.format("%,.0f VNĐ", detail.getUnitPrice()))
                         .append("\n");
 
-                content.append("------------------------------\n");
+                if (detail.getUnitPrice() != null) {
+                    subtotal = subtotal.add(detail.getUnitPrice());
+                }
+
+                content.append("----------------------------------------\n");
             }
 
             content.append("\n");
+            content.append("Tạm tính: ")
+                    .append(String.format("%,.0f VNĐ", subtotal))
+                    .append("\n");
 
-            content.append("TỔNG TIỀN: ")
-                    .append(invoice.getTotalAmount())
+            BigDecimal discount = subtotal.subtract(invoice.getTotalAmount());
+            if (discount.compareTo(BigDecimal.ZERO) > 0) {
+                content.append("Chiết khấu hội viên VIP: -")
+                        .append(String.format("%,.0f VNĐ", discount))
+                        .append("\n");
+            }
+
+            content.append("========================================\n");
+            content.append("TỔNG TIỀN THANH TOÁN: ")
+                    .append(String.format("%,.0f VNĐ", invoice.getTotalAmount()))
                     .append("\n");
 
             File file = new File(outputPath);
@@ -125,7 +142,7 @@ public class PdfService {
             if (parent != null && !parent.exists()) {
                 if (!parent.mkdirs()) {
                     throw new IOException(
-                            "Cannot create output directory.");
+                            "Không thể tạo thư mục xuất file.");
                 }
             }
 

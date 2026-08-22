@@ -2,10 +2,10 @@
 -- Import order is important because of foreign key constraints.
 
 -- 1. Customer
-INSERT INTO Customer (name, phone, address) VALUES
-    ('Nguyễn Văn An', '0901111111', '123 Đường Lê Lợi, Quận 1, TP.HCM'),
-    ('Trần Thị Bình', '0902222222', '45 Đường Phạm Ngũ Lão, Quận 1, TP.HCM'),
-    ('Lê Hoàng Cường', '0903333333', '88 Đường Võ Văn Tần, Quận 3, TP.HCM');
+INSERT INTO Customer (name, phone, address, tier) VALUES
+    ('Nguyễn Văn An', '0901111111', '123 Đường Lê Lợi, Quận 1, TP.HCM', 'VIP'),
+    ('Trần Thị Bình', '0902222222', '45 Đường Phạm Ngũ Lão, Quận 1, TP.HCM', 'PLATINUM'),
+    ('Lê Hoàng Cường', '0903333333', '88 Đường Võ Văn Tần, Quận 3, TP.HCM', 'STANDARD');
 
 -- 2. Users
 INSERT INTO Users (role, username, password, status) VALUES
@@ -51,10 +51,10 @@ INSERT INTO PriceList (service_id, vehicle_type, vehicle_brand, price, effective
     (5, 'SEDAN', 'Toyota', 1300000.00, '2026-01-01', NULL, 'Bảo dưỡng phanh sedan');
 
 -- 8. Appointment
-INSERT INTO Appointment (customer_id, vehicle_id, employee_id, appointment_date, status, notes) VALUES
-    (1, 1, 2, '2026-08-10 09:00:00', 'COMPLETED', 'Khách đặt lịch bảo dưỡng định kỳ'),
-    (2, 2, 2, '2026-08-12 15:30:00', 'CONFIRMED', 'Khách muốn kiểm tra hệ thống phanh'),
-    (3, 3, 1, '2026-08-14 08:00:00', 'PENDING', 'Đặt lịch thay lốp cho xe tải');
+INSERT INTO Appointment (customer_name, customer_phone, license_plate, vehicle_brand, vehicle_type, appointment_date, appointment_time, status, notes) VALUES
+    ('Nguyễn Văn An', '0901111111', '30A-12345', 'TOYOTA', 'SEDAN', '2026-08-10 09:00:00', '2026-08-10 09:00:00', 'COMPLETED', 'Khách đặt lịch bảo dưỡng định kỳ'),
+    ('Trần Thị Bình', '0902222222', '51B-67890', 'HONDA', 'SUV', '2026-08-12 15:30:00', '2026-08-12 15:30:00', 'CONFIRMED', 'Khách muốn kiểm tra hệ thống phanh'),
+    ('Lê Hoàng Cường', '0903333333', '59C-11111', 'FORD', 'PICKUP', '2026-08-14 08:00:00', '2026-08-14 08:00:00', 'PENDING', 'Đặt lịch thay lốp cho xe tải');
 
 -- 9. AppointmentServiceItem
 INSERT INTO AppointmentServiceItem (appointment_id, service_id, quantity, unit_price, notes) VALUES
@@ -64,17 +64,17 @@ INSERT INTO AppointmentServiceItem (appointment_id, service_id, quantity, unit_p
     (3, 4, 2, 2200000.00, 'Thay lốp cho xe pickup');
 
 -- 10. Invoice
-INSERT INTO Invoice (customer_id, employee_id, license_plate, vehicle_type, vehicle_brand, total_amount, issue_date, payment_status, pdf_path) VALUES
-    (1, 1, '30A-12345', 'SEDAN', 'Toyota', 2800000.00, '2026-08-10 09:00:00', 'PAID', '/invoices/invoice-INV-0001.pdf'),
-    (2, 2, '51B-67890', 'SUV', 'Honda', 1300000.00, '2026-08-12 15:30:00', 'PAID', '/invoices/invoice-INV-0002.pdf'),
-    (3, 1, '59C-11111', 'PICKUP', 'Ford', 2200000.00, '2026-08-14 08:00:00', 'UNPAID', '/invoices/invoice-INV-0003.pdf');
+INSERT INTO Invoice (customer_id, employee_id, employee_name, license_plate, vehicle_type, vehicle_brand, total_amount, issue_date, payment_status, pdf_path) VALUES
+    (1, 1, 'Nguyễn Văn Kỹ Thuật', '30A-12345', 'SEDAN', 'TOYOTA', 2800000.00, '2026-08-10 09:00:00', 'PAID', '/invoices/invoice-INV-0001.pdf'),
+    (2, 2, 'Trần Thị Tư Vấn', '51B-67890', 'SUV', 'HONDA', 1300000.00, '2026-08-12 15:30:00', 'PAID', '/invoices/invoice-INV-0002.pdf'),
+    (3, 1, 'Nguyễn Văn Kỹ Thuật', '59C-11111', 'PICKUP', 'FORD', 2200000.00, '2026-08-14 08:00:00', 'UNPAID', '/invoices/invoice-INV-0003.pdf');
 
 -- 11. InvoiceDetail
-INSERT INTO InvoiceDetail (invoice_id, service_id, service_name, unit_price, subtotal) VALUES
-    (1, 2, 'Bảo dưỡng định kỳ', 1500000.00, 1500000.00),
-    (1, 5, 'Bảo dưỡng phanh', 1300000.00, 1300000.00),
-    (2, 5, 'Bảo dưỡng phanh', 1300000.00, 1300000.00),
-    (3, 4, 'Thay lốp', 2200000.00, 2200000.00);
+INSERT INTO InvoiceDetail (invoice_id, service_id, service_name, unit_price) VALUES
+    (1, 2, 'Bảo dưỡng định kỳ', 1500000.00),
+    (1, 5, 'Bảo dưỡng phanh', 1300000.00),
+    (2, 5, 'Bảo dưỡng phanh', 1300000.00),
+    (3, 4, 'Thay lốp', 2200000.00);
 
 -- 13. Part
 INSERT INTO Part (part_name, part_code, supplier, unit_price, stock_quantity, min_stock, description) VALUES

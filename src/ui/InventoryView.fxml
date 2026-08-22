@@ -37,7 +37,7 @@
                 </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="idColumn"
-                                 text="ID"
+                                 text="Mã số"
                                  prefWidth="60" />
                     <TableColumn fx:id="nameColumn"
                                  text="Tên linh kiện / Phụ tùng"

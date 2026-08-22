@@ -57,55 +57,55 @@ public class InvoiceService {
 
         if (invoice == null) {
             throw new IllegalArgumentException(
-                    "Invoice is required.");
+                    "Hóa đơn không được để trống.");
         }
 
         if (invoice.getCustomerId() <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid customer ID.");
+                    "Mã khách hàng không hợp lệ.");
         }
 
         if (invoice.getEmployeeId() <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid employee ID.");
+                    "Mã nhân viên không hợp lệ.");
         }
 
         if (invoice.getLicensePlate() == null
                 || invoice.getLicensePlate().isBlank()) {
 
             throw new IllegalArgumentException(
-                    "License plate is required.");
+                    "Biển số xe không được để trống.");
         }
 
         if (invoice.getVehicleType() == null
                 || invoice.getVehicleType().isBlank()) {
 
             throw new IllegalArgumentException(
-                    "Vehicle type is required.");
+                    "Loại xe không được để trống.");
         }
 
         if (invoice.getVehicleBrand() == null
                 || invoice.getVehicleBrand().isBlank()) {
 
             throw new IllegalArgumentException(
-                    "Vehicle brand is required.");
+                    "Hãng xe không được để trống.");
         }
 
         if (invoice.getInvoiceDetails() == null
                 || invoice.getInvoiceDetails().isEmpty()) {
 
             throw new IllegalArgumentException(
-                    "At least one service must be selected.");
+                    "Vui lòng chọn ít nhất một dịch vụ.");
         }
 
         if (invoice.getPaymentStatus() == null) {
             throw new IllegalArgumentException(
-                    "Payment status is required.");
+                    "Trạng thái thanh toán không được để trống.");
         }
 
         if (invoice.getIssueDate() == null) {
             throw new IllegalArgumentException(
-                    "Issue date is required.");
+                    "Ngày lập hóa đơn không được để trống.");
         }
     }
 
@@ -113,7 +113,7 @@ public class InvoiceService {
 
         if (id <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid invoice ID.");
+                    "Mã hóa đơn không hợp lệ.");
         }
     }
 
@@ -121,7 +121,7 @@ public class InvoiceService {
 
         if (Session.getCurrentUser() == null) {
             throw new IllegalStateException(
-                    "No employee is logged in.");
+                    "Chưa có nhân viên nào đăng nhập.");
         }
     }
 
@@ -134,7 +134,7 @@ public class InvoiceService {
 
         if (employee == null) {
             throw new IllegalStateException(
-                    "Current account does not have an employee profile.");
+                    "Tài khoản hiện tại chưa được liên kết với hồ sơ nhân viên.");
         }
 
         return employee;
@@ -151,7 +151,7 @@ public class InvoiceService {
 
         if (Session.getCurrentUser().getRole() != UserRole.OWNER) {
             throw new IllegalStateException(
-                    "Employee cannot delete invoices.");
+                    "Chỉ có Chủ gara mới có quyền xóa hóa đơn.");
         }
     }
 
@@ -161,7 +161,7 @@ public class InvoiceService {
                 || outputDirectory.isBlank()) {
 
             throw new IllegalArgumentException(
-                    "Output directory is required.");
+                    "Thư mục xuất file không được để trống.");
         }
     }
 
@@ -169,7 +169,7 @@ public class InvoiceService {
 
         if (price == null) {
             throw new IllegalStateException(
-                    "Price not found for service.");
+                    "Chưa thiết lập bảng giá cho dịch vụ này.");
         }
     }
 
@@ -206,21 +206,21 @@ public class InvoiceService {
 
         if (invoice.getTotalAmount() == null) {
             throw new IllegalStateException(
-                    "Invoice total cannot be null.");
+                    "Tổng tiền hóa đơn không hợp lệ.");
         }
 
         if (invoice.getTotalAmount().compareTo(
                 BigDecimal.ZERO) < 0) {
 
             throw new IllegalStateException(
-                    "Invoice total cannot be negative.");
+                    "Tổng tiền hóa đơn không được âm.");
         }
 
         boolean created = invoiceDAO.addInvoice(invoice);
 
         if (!created) {
             throw new IllegalStateException(
-                    "Cannot create invoice.");
+                    "Không thể tạo hóa đơn.");
         }
     }
 
@@ -230,19 +230,19 @@ public class InvoiceService {
 
         if (invoice.getId() <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid invoice ID.");
+                    "Mã hóa đơn không hợp lệ.");
         }
 
         if (!invoiceDAO.existsById(invoice.getId())) {
             throw new IllegalArgumentException(
-                    "Invoice not found.");
+                    "Không tìm thấy hóa đơn.");
         }
 
         boolean updated = invoiceDAO.updateInvoice(invoice);
 
         if (!updated) {
             throw new IllegalStateException(
-                    "Cannot update invoice.");
+                    "Không thể cập nhật hóa đơn.");
         }
     }
 
@@ -254,14 +254,14 @@ public class InvoiceService {
 
         if (!invoiceDAO.existsById(id)) {
             throw new IllegalArgumentException(
-                    "Invoice not found.");
+                    "Không tìm thấy hóa đơn.");
         }
 
         boolean deleted = invoiceDAO.deleteInvoice(id);
 
         if (!deleted) {
             throw new IllegalStateException(
-                    "Cannot delete invoice.");
+                    "Không thể xóa hóa đơn.");
         }
     }
 
@@ -273,7 +273,7 @@ public class InvoiceService {
 
         if (invoice == null) {
             throw new IllegalArgumentException(
-                    "Invoice not found.");
+                    "Không tìm thấy hóa đơn.");
         }
 
         return invoice;
@@ -285,7 +285,7 @@ public class InvoiceService {
 
         if (invoices == null) {
             throw new IllegalStateException(
-                    "Cannot load invoice list.");
+                    "Không thể tải danh sách hóa đơn.");
         }
 
         return invoices;

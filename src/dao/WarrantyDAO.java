@@ -106,7 +106,7 @@ public class WarrantyDAO extends BaseDAO<Warranty> {
             super.delete(id);
             return true;
         } catch (Exception e) {
-            throw new DatabaseException("Could not delete warranty.", e);
+            throw new DatabaseException("Không thể xóa phiếu bảo hành.", e);
         }
     }
 

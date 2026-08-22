@@ -15,6 +15,7 @@ import service.ServiceService;
 import service.VehicleService;
 
 import util.AlertUtil;
+import util.UIHelper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -100,7 +101,7 @@ public class StatisticsController {
                 String.valueOf(invoiceCount));
 
         revenueLabel.setText(
-                revenue.toString());
+                UIHelper.formatCurrency(revenue));
     }
 
     @FXML
@@ -126,28 +127,28 @@ public class StatisticsController {
                         .toString();
 
                 AlertUtil.showInfo(
-                        "Statistics Report",
-                        "PDF exported successfully:\n"
+                        "Báo cáo thống kê",
+                        "Xuất báo cáo PDF thành công:\n"
                                 + filePath);
 
             } else {
 
                 AlertUtil.showError(
-                        "Statistics Report",
-                        "Cannot export statistics report.");
+                        "Báo cáo thống kê",
+                        "Không thể xuất báo cáo thống kê.");
             }
 
         } catch (Exception exception) {
 
             AlertUtil.showError(
-                    "Statistics Report",
+                    "Báo cáo thống kê",
                     exception.getMessage());
         }
     }
 
     private void validateOutputDirectory(String outputDirectory) {
         if (outputDirectory == null || outputDirectory.isEmpty()) {
-            throw new IllegalArgumentException("Output directory is required.");
+            throw new IllegalArgumentException("Thư mục xuất file không được để trống.");
         }
     }
 
@@ -157,7 +158,6 @@ public class StatisticsController {
         Navigation.changeScene(
                 revenueLabel,
                 "/ui/DashboardView.fxml",
-                650,
-                650);
+                "Bảng điều khiển trung tâm");
     }
 }

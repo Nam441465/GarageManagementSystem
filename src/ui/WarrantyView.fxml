@@ -39,7 +39,7 @@
                 </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="idColumn"
-                                 text="ID"
+                                 text="Mã số"
                                  prefWidth="50" />
                     <TableColumn fx:id="invoiceColumn"
                                  text="Mã hóa đơn"

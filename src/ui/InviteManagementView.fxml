@@ -65,7 +65,7 @@
                 </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="idColumn"
-                                 text="ID"
+                                 text="Mã số"
                                  prefWidth="70" />
                     <TableColumn fx:id="codeColumn"
                                  text="Mã mời"

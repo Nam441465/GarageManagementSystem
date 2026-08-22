@@ -31,27 +31,27 @@ public class EmployeeService {
     private void validate(Employee employee) {
 
         if (employee == null) {
-            throw new IllegalArgumentException("Employee is required");
+            throw new IllegalArgumentException("Thông tin nhân viên không được để trống.");
         }
 
         if (employee.getName() == null ||
                 employee.getName().trim().isEmpty()) {
 
             throw new IllegalArgumentException(
-                    "Employee name is required");
+                    "Tên nhân viên không được để trống.");
         }
 
         if (employee.getPhone() == null ||
                 employee.getPhone().trim().isEmpty()) {
 
             throw new IllegalArgumentException(
-                    "Phone is required");
+                    "Số điện thoại không được để trống.");
         }
 
         if (employee.getSalary() < 0) {
 
             throw new IllegalArgumentException(
-                    "Salary cannot be negative");
+                    "Mức lương không được âm.");
         }
     }
 
@@ -69,7 +69,7 @@ public class EmployeeService {
         authorizationService.requireOwner();
 
         if (employee.getId() <= 0 || dao.findById(employee.getId()) == null) {
-            throw new IllegalArgumentException("Employee not found");
+            throw new IllegalArgumentException("Không tìm thấy nhân viên.");
         }
 
         dao.updateEmployee(employee);
@@ -79,7 +79,7 @@ public class EmployeeService {
 
         authorizationService.requireOwner();
         if (id <= 0 || dao.findById(id) == null) {
-            throw new IllegalArgumentException("Employee not found");
+            throw new IllegalArgumentException("Không tìm thấy nhân viên.");
         }
         
         dao.deleteEmployee(id);

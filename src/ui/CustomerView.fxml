@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
@@ -18,9 +19,9 @@
 
     <top>
         <VBox style="-fx-background-color: #ffffff; -fx-padding: 14 20 14 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
-            <Label text="QUẢN LÝ KHÁCH HÀNG"
+            <Label text="QUẢN LÝ KHÁCH HÀNG &amp; PHÂN HẠNG VIP"
                    style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
-            <Label text="Danh sách khách hàng và quản lý thông tin liên hệ"
+            <Label text="Danh sách khách hàng, quản lý liên hệ và chính sách chiết khấu VIP"
                    style="-fx-font-size: 13px; -fx-text-fill: #546e7a; -fx-font-weight: bold;" />
         </VBox>
     </top>
@@ -35,17 +36,20 @@
                 </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="idColumn"
-                                 text="ID"
-                                 prefWidth="60" />
+                                 text="Mã số"
+                                 prefWidth="50" />
                     <TableColumn fx:id="nameColumn"
                                  text="Họ và tên"
-                                 prefWidth="220" />
+                                 prefWidth="200" />
                     <TableColumn fx:id="phoneColumn"
                                  text="Số điện thoại"
-                                 prefWidth="140" />
+                                 prefWidth="130" />
                     <TableColumn fx:id="addressColumn"
                                  text="Địa chỉ"
-                                 prefWidth="280" />
+                                 prefWidth="220" />
+                    <TableColumn fx:id="tierColumn"
+                                 text="Hạng khách hàng"
+                                 prefWidth="150" />
                 </columns>
             </TableView>
         </VBox>
@@ -77,6 +81,13 @@
                            promptText="Nhập địa chỉ"
                            prefHeight="34"
                            style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />
+
+                <Label text="Phân hạng thành viên:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
+                <ComboBox fx:id="tierComboBox"
+                          promptText="Chọn hạng khách hàng"
+                          maxWidth="Infinity"
+                          prefHeight="34"
+                          style="-fx-font-size: 13px;" />
             </VBox>
 
             <Separator />

@@ -3,6 +3,7 @@ CREATE TABLE Customer (
     name VARCHAR(100) NOT NULL,
     phone VARCHAR(20) NULL,
     address VARCHAR(255) NULL,
+    tier ENUM('STANDARD', 'VIP', 'PLATINUM') NOT NULL DEFAULT 'STANDARD',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE Users (
@@ -65,6 +66,8 @@ CREATE TABLE Service (
     id INT PRIMARY KEY AUTO_INCREMENT,
     service_name VARCHAR(100) NOT NULL,
     description TEXT NULL,
+    category ENUM('CLEANING', 'MAINTENANCE', 'REPAIR', 'REPLACEMENT') NULL DEFAULT 'REPAIR',
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE PriceList (
@@ -108,6 +111,7 @@ CREATE TABLE Appointment (
     vehicle_brand VARCHAR(50) NOT NULL,
     vehicle_type VARCHAR(50) NOT NULL,
     appointment_date DATETIME NOT NULL,
+    appointment_time DATETIME NULL,
     status ENUM(
         'PENDING',
         'CONFIRMED',

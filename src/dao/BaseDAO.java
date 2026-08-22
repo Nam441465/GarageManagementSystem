@@ -42,7 +42,7 @@ public abstract class BaseDAO<T> implements GenericDAO<T> {
 
         } catch (SQLException e) {
             throw new RuntimeException(
-                    "Error adding " + getTableName(), e);
+                    "Lỗi khi thêm mới " + getTableName(), e);
         }
     }
 
@@ -56,7 +56,7 @@ public abstract class BaseDAO<T> implements GenericDAO<T> {
 
         } catch (SQLException e) {
             throw new RuntimeException(
-                    "Error updating " + getTableName(), e);
+                    "Lỗi khi cập nhật " + getTableName(), e);
         }
     }
 
@@ -72,7 +72,7 @@ public abstract class BaseDAO<T> implements GenericDAO<T> {
 
         } catch (SQLException e) {
             throw new RuntimeException(
-                    "Error deleting " + getTableName(), e);
+                    "Lỗi khi xóa " + getTableName(), e);
         }
     }
 
@@ -97,7 +97,7 @@ public abstract class BaseDAO<T> implements GenericDAO<T> {
 
         } catch (SQLException e) {
             throw new RuntimeException(
-                    "Error finding "
+                    "Lỗi khi tìm kiếm "
                             + getTableName()
                             + " by ID",
                     e);
@@ -122,7 +122,7 @@ public abstract class BaseDAO<T> implements GenericDAO<T> {
 
         } catch (SQLException e) {
             throw new RuntimeException(
-                    "Error finding all "
+                    "Lỗi khi tải danh sách "
                             + getTableName(),
                     e);
         }
@@ -149,7 +149,7 @@ public abstract class BaseDAO<T> implements GenericDAO<T> {
 
         } catch (SQLException e) {
             throw new RuntimeException(
-                    "Error checking "
+                    "Lỗi khi kiểm tra "
                             + getTableName()
                             + " by ID",
                     e);

@@ -26,18 +26,18 @@ public class CustomerService {
         }
 
         if (customer.getName() == null || customer.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Customer name can not be empty");
+            throw new IllegalArgumentException("Tên khách hàng không được để trống.");
         }
 
         if (customer.getPhone() == null || customer.getPhone().trim().isEmpty()) {
-            throw new IllegalArgumentException("Customer Phone can not be empty");
+            throw new IllegalArgumentException("Số điện thoại khách hàng không được để trống.");
         }
     }
 
     public void addCustomer(Customer customer) {
         validateCustomer(customer);
         if (customerDao.existsByPhone(customer.getPhone())) {
-            throw new IllegalArgumentException("Phone already exists");
+            throw new IllegalArgumentException("Số điện thoại này đã tồn tại trong hệ thống.");
         }
         customerDao.addCustomer(customer);
     }
@@ -45,11 +45,11 @@ public class CustomerService {
     public void updateCustomer(Customer customer) {
         validateCustomer(customer);
         if (customer.getId() <= 0) {
-            throw new IllegalArgumentException("Invalid customer id");
+            throw new IllegalArgumentException("Mã khách hàng không hợp lệ.");
         }
 
         if (!customerDao.existsById(customer.getId())) {
-            throw new IllegalArgumentException("Customer not found!");
+            throw new IllegalArgumentException("Không tìm thấy khách hàng!");
         }
         customerDao.updateCustomer(customer);
     }
@@ -57,7 +57,7 @@ public class CustomerService {
     public void deleteCustomer(int id) {
 
         if (id <= 0) {
-            throw new IllegalArgumentException("Invalid customer id");
+            throw new IllegalArgumentException("Mã khách hàng không hợp lệ.");
         }
 
         // PHẢN TRÁCH: Authorization check moved from Controller to Service
@@ -70,7 +70,7 @@ public class CustomerService {
         }
 
         if (!customerDao.existsById(id)) {
-            throw new IllegalArgumentException("Customer not found");
+            throw new IllegalArgumentException("Không tìm thấy khách hàng.");
         }
         customerDao.deleteCustomer(id);
     }
@@ -85,7 +85,7 @@ public class CustomerService {
 
     public boolean existsByPhone(String phone) {
         if (phone == null || phone.trim().isEmpty()) {
-            throw new IllegalArgumentException("Customer phone can not be empty");
+            throw new IllegalArgumentException("Số điện thoại khách hàng không được để trống.");
         }
         return customerDao.existsByPhone(phone);
     }

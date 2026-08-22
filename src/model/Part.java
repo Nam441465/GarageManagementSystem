@@ -52,19 +52,19 @@ public class Part {
 
     public void validate() {
         if (partName == null || partName.isBlank()) {
-            throw new IllegalArgumentException("Part name is required.");
+            throw new IllegalArgumentException("Tên phụ tùng không được để trống.");
         }
 
         if (unitPrice == null) {
-            throw new IllegalArgumentException("Unit price is required.");
+            throw new IllegalArgumentException("Đơn giá phụ tùng không được để trống.");
         }
 
         if (unitPrice.signum() < 0) {
-            throw new IllegalArgumentException("Unit price cannot be negative.");
+            throw new IllegalArgumentException("Đơn giá phụ tùng không được âm.");
         }
 
         if (stockQuantity < 0) {
-            throw new IllegalArgumentException("Stock quantity cannot be negative.");
+            throw new IllegalArgumentException("Số lượng tồn kho không được âm.");
         }
     }
 
@@ -81,7 +81,7 @@ public class Part {
     public boolean hasEnoughStock(int quantity) {
         if (quantity <= 0) {
             throw new IllegalArgumentException(
-                    "Quantity must be greater than zero.");
+                    "Số lượng phải lớn hơn 0.");
         }
 
         return stockQuantity >= quantity;
@@ -98,7 +98,7 @@ public class Part {
 
         if (!hasEnoughStock(quantity)) {
             throw new IllegalArgumentException(
-                    "Not enough parts in stock.");
+                    "Số lượng phụ tùng trong kho không đủ.");
         }
 
         stockQuantity -= quantity;
@@ -107,7 +107,7 @@ public class Part {
     private void validateQuantity(int quantity) {
         if (quantity <= 0) {
             throw new IllegalArgumentException(
-                    "Quantity must be greater than zero.");
+                    "Số lượng phải lớn hơn 0.");
         }
     }
 
@@ -119,7 +119,7 @@ public class Part {
 
     public void setId(int id) {
         if (id < 0) {
-            throw new IllegalArgumentException("ID cannot be negative.");
+            throw new IllegalArgumentException("Mã không được là số âm.");
         }
 
         this.id = id;
@@ -148,7 +148,7 @@ public class Part {
     public void setUnitPrice(BigDecimal unitPrice) {
         if (unitPrice != null && unitPrice.signum() < 0) {
             throw new IllegalArgumentException(
-                    "Unit price cannot be negative.");
+                    "Đơn giá phụ tùng không được âm.");
         }
 
         this.unitPrice = unitPrice;
@@ -161,7 +161,7 @@ public class Part {
     public void setStockQuantity(int stockQuantity) {
         if (stockQuantity < 0) {
             throw new IllegalArgumentException(
-                    "Stock quantity cannot be negative.");
+                    "Số lượng tồn kho không được âm.");
         }
 
         this.stockQuantity = stockQuantity;

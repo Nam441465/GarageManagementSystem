@@ -49,7 +49,7 @@ public class InventoryService {
 
         if (partId <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid part ID.");
+                    "Mã phụ tùng không hợp lệ.");
         }
 
         return partDAO.findById(partId);
@@ -59,7 +59,7 @@ public class InventoryService {
 
         Objects.requireNonNull(
                 part,
-                "Part is required.");
+                "Thông tin phụ tùng không được để trống.");
 
         part.validate();
 
@@ -70,11 +70,11 @@ public class InventoryService {
 
         Objects.requireNonNull(
                 part,
-                "Part is required.");
+                "Thông tin phụ tùng không được để trống.");
 
         if (part.getId() <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid part ID.");
+                    "Mã phụ tùng không hợp lệ.");
         }
 
         part.validate();
@@ -86,7 +86,7 @@ public class InventoryService {
 
         if (partId <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid part ID.");
+                    "Mã phụ tùng không hợp lệ.");
         }
 
         return partDAO.deletePart(partId);
@@ -98,12 +98,12 @@ public class InventoryService {
 
         if (partId <= 0) {
             throw new IllegalArgumentException(
-                    "Invalid part ID.");
+                    "Mã phụ tùng không hợp lệ.");
         }
 
         if (newQuantity < 0) {
             throw new IllegalArgumentException(
-                    "Stock quantity cannot be negative.");
+                    "Số lượng tồn kho không được âm.");
         }
 
         Part part = partDAO.findById(partId);

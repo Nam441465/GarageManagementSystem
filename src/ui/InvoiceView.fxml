@@ -37,13 +37,13 @@
                 </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="idColumn"
-                                 text="ID"
+                                 text="Mã số"
                                  prefWidth="50" />
                     <TableColumn fx:id="customerIdColumn"
-                                 text="Mã KH"
+                                 text="Mã khách hàng"
                                  prefWidth="70" />
                     <TableColumn fx:id="employeeIdColumn"
-                                 text="Mã NV"
+                                 text="Mã nhân viên"
                                  prefWidth="70" />
                     <TableColumn fx:id="licensePlateColumn"
                                  text="Biển số"
@@ -81,7 +81,7 @@
                 <VBox spacing="5">
                     <Label text="Mã khách hàng:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <TextField fx:id="customerIdField"
-                               promptText="Mã khách hàng (ID)"
+                               promptText="Nhập mã khách hàng"
                                maxWidth="Infinity"
                                prefHeight="30"
                                style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />

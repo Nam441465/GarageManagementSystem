@@ -112,7 +112,7 @@ public class PriceListService {
 
                 if (!serviceDAO.existsById(serviceId)) {
                         throw new IllegalArgumentException(
-                                        "Service not found");
+                                        "Không tìm thấy dịch vụ tương ứng.");
                 }
 
                 PriceList priceList = new PriceList(
@@ -128,7 +128,7 @@ public class PriceListService {
 
                 if (!created) {
                         throw new IllegalStateException(
-                                        "Failed to create price list");
+                                        "Không thể tạo bảng giá mới.");
                 }
 
                 return true;
@@ -138,14 +138,14 @@ public class PriceListService {
 
                 if (priceId <= 0) {
                         throw new IllegalArgumentException(
-                                        "Invalid price list id");
+                                        "Mã bảng giá không hợp lệ.");
                 }
 
                 PriceList priceList = priceListDAO.findById(priceId);
 
                 if (priceList == null) {
                         throw new IllegalArgumentException(
-                                        "Price list not found");
+                                        "Không tìm thấy bảng giá.");
                 }
 
                 return priceList;
@@ -159,12 +159,12 @@ public class PriceListService {
 
                 if (serviceId <= 0) {
                         throw new IllegalArgumentException(
-                                        "Invalid service id");
+                                        "Mã dịch vụ không hợp lệ.");
                 }
 
                 if (!serviceDAO.existsById(serviceId)) {
                         throw new IllegalArgumentException(
-                                        "Service not found");
+                                        "Không tìm thấy dịch vụ tương ứng.");
                 }
 
                 return priceListDAO.findByServiceId(serviceId);
@@ -179,7 +179,7 @@ public class PriceListService {
 
                 if (priceList.getId() <= 0) {
                         throw new IllegalArgumentException(
-                                        "Invalid price list id");
+                                        "Mã bảng giá không hợp lệ.");
                 }
 
                 validatePriceData(
@@ -194,14 +194,14 @@ public class PriceListService {
                                 priceList.getServiceId())) {
 
                         throw new IllegalArgumentException(
-                                        "Service not found");
+                                        "Không tìm thấy dịch vụ tương ứng.");
                 }
 
                 if (priceListDAO.findById(
                                 priceList.getId()) == null) {
 
                         throw new IllegalArgumentException(
-                                        "Price list not found");
+                                        "Không tìm thấy bảng giá.");
                 }
 
                 boolean updated = priceListDAO.updatePriceList(
@@ -209,7 +209,7 @@ public class PriceListService {
 
                 if (!updated) {
                         throw new IllegalStateException(
-                                        "Failed to update price list");
+                                        "Không thể cập nhật bảng giá.");
                 }
 
                 return true;
@@ -219,12 +219,12 @@ public class PriceListService {
 
                 if (priceId <= 0) {
                         throw new IllegalArgumentException(
-                                        "Invalid price list id");
+                                        "Mã bảng giá không hợp lệ.");
                 }
 
                 if (priceListDAO.findById(priceId) == null) {
                         throw new IllegalArgumentException(
-                                        "Price list not found");
+                                        "Không tìm thấy bảng giá.");
                 }
 
                 boolean deleted = priceListDAO.deletePriceList(
@@ -232,7 +232,7 @@ public class PriceListService {
 
                 if (!deleted) {
                         throw new IllegalStateException(
-                                        "Failed to delete price list");
+                                        "Không thể xóa bảng giá.");
                 }
 
                 return true;
@@ -245,19 +245,19 @@ public class PriceListService {
 
                 if (serviceId <= 0) {
                         throw new IllegalArgumentException(
-                                        "Invalid service id");
+                                        "Mã dịch vụ không hợp lệ.");
                 }
 
                 if (vehicleType == null
                                 || vehicleType.trim().isEmpty()) {
                         throw new IllegalArgumentException(
-                                        "Vehicle type cannot be empty");
+                                        "Loại xe không được để trống.");
                 }
 
                 if (vehicleBrand == null
                                 || vehicleBrand.trim().isEmpty()) {
                         throw new IllegalArgumentException(
-                                        "Vehicle brand cannot be empty");
+                                        "Hãng xe không được để trống.");
                 }
 
                 PriceList price = priceListDAO.findByServiceVehicleTypeAndBrand(
@@ -278,43 +278,43 @@ public class PriceListService {
 
                 if (serviceId <= 0) {
                         throw new IllegalArgumentException(
-                                        "Invalid service id");
+                                        "Mã dịch vụ không hợp lệ.");
                 }
 
                 if (vehicleType == null
                                 || vehicleType.trim().isEmpty()) {
 
                         throw new IllegalArgumentException(
-                                        "Vehicle type cannot be empty");
+                                        "Loại xe không được để trống.");
                 }
 
                 if (vehicleBrand == null
                                 || vehicleBrand.trim().isEmpty()) {
 
                         throw new IllegalArgumentException(
-                                        "Vehicle brand cannot be empty");
+                                        "Hãng xe không được để trống.");
                 }
 
                 if (price == null) {
                         throw new IllegalArgumentException(
-                                        "Price cannot be null");
+                                        "Giá dịch vụ không được để trống.");
                 }
 
                 if (price.compareTo(BigDecimal.ZERO) < 0) {
                         throw new IllegalArgumentException(
-                                        "Price cannot be negative");
+                                        "Giá dịch vụ không được âm.");
                 }
 
                 if (effectiveFrom == null) {
                         throw new IllegalArgumentException(
-                                        "Effective from date cannot be null");
+                                        "Ngày bắt đầu hiệu lực không được để trống.");
                 }
 
                 if (effectiveTo != null
                                 && effectiveTo.isBefore(effectiveFrom)) {
 
                         throw new IllegalArgumentException(
-                                        "Effective to date cannot be before effective from date");
+                                        "Ngày kết thúc hiệu lực không được trước ngày bắt đầu.");
                 }
         }
 }

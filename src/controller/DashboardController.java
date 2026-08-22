@@ -65,7 +65,7 @@ public class DashboardController {
         if (user != null) {
 
             welcomeLabel.setText("Chào mừng: " + user.getUsername());
-            roleLabel.setText("Vai trò: " + user.getRole());
+            roleLabel.setText("Vai trò: " + (user.getRole() != null ? user.getRole().getDisplayName() : ""));
 
             if (!authorizationService.isOwner()) {
                 employeeButton.setVisible(false);
@@ -74,9 +74,15 @@ public class DashboardController {
                 inviteButton.setManaged(false);
                 statisticsButton.setVisible(false);
                 statisticsButton.setManaged(false);
-                System.out.println("Employee login");
+                System.out.println("Nhân viên đăng nhập: Ẩn quản lý nhân viên, mã mời và thống kê.");
             } else {
-                System.out.println("Owner login");
+                employeeButton.setVisible(true);
+                employeeButton.setManaged(true);
+                inviteButton.setVisible(true);
+                inviteButton.setManaged(true);
+                statisticsButton.setVisible(true);
+                statisticsButton.setManaged(true);
+                System.out.println("Chủ gara đăng nhập: Đầy đủ tính năng.");
             }
         }
     }
@@ -93,13 +99,13 @@ public class DashboardController {
 
     @FXML
     public void showService() {
-        openWindow("/ui/ServiceView.fxml", "Quản lý dịch vụ");
+        openWindow("/ui/ServiceView.fxml", "Quản lý danh mục dịch vụ");
     }
 
     @FXML
     public void showAppointment() {
         if (authorizationService.isOwnerOrEmployee()) {
-            openWindow("/ui/AppointmentManagementView.fxml", "Lịch hẹn đã đặt");
+            openWindow("/ui/AppointmentManagementView.fxml", "Quản lý lịch hẹn");
         } else {
             openWindow("/ui/CustomerAppointmentView.fxml", "Đặt lịch hẹn");
         }
@@ -137,7 +143,7 @@ public class DashboardController {
 
     @FXML
     public void showStatistics() {
-        openWindow("/ui/StatisticsView.fxml", "Thống kê gara");
+        openWindow("/ui/StatisticsView.fxml", "Báo cáo thống kê gara");
     }
 
     private void openWindow(String path, String title) {

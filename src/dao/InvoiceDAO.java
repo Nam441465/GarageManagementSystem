@@ -33,6 +33,7 @@ public class InvoiceDAO extends BaseDAO<Invoice> {
         invoice.setId(rs.getInt("id"));
         invoice.setCustomerId(rs.getInt("customer_id"));
         invoice.setEmployeeId(rs.getInt("employee_id"));
+        try { invoice.setEmployeeName(rs.getString("employee_name")); } catch (Exception ignored) {}
         invoice.setLicensePlate(rs.getString("license_plate"));
         invoice.setVehicleType(rs.getString("vehicle_type"));
         invoice.setVehicleBrand(rs.getString("vehicle_brand"));

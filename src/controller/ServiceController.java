@@ -9,159 +9,183 @@ import javafx.fxml.FXML;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import model.Service;
 
 import service.ServiceService;
+import util.AlertUtil;
 
 public class ServiceController {
 
-        @FXML
-        private TableView<Service> serviceTable;
+    @FXML
+    private TableView<Service> serviceTable;
 
-        @FXML
-        private TableColumn<Service, Integer> idColumn;
+    @FXML
+    private TableColumn<Service, Integer> idColumn;
 
-        @FXML
-        private TableColumn<Service, String> serviceNameColumn;
+    @FXML
+    private TableColumn<Service, String> serviceNameColumn;
 
-        @FXML
-        private TableColumn<Service, String> descriptionColumn;
+    @FXML
+    private TableColumn<Service, String> descriptionColumn;
 
-        @FXML
-        private TextField serviceNameField;
+    @FXML
+    private TextField serviceNameField;
 
-        @FXML
-        private TextField descriptionField;
+    @FXML
+    private TextArea descriptionField;
 
-        private final ServiceService serviceService = new ServiceService();
+    private final ServiceService serviceService = new ServiceService();
 
-        private ObservableList<Service> serviceList;
+    private ObservableList<Service> serviceList;
 
-        @FXML
-        public void initialize() {
+    @FXML
+    public void initialize() {
 
-                serviceList = FXCollections.observableArrayList();
+        serviceList = FXCollections.observableArrayList();
 
-                idColumn.setCellValueFactory(
-                                data -> new SimpleIntegerProperty(
-                                                data.getValue().getId()).asObject());
+        idColumn.setCellValueFactory(
+                data -> new SimpleIntegerProperty(
+                        data.getValue().getId()).asObject());
 
-                serviceNameColumn.setCellValueFactory(
-                                data -> new SimpleStringProperty(
-                                                data.getValue().getServiceName()));
+        serviceNameColumn.setCellValueFactory(
+                data -> new SimpleStringProperty(
+                        data.getValue().getServiceName()));
 
-                descriptionColumn.setCellValueFactory(
-                                data -> new SimpleStringProperty(
-                                                data.getValue().getDescription()));
+        descriptionColumn.setCellValueFactory(
+                data -> new SimpleStringProperty(
+                        data.getValue().getDescription()));
 
-                loadServices();
+        loadServices();
 
-                serviceTable.getSelectionModel()
-                                .selectedItemProperty()
-                                .addListener((obs, old, service) -> {
+        serviceTable.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, old, service) -> {
 
-                                        if (service != null) {
+                    if (service != null) {
 
-                                                serviceNameField.setText(
-                                                                service.getServiceName());
+                        serviceNameField.setText(
+                                service.getServiceName());
 
-                                                descriptionField.setText(
-                                                                service.getDescription());
-                                        }
-                                });
+                        descriptionField.setText(
+                                service.getDescription());
+                    }
+                });
+    }
+
+    private void loadServices() {
+
+        serviceList.clear();
+
+        serviceList.addAll(
+                serviceService.findAll());
+
+        serviceTable.setItems(
+                serviceList);
+    }
+
+    @FXML
+    public void addService() {
+
+        try {
+            String name = serviceNameField.getText().trim();
+            String desc = descriptionField.getText().trim();
+
+            if (name.isEmpty()) {
+                AlertUtil.showWarning("Cảnh báo", "Tên dịch vụ không được để trống!");
+                return;
+            }
+
+            Service service = new Service();
+            service.setServiceName(name);
+            service.setDescription(desc);
+
+            serviceService.addService(service);
+
+            loadServices();
+            clearFields();
+            AlertUtil.showInfo("Thành công", "Thêm gói dịch vụ mới thành công!");
+        } catch (Exception e) {
+            AlertUtil.showError("Lỗi", e.getMessage() != null ? e.getMessage() : "Không thể thêm dịch vụ.");
+        }
+    }
+
+    @FXML
+    public void updateService() {
+
+        Service service = serviceTable
+                .getSelectionModel()
+                .getSelectedItem();
+
+        if (service == null) {
+            AlertUtil.showWarning("Cảnh báo", "Vui lòng chọn dịch vụ cần cập nhật!");
+            return;
         }
 
-        private void loadServices() {
+        try {
+            String name = serviceNameField.getText().trim();
+            String desc = descriptionField.getText().trim();
 
-                serviceList.clear();
+            if (name.isEmpty()) {
+                AlertUtil.showWarning("Cảnh báo", "Tên dịch vụ không được để trống!");
+                return;
+            }
 
-                serviceList.addAll(
-                                serviceService.findAll());
+            service.setServiceName(name);
+            service.setDescription(desc);
 
-                serviceTable.setItems(
-                                serviceList);
+            serviceService.updateService(service);
+
+            loadServices();
+            clearFields();
+            AlertUtil.showInfo("Thành công", "Cập nhật gói dịch vụ thành công!");
+        } catch (Exception e) {
+            AlertUtil.showError("Lỗi", e.getMessage() != null ? e.getMessage() : "Không thể cập nhật dịch vụ.");
+        }
+    }
+
+    @FXML
+    public void deleteService() {
+
+        Service service = serviceTable
+                .getSelectionModel()
+                .getSelectedItem();
+
+        if (service == null) {
+            AlertUtil.showWarning("Cảnh báo", "Vui lòng chọn dịch vụ cần xóa!");
+            return;
         }
 
-        @FXML
-        public void addService() {
-
-                Service service = new Service();
-
-                service.setServiceName(
-                                serviceNameField.getText());
-
-                service.setDescription(
-                                descriptionField.getText());
-
-                serviceService.addService(service);
-
+        if (AlertUtil.showConfirmation("Xác nhận", "Bạn có chắc chắn muốn xóa dịch vụ: " + service.getServiceName() + "?")) {
+            try {
+                serviceService.deleteService(service.getId());
                 loadServices();
-
                 clearFields();
+                AlertUtil.showInfo("Thành công", "Xóa gói dịch vụ thành công!");
+            } catch (Exception e) {
+                AlertUtil.showError("Lỗi", e.getMessage() != null ? e.getMessage() : "Không thể xóa dịch vụ.");
+            }
         }
+    }
 
-        @FXML
-        public void updateService() {
+    private void clearFields() {
 
-                Service service = serviceTable
-                                .getSelectionModel()
-                                .getSelectedItem();
+        serviceNameField.clear();
 
-                if (service == null) {
-                        return;
-                }
+        descriptionField.clear();
 
-                service.setServiceName(
-                                serviceNameField.getText());
+        serviceTable.getSelectionModel()
+                .clearSelection();
+    }
 
-                service.setDescription(
-                                descriptionField.getText());
+    @FXML
+    public void backToDashboard() {
 
-                serviceService.updateService(service);
-
-                loadServices();
-
-                clearFields();
-        }
-
-        @FXML
-        public void deleteService() {
-
-                Service service = serviceTable
-                                .getSelectionModel()
-                                .getSelectedItem();
-
-                if (service == null) {
-                        return;
-                }
-
-                serviceService.deleteService(
-                                service.getId());
-
-                loadServices();
-
-                clearFields();
-        }
-
-        private void clearFields() {
-
-                serviceNameField.clear();
-
-                descriptionField.clear();
-
-                serviceTable.getSelectionModel()
-                                .clearSelection();
-        }
-
-        @FXML
-        public void backToDashboard() {
-
-                Navigation.changeScene(
-                                serviceTable,
-                                "/ui/DashboardView.fxml",
-                                650,
-                                650);
-        }
+        Navigation.changeScene(
+                serviceTable,
+                "/ui/DashboardView.fxml",
+                "Bảng điều khiển trung tâm");
+    }
 }

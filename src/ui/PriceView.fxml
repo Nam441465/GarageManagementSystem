@@ -39,7 +39,7 @@
                 </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="idColumn"
-                                 text="ID"
+                                 text="Mã số"
                                  prefWidth="60" />
                     <TableColumn fx:id="serviceColumn"
                                  text="Mã dịch vụ"
@@ -74,7 +74,7 @@
                 <VBox spacing="5">
                     <Label text="Mã dịch vụ:" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
                     <TextField fx:id="serviceIdField"
-                               promptText="Mã dịch vụ (ID)"
+                               promptText="Nhập mã dịch vụ"
                                maxWidth="Infinity"
                                prefHeight="32"
                                style="-fx-font-size: 13px; -fx-text-fill: #263238; -fx-control-inner-background: #ffffff;" />

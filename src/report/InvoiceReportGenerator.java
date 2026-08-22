@@ -5,6 +5,7 @@ import model.InvoiceDetail;
 import service.InvoiceService;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -31,21 +32,21 @@ public class InvoiceReportGenerator {
 
                 if (invoiceId <= 0) {
                         throw new IllegalArgumentException(
-                                        "Invalid invoice ID.");
+                                        "Mã hóa đơn không hợp lệ.");
                 }
 
                 if (outputDirectory == null
                                 || outputDirectory.isBlank()) {
 
                         throw new IllegalArgumentException(
-                                        "Output directory is required.");
+                                        "Thư mục xuất file không được để trống.");
                 }
 
                 Invoice invoice = invoiceService.findById(invoiceId);
 
                 if (invoice == null) {
                         throw new IllegalArgumentException(
-                                        "Invoice not found.");
+                                        "Không tìm thấy hóa đơn.");
                 }
 
                 try {
@@ -58,7 +59,7 @@ public class InvoiceReportGenerator {
 
                         boolean exported = exporter.export(
                                         output.toString(),
-                                        "GARAGE INVOICE",
+                                        "HÓA ĐƠN DỊCH VỤ",
                                         buildContent(invoice));
 
                         if (exported) {
@@ -83,71 +84,83 @@ public class InvoiceReportGenerator {
 
                 StringBuilder content = new StringBuilder();
 
-                content.append("GARAGE INVOICE\n");
-                content.append("============================\n");
+                content.append("HÓA ĐƠN DỊCH VỤ GARA\n");
+                content.append("========================================\n");
 
-                content.append("Invoice ID: ")
+                content.append("Mã hóa đơn: ")
                                 .append(invoice.getId())
                                 .append("\n");
 
-                content.append("Customer ID: ")
+                content.append("Mã khách hàng: ")
                                 .append(invoice.getCustomerId())
                                 .append("\n");
 
-                content.append("Employee ID: ")
-                                .append(invoice.getEmployeeId())
+                content.append("Nhân viên lập: ")
+                                .append(invoice.getEmployeeName() != null && !invoice.getEmployeeName().isBlank() ? invoice.getEmployeeName() : ("ID #" + invoice.getEmployeeId()))
                                 .append("\n");
 
-                content.append("License plate: ")
+                content.append("Biển số xe: ")
                                 .append(invoice.getLicensePlate())
                                 .append("\n");
 
-                content.append("Vehicle type: ")
+                content.append("Loại xe: ")
                                 .append(invoice.getVehicleType())
                                 .append("\n");
 
-                content.append("Vehicle brand: ")
+                content.append("Hãng xe: ")
                                 .append(invoice.getVehicleBrand())
                                 .append("\n");
 
-                content.append("Issue date: ")
+                content.append("Ngày phát hành: ")
                                 .append(invoice.getIssueDate())
                                 .append("\n");
 
-                content.append("Payment status: ")
+                content.append("Trạng thái thanh toán: ")
                                 .append(invoice.getPaymentStatus())
                                 .append("\n");
 
-                content.append("\nSERVICES\n");
-                content.append("----------------------------\n");
+                content.append("\nCHI TIẾT CÁC HẠNG MỤC DỊCH VỤ\n");
+                content.append("----------------------------------------\n");
 
+                BigDecimal subtotal = BigDecimal.ZERO;
                 if (invoice.getInvoiceDetails() == null
                                 || invoice.getInvoiceDetails().isEmpty()) {
 
-                        content.append("No services.\n");
+                        content.append("Không có chi tiết dịch vụ.\n");
 
                 } else {
 
                         for (InvoiceDetail detail : invoice.getInvoiceDetails()) {
 
-                                content.append("Service ID: ")
-                                                .append(detail.getServiceId())
-                                                .append("\n");
-
-                                content.append("Service: ")
+                                content.append("- Dịch vụ: ")
                                                 .append(detail.getServiceName())
                                                 .append("\n");
 
-                                content.append("Price: ")
-                                                .append(detail.getUnitPrice())
+                                content.append("  Đơn giá: ")
+                                                .append(String.format("%,.0f VNĐ", detail.getUnitPrice()))
                                                 .append("\n");
 
-                                content.append("----------------------------\n");
+                                if (detail.getUnitPrice() != null) {
+                                        subtotal = subtotal.add(detail.getUnitPrice());
+                                }
                         }
                 }
 
-                content.append("TOTAL: ")
-                                .append(invoice.getTotalAmount())
+                content.append("----------------------------------------\n");
+                content.append("Tạm tính: ")
+                                .append(String.format("%,.0f VNĐ", subtotal))
+                                .append("\n");
+
+                BigDecimal discount = subtotal.subtract(invoice.getTotalAmount());
+                if (discount.compareTo(BigDecimal.ZERO) > 0) {
+                        content.append("Chiết khấu hội viên (Strategy Discount): -")
+                                        .append(String.format("%,.0f VNĐ", discount))
+                                        .append("\n");
+                }
+
+                content.append("========================================\n");
+                content.append("TỔNG TIỀN THANH TOÁN: ")
+                                .append(String.format("%,.0f VNĐ", invoice.getTotalAmount()))
                                 .append("\n");
 
                 return content.toString();

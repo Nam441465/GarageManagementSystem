@@ -26,24 +26,24 @@ public class UserService {
 
         if (user.getUsername() == null
                 || user.getUsername().trim().isEmpty()) {
-            throw new IllegalArgumentException("Username can not be empty");
+            throw new IllegalArgumentException("Tên đăng nhập không được để trống.");
         }
 
         if (user.getPassword() == null
                 || user.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("Password can not be empty");
+            throw new IllegalArgumentException("Mật khẩu không được để trống.");
         }
 
         if (user.getRole() == null) {
-            throw new IllegalArgumentException("Role can not be empty");
+            throw new IllegalArgumentException("Quyền hạn không được để trống.");
         }
 
         if (user.getRole() == UserRole.OWNER) {
-            throw new IllegalArgumentException("The fixed Owner account cannot be created manually");
+            throw new IllegalArgumentException("Không thể tạo thủ công tài khoản Chủ gara cố định.");
         }
 
         if (userDAO.existsByUsername(user.getUsername())) {
-            throw new IllegalArgumentException("Username already exists");
+            throw new IllegalArgumentException("Tên đăng nhập này đã được sử dụng.");
         }
 
         userDAO.addUser(user);
@@ -56,29 +56,29 @@ public class UserService {
         }
 
         if (user.getId() <= 0) {
-            throw new IllegalArgumentException("Invalid user id");
+            throw new IllegalArgumentException("Mã người dùng không hợp lệ.");
         }
 
         if (user.getUsername() == null
                 || user.getUsername().trim().isEmpty()) {
-            throw new IllegalArgumentException("Username can not be empty");
+            throw new IllegalArgumentException("Tên đăng nhập không được để trống.");
         }
 
         if (user.getPassword() == null
                 || user.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("Password can not be empty");
+            throw new IllegalArgumentException("Mật khẩu không được để trống.");
         }
 
         if (user.getRole() == null) {
-            throw new IllegalArgumentException("Role can not be empty");
+            throw new IllegalArgumentException("Quyền hạn không được để trống.");
         }
 
         if (!userDAO.existsById(user.getId())) {
-            throw new IllegalArgumentException("User not found");
+            throw new IllegalArgumentException("Không tìm thấy người dùng.");
         }
 
         if (isOwner(user.getId())) {
-            throw new IllegalArgumentException("The fixed Owner account cannot be modified");
+            throw new IllegalArgumentException("Không thể sửa tài khoản Chủ gara cố định.");
         }
 
         userDAO.updateUser(user);
@@ -87,15 +87,15 @@ public class UserService {
     public void deleteUser(int id) {
 
         if (id <= 0) {
-            throw new IllegalArgumentException("Invalid user id");
+            throw new IllegalArgumentException("Mã người dùng không hợp lệ.");
         }
 
         if (!userDAO.existsById(id)) {
-            throw new IllegalArgumentException("User not found");
+            throw new IllegalArgumentException("Không tìm thấy người dùng.");
         }
 
         if (isOwner(id)) {
-            throw new IllegalArgumentException("The fixed Owner account cannot be deleted");
+            throw new IllegalArgumentException("Không thể xóa tài khoản Chủ gara cố định.");
         }
 
         userDAO.deleteUser(id);
@@ -104,7 +104,7 @@ public class UserService {
     public User findById(int id) {
 
         if (id <= 0) {
-            throw new IllegalArgumentException("Invalid user id");
+            throw new IllegalArgumentException("Mã người dùng không hợp lệ.");
         }
 
         return userDAO.findById(id);
@@ -117,7 +117,7 @@ public class UserService {
     public User findByUsername(String username) {
 
         if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username can not be empty");
+            throw new IllegalArgumentException("Tên đăng nhập không được để trống.");
         }
 
         return userDAO.findByUsername(username);
@@ -126,11 +126,11 @@ public class UserService {
     public User login(String username, String password) {
 
         if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username can not be empty");
+            throw new IllegalArgumentException("Tên đăng nhập không được để trống.");
         }
 
         if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Password can not be empty");
+            throw new IllegalArgumentException("Mật khẩu không được để trống.");
         }
 
         return userDAO.login(username, password);
@@ -139,16 +139,16 @@ public class UserService {
     public boolean changePassword(int userId, String newPassword) {
 
         if (userId <= 0) {
-            throw new IllegalArgumentException("Invalid user id");
+            throw new IllegalArgumentException("Mã người dùng không hợp lệ.");
         }
 
         if (newPassword == null
                 || newPassword.trim().isEmpty()) {
-            throw new IllegalArgumentException("New password can not be empty");
+            throw new IllegalArgumentException("Mật khẩu mới không được để trống.");
         }
 
         if (!userDAO.existsById(userId)) {
-            throw new IllegalArgumentException("User not found");
+            throw new IllegalArgumentException("Không tìm thấy người dùng.");
         }
 
         return userDAO.changePassword(userId, newPassword);
@@ -157,7 +157,7 @@ public class UserService {
     public boolean existsById(int id) {
 
         if (id <= 0) {
-            throw new IllegalArgumentException("Invalid user id");
+            throw new IllegalArgumentException("Mã người dùng không hợp lệ.");
         }
 
         return userDAO.existsById(id);
@@ -166,7 +166,7 @@ public class UserService {
     public boolean existsByUsername(String username) {
 
         if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username can not be empty");
+            throw new IllegalArgumentException("Tên đăng nhập không được để trống.");
         }
 
         return userDAO.existsByUsername(username);

@@ -35,7 +35,7 @@
                 </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="idColumn"
-                                 text="ID"
+                                 text="Mã số"
                                  prefWidth="50" />
                     <TableColumn fx:id="nameColumn"
                                  text="Họ và tên"
@@ -50,7 +50,7 @@
                                  text="Mức lương cứng (VNĐ)"
                                  prefWidth="160" />
                     <TableColumn fx:id="userIdColumn"
-                                 text="User ID"
+                                 text="Mã tài khoản"
                                  prefWidth="80" />
                 </columns>
             </TableView>

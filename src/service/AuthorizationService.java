@@ -14,7 +14,7 @@ public class AuthorizationService {
     public void requireOwner() {
         if (!isOwner()) {
             throw new PermissionDeniedException(
-                    "Owner permission required.");
+                    "Yêu cầu quyền hạn Chủ gara.");
         }
     }
 
@@ -26,7 +26,7 @@ public class AuthorizationService {
     public void requireEmployee() {
         if (!isEmployee()) {
             throw new PermissionDeniedException(
-                    "Employee permission required.");
+                    "Yêu cầu quyền hạn Nhân viên.");
         }
     }
 
@@ -39,7 +39,7 @@ public class AuthorizationService {
     public void requireOwnerOrEmployee() {
         if (!isOwnerOrEmployee()) {
             throw new PermissionDeniedException(
-                    "Owner or Employee permission required.");
+                    "Yêu cầu quyền hạn Chủ gara hoặc Nhân viên.");
         }
     }
 }

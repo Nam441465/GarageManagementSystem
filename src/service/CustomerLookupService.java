@@ -195,7 +195,7 @@ public class CustomerLookupService {
 
         if (vehicle == null) {
             throw new IllegalArgumentException(
-                    "Vehicle is required.");
+                    "Thông tin xe không được để trống.");
         }
 
         if (vehicle.getStatus() == null) {

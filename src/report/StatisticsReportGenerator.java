@@ -54,7 +54,7 @@ public class StatisticsReportGenerator {
                                 || outputDirectory.isBlank()) {
 
                         throw new IllegalArgumentException(
-                                        "Output directory is required.");
+                                        "Thư mục xuất file không được để trống.");
                 }
 
                 try {
