@@ -1,8 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="controller.WarrantyController">
-    <top><Label text="Quản lý bảo hành" style="-fx-font-size: 20px; -fx-padding: 12;"/></top>
-    <center><TableView fx:id="warrantyTable"><columns><TableColumn fx:id="idColumn" text="ID" prefWidth="50"/><TableColumn fx:id="invoiceColumn" text="Mã hóa đơn" prefWidth="120"/><TableColumn fx:id="codeColumn" text="Mã bảo hành" prefWidth="130"/><TableColumn fx:id="startColumn" text="Ngày bắt đầu" prefWidth="110"/><TableColumn fx:id="endColumn" text="Ngày kết thúc" prefWidth="110"/><TableColumn fx:id="statusColumn" text="Trạng thái" prefWidth="90"/></columns></TableView></center>
-    <right><VBox spacing="8" prefWidth="250" style="-fx-padding: 12;"><TextField fx:id="invoiceIdField" promptText="Mã hóa đơn"/><TextField fx:id="warrantyCodeField" promptText="Mã bảo hành"/><DatePicker fx:id="startDatePicker" promptText="Ngày bắt đầu"/><DatePicker fx:id="endDatePicker" promptText="Ngày kết thúc"/><ComboBox fx:id="statusComboBox" promptText="Trạng thái"/><TextArea fx:id="coverageArea" promptText="Phạm vi bảo hành" prefRowCount="4"/><HBox spacing="8"><Button text="Thêm" onAction="#addWarranty"/><Button text="Cập nhật" onAction="#updateWarranty"/></HBox><HBox spacing="8"><Button text="Xóa" onAction="#deleteWarranty"/><Button text="Xóa trắng" onAction="#clearForm"/></HBox><Button text="Quay lại" onAction="#backToDashboard"/></VBox></right>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.WarrantyController"
+            style="-fx-background-color: #f8f9fa;">
+
+    <top>
+        <VBox style="-fx-background-color: #ffffff; -fx-padding: 14 20 14 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+            <Label text="QUẢN LÝ BẢO HÀNH"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
+            <Label text="Theo dõi và quản lý phiếu bảo hành dịch vụ, phụ tùng"
+                   style="-fx-font-size: 13px; -fx-text-fill: #666666;" />
+        </VBox>
+    </top>
+
+    <center>
+        <VBox style="-fx-padding: 12 16 12 16;" spacing="8">
+            <TableView fx:id="warrantyTable"
+                       VBox.vgrow="ALWAYS"
+                       style="-fx-font-size: 13px;">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+                <columns>
+                    <TableColumn fx:id="idColumn"
+                                 text="ID"
+                                 prefWidth="50" />
+                    <TableColumn fx:id="invoiceColumn"
+                                 text="Mã hóa đơn"
+                                 prefWidth="120" />
+                    <TableColumn fx:id="codeColumn"
+                                 text="Mã bảo hành"
+                                 prefWidth="140" />
+                    <TableColumn fx:id="startColumn"
+                                 text="Ngày bắt đầu"
+                                 prefWidth="120" />
+                    <TableColumn fx:id="endColumn"
+                                 text="Ngày kết thúc"
+                                 prefWidth="120" />
+                    <TableColumn fx:id="statusColumn"
+                                 text="Trạng thái"
+                                 prefWidth="100" />
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <right>
+        <ScrollPane fitToWidth="true"
+                    prefWidth="350"
+                    style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;">
+            <VBox spacing="8"
+                  style="-fx-padding: 14 16 18 16;">
+
+                <Label text="Thông tin phiếu bảo hành"
+                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+
+                <VBox spacing="6">
+                    <TextField fx:id="invoiceIdField"
+                               promptText="Mã hóa đơn"
+                               maxWidth="Infinity"
+                               prefHeight="32"
+                               style="-fx-font-size: 13px;" />
+
+                    <TextField fx:id="warrantyCodeField"
+                               promptText="Mã bảo hành"
+                               maxWidth="Infinity"
+                               prefHeight="32"
+                               style="-fx-font-size: 13px;" />
+
+                    <DatePicker fx:id="startDatePicker"
+                                promptText="Ngày bắt đầu"
+                                maxWidth="Infinity"
+                                prefHeight="32"
+                                style="-fx-font-size: 13px;" />
+
+                    <DatePicker fx:id="endDatePicker"
+                                promptText="Ngày kết thúc"
+                                maxWidth="Infinity"
+                                prefHeight="32"
+                                style="-fx-font-size: 13px;" />
+
+                    <ComboBox fx:id="statusComboBox"
+                              promptText="Trạng thái"
+                              maxWidth="Infinity"
+                              prefHeight="32"
+                              style="-fx-font-size: 13px;" />
+
+                    <TextArea fx:id="coverageArea"
+                              promptText="Phạm vi bảo hành"
+                              prefRowCount="2"
+                              maxWidth="Infinity"
+                              style="-fx-font-size: 13px;" />
+                </VBox>
+
+                <Separator />
+
+                <VBox spacing="6">
+                    <HBox spacing="6">
+                        <Button text="Thêm"
+                                onAction="#addWarranty"
+                                HBox.hgrow="ALWAYS"
+                                maxWidth="Infinity"
+                                prefHeight="32"
+                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+
+                        <Button text="Cập nhật"
+                                onAction="#updateWarranty"
+                                HBox.hgrow="ALWAYS"
+                                maxWidth="Infinity"
+                                prefHeight="32"
+                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                    </HBox>
+
+                    <HBox spacing="6">
+                        <Button text="Xóa"
+                                onAction="#deleteWarranty"
+                                HBox.hgrow="ALWAYS"
+                                maxWidth="Infinity"
+                                prefHeight="32"
+                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+
+                        <Button text="Xóa trắng"
+                                onAction="#clearForm"
+                                HBox.hgrow="ALWAYS"
+                                maxWidth="Infinity"
+                                prefHeight="32"
+                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                    </HBox>
+
+                    <Button text="Quay lại"
+                            onAction="#backToDashboard"
+                            maxWidth="Infinity"
+                            prefHeight="32"
+                            style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </right>
+
 </BorderPane>

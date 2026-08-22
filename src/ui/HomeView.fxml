@@ -1,36 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controller.HomeController"
-      alignment="CENTER"
-      spacing="20"
-      prefWidth="500"
-      prefHeight="500">
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.HomeController"
+            style="-fx-background-color: #f0f4f8;">
 
-    <Label text="HỆ THỐNG QUẢN LÝ GARA"
-           style="-fx-font-size: 24px;"/>
+    <top>
+        <VBox alignment="CENTER"
+              spacing="10"
+              style="-fx-background-color: #1a237e; -fx-padding: 35 20 35 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);">
+            <Label text="HỆ THỐNG QUẢN LÝ GARA CHUYÊN NGHIỆP"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #ffffff;" />
+            <Label text="Giải pháp quản trị toàn diện - Đặt lịch hẹn - Tra cứu thông tin xe &amp; Dịch vụ bảo dưỡng"
+                   style="-fx-font-size: 15px; -fx-text-fill: #e8eaf6;" />
+        </VBox>
+    </top>
 
-    <Button fx:id="loginButton"
-            text="Đăng nhập"
-            prefWidth="220"
-            prefHeight="45"
-            onAction="#openLogin"/>
+    <center>
+        <VBox alignment="CENTER"
+              spacing="30"
+              style="-fx-padding: 40;"
+              VBox.vgrow="ALWAYS">
 
-    <Button fx:id="customerSearchButton"
-            text="Tra cứu khách hàng"
-            prefWidth="220"
-            prefHeight="45"
-            onAction="#openCustomerLookupView"/>
+            <GridPane hgap="30"
+                      vgap="30"
+                      alignment="CENTER"
+                      VBox.vgrow="ALWAYS"
+                      maxWidth="Infinity">
 
-    <Button fx:id="appointmentButton"
-            text="Đặt lịch"
-            prefWidth="220"
-            prefHeight="45"
-            onAction="#openAppointment"/>
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33.33" />
+                    <ColumnConstraints percentWidth="33.33" />
+                    <ColumnConstraints percentWidth="33.33" />
+                </columnConstraints>
 
-</VBox>
+                <rowConstraints>
+                    <RowConstraints percentHeight="100" />
+                </rowConstraints>
+
+                <!-- Action 1: Đăng nhập -->
+                <VBox alignment="CENTER"
+                      spacing="20"
+                      GridPane.columnIndex="0"
+                      GridPane.rowIndex="0"
+                      style="-fx-background-color: #ffffff; -fx-padding: 30; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #cfd8dc; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+                    <Label text="DÀNH CHO QUẢN TRỊ &amp; NHÂN VIÊN"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #283593;" />
+                    <Label text="Đăng nhập để quản lý xe, khách hàng, hóa đơn, phụ tùng và báo cáo thống kê."
+                           style="-fx-font-size: 13px; -fx-text-fill: #546e7a;"
+                           wrapText="true"
+                           textAlignment="CENTER"
+                           VBox.vgrow="ALWAYS" />
+                    <Button fx:id="loginButton"
+                            text="ĐĂNG NHẬP HỆ THỐNG"
+                            maxWidth="Infinity"
+                            prefHeight="55"
+                            style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: white; -fx-background-radius: 8;"
+                            onAction="#openLogin" />
+                </VBox>
+
+                <!-- Action 2: Tra cứu thông tin -->
+                <VBox alignment="CENTER"
+                      spacing="20"
+                      GridPane.columnIndex="1"
+                      GridPane.rowIndex="0"
+                      style="-fx-background-color: #ffffff; -fx-padding: 30; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #cfd8dc; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+                    <Label text="DÀNH CHO KHÁCH HÀNG"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #00695c;" />
+                    <Label text="Tra cứu bảng giá dịch vụ sửa chữa và kiểm tra tình trạng tiến độ sửa chữa của xe."
+                           style="-fx-font-size: 13px; -fx-text-fill: #546e7a;"
+                           wrapText="true"
+                           textAlignment="CENTER"
+                           VBox.vgrow="ALWAYS" />
+                    <Button fx:id="customerSearchButton"
+                            text="TRA CỨU DỊCH VỤ &amp; XE"
+                            maxWidth="Infinity"
+                            prefHeight="55"
+                            style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #00695c; -fx-text-fill: white; -fx-background-radius: 8;"
+                            onAction="#openCustomerLookupView" />
+                </VBox>
+
+                <!-- Action 3: Đặt lịch hẹn -->
+                <VBox alignment="CENTER"
+                      spacing="20"
+                      GridPane.columnIndex="2"
+                      GridPane.rowIndex="0"
+                      style="-fx-background-color: #ffffff; -fx-padding: 30; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #cfd8dc; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+                    <Label text="DỊCH VỤ NHANH CHÓNG"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #e65100;" />
+                    <Label text="Đặt trước lịch hẹn tiếp nhận xe để được phục vụ nhanh chóng và không phải chờ đợi."
+                           style="-fx-font-size: 13px; -fx-text-fill: #546e7a;"
+                           wrapText="true"
+                           textAlignment="CENTER"
+                           VBox.vgrow="ALWAYS" />
+                    <Button fx:id="appointmentButton"
+                            text="ĐẶT LỊCH HẸN TRỰC TUYẾN"
+                            maxWidth="Infinity"
+                            prefHeight="55"
+                            style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #e65100; -fx-text-fill: white; -fx-background-radius: 8;"
+                            onAction="#openAppointment" />
+                </VBox>
+
+            </GridPane>
+
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER"
+              style="-fx-background-color: #ffffff; -fx-padding: 15; -fx-border-color: #e0e0e0; -fx-border-width: 1 0 0 0;">
+            <Label text="Hệ thống Quản lý Gara © 2026 - Hoạt động ổn định trên màn hình Windows"
+                   style="-fx-font-size: 13px; -fx-text-fill: #78909c;" />
+        </HBox>
+    </bottom>
+
+</BorderPane>

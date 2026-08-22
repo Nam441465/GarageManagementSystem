@@ -1,7 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="controller.InviteController" prefHeight="420" prefWidth="720">
-    <top><VBox alignment="CENTER" spacing="10" style="-fx-padding: 16;"><Label text="Quản lý mã mời nhân viên" style="-fx-font-size: 20px; -fx-font-weight: bold;"/><HBox alignment="CENTER" spacing="8"><TextField fx:id="inviteCodeField" promptText="Mã mời" prefWidth="300"/><Button text="Tạo mã" onAction="#generateCode"/><Button text="Tạo" onAction="#createInvite"/><Button text="Xóa mục đã chọn" onAction="#deleteInvite"/><Button text="Quay lại" onAction="#backToDashboard"/></HBox></VBox></top>
-    <center><TableView fx:id="inviteTable"><columns><TableColumn fx:id="idColumn" text="ID" prefWidth="70"/><TableColumn fx:id="codeColumn" text="Mã mời" prefWidth="250"/><TableColumn fx:id="statusColumn" text="Trạng thái" prefWidth="120"/><TableColumn fx:id="createdDateColumn" text="Ngày tạo" prefWidth="240"/></columns></TableView></center>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.InviteController"
+            style="-fx-background-color: #f8f9fa;">
+
+    <top>
+        <VBox spacing="14"
+              alignment="CENTER"
+              style="-fx-background-color: #ffffff; -fx-padding: 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+
+            <Label text="QUẢN LÝ MÃ MỜI NHÂN VIÊN"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
+
+            <HBox alignment="CENTER" spacing="10">
+                <TextField fx:id="inviteCodeField"
+                           promptText="Mã mời nhân viên"
+                           prefWidth="280"
+                           prefHeight="36"
+                           style="-fx-font-size: 13px;" />
+
+                <Button text="Tạo mã"
+                        prefHeight="36"
+                        style="-fx-font-size: 13px; -fx-cursor: hand;"
+                        onAction="#generateCode" />
+
+                <Button text="Lưu mã"
+                        prefHeight="36"
+                        style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand;"
+                        onAction="#createInvite" />
+
+                <Button text="Xóa mục đã chọn"
+                        prefHeight="36"
+                        style="-fx-font-size: 13px; -fx-cursor: hand; -fx-text-fill: #c62828;"
+                        onAction="#deleteInvite" />
+
+                <Button text="Quay lại"
+                        prefHeight="36"
+                        style="-fx-font-size: 13px; -fx-cursor: hand;"
+                        onAction="#backToDashboard" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox style="-fx-padding: 16;" spacing="10">
+            <TableView fx:id="inviteTable"
+                       VBox.vgrow="ALWAYS"
+                       style="-fx-font-size: 13px;">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+                <columns>
+                    <TableColumn fx:id="idColumn"
+                                 text="ID"
+                                 prefWidth="70" />
+                    <TableColumn fx:id="codeColumn"
+                                 text="Mã mời"
+                                 prefWidth="280" />
+                    <TableColumn fx:id="statusColumn"
+                                 text="Trạng thái"
+                                 prefWidth="140" />
+                    <TableColumn fx:id="createdDateColumn"
+                                 text="Ngày tạo"
+                                 prefWidth="250" />
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
 </BorderPane>

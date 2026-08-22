@@ -16,14 +16,23 @@ public class VehicleDAO extends BaseDAO<Vehicle> {
 
     @Override
     protected Vehicle mapResultSet(ResultSet rs) throws SQLException {
-        VehicleBrand brand = VehicleBrand.valueOf(
-                rs.getString("brand"));
+        VehicleBrand brand = null;
+        try {
+            String b = rs.getString("brand");
+            if (b != null) brand = VehicleBrand.valueOf(b.trim().toUpperCase());
+        } catch (Exception ignored) {}
 
-        VehicleType vehicleType = VehicleType.valueOf(
-                rs.getString("vehicle_type"));
+        VehicleType vehicleType = null;
+        try {
+            String vt = rs.getString("vehicle_type");
+            if (vt != null) vehicleType = VehicleType.valueOf(vt.trim().toUpperCase());
+        } catch (Exception ignored) {}
 
-        VehicleStatus status = VehicleStatus.valueOf(
-                rs.getString("status"));
+        VehicleStatus status = VehicleStatus.AVAILABLE;
+        try {
+            String s = rs.getString("status");
+            if (s != null) status = VehicleStatus.valueOf(s.trim().toUpperCase());
+        } catch (Exception ignored) {}
 
         return new Vehicle(
                 rs.getInt("id"),
@@ -82,9 +91,9 @@ public class VehicleDAO extends BaseDAO<Vehicle> {
     @Override
     protected void setInsertParameters(PreparedStatement ps, Vehicle vehicle) throws SQLException {
         ps.setInt(1, vehicle.getCustomerId());
-        ps.setString(2, vehicle.getVehicleBrand().name());
-        ps.setString(3, vehicle.getVehicleType().name());
-        ps.setString(4, vehicle.getStatus().name());
+        ps.setString(2, vehicle.getVehicleBrand() != null ? vehicle.getVehicleBrand().name() : null);
+        ps.setString(3, vehicle.getVehicleType() != null ? vehicle.getVehicleType().name() : null);
+        ps.setString(4, vehicle.getStatus() != null ? vehicle.getStatus().name() : "AVAILABLE");
         ps.setString(5, vehicle.getLicensePlate());
         ps.setString(6, vehicle.getModel());
     }
@@ -92,9 +101,9 @@ public class VehicleDAO extends BaseDAO<Vehicle> {
     @Override
     protected void setUpdateParameters(PreparedStatement ps, Vehicle vehicle) throws SQLException {
         ps.setInt(1, vehicle.getCustomerId());
-        ps.setString(2, vehicle.getVehicleBrand().name());
-        ps.setString(3, vehicle.getVehicleType().name());
-        ps.setString(4, vehicle.getStatus().name());
+        ps.setString(2, vehicle.getVehicleBrand() != null ? vehicle.getVehicleBrand().name() : null);
+        ps.setString(3, vehicle.getVehicleType() != null ? vehicle.getVehicleType().name() : null);
+        ps.setString(4, vehicle.getStatus() != null ? vehicle.getStatus().name() : "AVAILABLE");
         ps.setString(5, vehicle.getLicensePlate());
         ps.setString(6, vehicle.getModel());
         ps.setInt(7, vehicle.getId());
@@ -134,7 +143,8 @@ public class VehicleDAO extends BaseDAO<Vehicle> {
         String sql = """
                 SELECT *
                 FROM Vehicle
-                WHERE license_plate = ?
+                WHERE UPPER(TRIM(license_plate)) = UPPER(TRIM(?))
+                LIMIT 1
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -160,7 +170,8 @@ public class VehicleDAO extends BaseDAO<Vehicle> {
         String sql = """
                 SELECT 1
                 FROM Vehicle
-                WHERE license_plate = ?
+                WHERE UPPER(TRIM(license_plate)) = UPPER(TRIM(?))
+                LIMIT 1
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();

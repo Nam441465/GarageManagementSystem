@@ -4,86 +4,145 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-    xmlns:fx="http://javafx.com/fxml"
-    fx:controller="controller.CustomerLookupController"
-    spacing="15"
-    alignment="TOP_CENTER"
-    prefWidth="800"
-    prefHeight="600">
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.CustomerLookupController"
+            style="-fx-background-color: #f0f4f8;">
 
-    <padding>
-        <Insets top="20"
-            right="30"
-            bottom="20"
-            left="30" />
-    </padding>
+    <top>
+        <VBox spacing="6"
+              alignment="CENTER"
+              style="-fx-background-color: #1a237e; -fx-padding: 16 25 16 25;">
+            <Label text="TRA CỨU DỊCH VỤ, BẢNG GIÁ &amp; TIẾN ĐỘ SỬA CHỮA"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #ffffff;" />
+            <Label text="Hệ thống tra cứu trực tuyến dành cho khách hàng gara"
+                   style="-fx-font-size: 13px; -fx-text-fill: #e8eaf6;" />
+        </VBox>
+    </top>
 
-    <Label text="TRA CỨU KHÁCH HÀNG"
-        style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    <center>
+        <ScrollPane fitToWidth="true"
+                    fitToHeight="true"
+                    style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox style="-fx-padding: 18 25 18 25;"
+                  spacing="15"
+                  VBox.vgrow="ALWAYS">
 
-    <Label text="1. Tra cứu dịch vụ và giá"
-        style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                <GridPane hgap="20"
+                          vgap="15"
+                          maxWidth="Infinity"
+                          VBox.vgrow="ALWAYS">
 
-    <HBox spacing="10"
-        alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="60" />
+                        <ColumnConstraints percentWidth="40" />
+                    </columnConstraints>
 
-        <ComboBox fx:id="vehicleTypeComboBox"
-            promptText="Loại xe"
-            prefWidth="180" />
+                    <rowConstraints>
+                        <RowConstraints percentHeight="100" />
+                    </rowConstraints>
 
-        <ComboBox fx:id="vehicleBrandComboBox"
-            promptText="Hãng xe"
-            prefWidth="180" />
+                    <!-- Khối 1: Tra cứu dịch vụ & giá -->
+                    <VBox spacing="12"
+                          GridPane.columnIndex="0"
+                          GridPane.rowIndex="0"
+                          style="-fx-background-color: #ffffff; -fx-padding: 18; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cfd8dc;"
+                          VBox.vgrow="ALWAYS">
 
-        <Button text="Tra cứu dịch vụ"
-            onAction="#searchServices"
-            prefWidth="160" />
-    </HBox>
+                        <Label text="1. TRA CỨU DỊCH VỤ VÀ BẢNG GIÁ"
+                               style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
 
-    <TextArea fx:id="serviceResultArea"
-        editable="false"
-        wrapText="true"
-        prefHeight="220"
-        prefWidth="700" />
+                        <HBox spacing="10" alignment="CENTER_LEFT" maxWidth="Infinity">
+                            <ComboBox fx:id="vehicleTypeComboBox"
+                                      promptText="Chọn loại xe"
+                                      HBox.hgrow="ALWAYS"
+                                      maxWidth="Infinity"
+                                      prefHeight="36"
+                                      style="-fx-font-size: 13px;" />
 
+                            <ComboBox fx:id="vehicleBrandComboBox"
+                                      promptText="Chọn hãng xe"
+                                      HBox.hgrow="ALWAYS"
+                                      maxWidth="Infinity"
+                                      prefHeight="36"
+                                      style="-fx-font-size: 13px;" />
 
-    <!-- =============================== -->
-    <!-- TRA CỨU XE -->
-    <!-- =============================== -->
+                            <Button text="Tra cứu giá"
+                                    prefWidth="140"
+                                    prefHeight="36"
+                                    style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: white; -fx-background-radius: 6;"
+                                    onAction="#searchServices" />
+                        </HBox>
 
-    <Label text="2. Tra cứu tình trạng xe"
-        style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                        <TextArea fx:id="serviceResultArea"
+                                  editable="false"
+                                  wrapText="true"
+                                  maxWidth="Infinity"
+                                  prefRowCount="6"
+                                  VBox.vgrow="ALWAYS"
+                                  style="-fx-font-size: 13px; -fx-font-family: monospace; -fx-text-fill: #0d47a1; -fx-control-inner-background: #f8f9fa;" />
+                    </VBox>
 
-    <HBox spacing="10"
-        alignment="CENTER">
+                    <!-- Khối 2: Tra cứu tình trạng xe -->
+                    <VBox spacing="12"
+                          GridPane.columnIndex="1"
+                          GridPane.rowIndex="0"
+                          style="-fx-background-color: #ffffff; -fx-padding: 18; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cfd8dc;"
+                          VBox.vgrow="ALWAYS">
 
-        <TextField fx:id="licensePlateField"
-            promptText="Nhập biển số xe"
-            prefWidth="250" />
+                        <Label text="2. TRA CỨU TÌNH TRẠNG XE"
+                               style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
 
-        <Button text="Tra cứu xe"
-            onAction="#searchVehicle"
-            prefWidth="140" />
-    </HBox>
+                        <VBox spacing="8">
+                            <TextField fx:id="licensePlateField"
+                                       promptText="Nhập biển số xe (VD: 29A-123.45)"
+                                       maxWidth="Infinity"
+                                       prefHeight="36"
+                                       style="-fx-font-size: 13px; -fx-text-fill: #263238;" />
 
-    <Label fx:id="vehicleResultLabel"
-        text="Nhập biển số xe để tra cứu."
-        wrapText="true"
-        prefWidth="700" />
+                            <Button text="Tra cứu tình trạng"
+                                    maxWidth="Infinity"
+                                    prefHeight="36"
+                                    style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #00695c; -fx-text-fill: white; -fx-background-radius: 6;"
+                                    onAction="#searchVehicle" />
+                        </VBox>
 
+                        <Label fx:id="vehicleResultLabel"
+                               text="Nhập biển số xe để tra cứu thông tin trạng thái xe trong gara."
+                               wrapText="true"
+                               maxWidth="Infinity"
+                               VBox.vgrow="ALWAYS"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #0d47a1; -fx-line-spacing: 4px; -fx-padding: 14; -fx-background-color: #e8eaf6; -fx-background-radius: 6; -fx-border-color: #9fa8da; -fx-border-radius: 6; -fx-border-width: 1.5;" />
+                    </VBox>
 
-    <!-- =============================== -->
-    <!-- QUAY LẠI -->
-    <!-- =============================== -->
+                </GridPane>
 
-    <Button text="Quay lại Home"
-        onAction="#backToHome"
-        prefWidth="150" />
+            </VBox>
+        </ScrollPane>
+    </center>
 
-</VBox>
+    <bottom>
+        <HBox spacing="16"
+              alignment="CENTER"
+              style="-fx-background-color: #ffffff; -fx-padding: 12 25 15 25; -fx-border-color: #e0e0e0; -fx-border-width: 1 0 0 0;">
+
+            <Button text="Quay lại Trang chủ"
+                    prefWidth="180"
+                    prefHeight="38"
+                    style="-fx-font-size: 13px; -fx-cursor: hand; -fx-text-fill: #263238;"
+                    onAction="#backToHome" />
+
+        </HBox>
+    </bottom>
+
+</BorderPane>

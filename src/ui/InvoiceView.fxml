@@ -1,118 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
-    xmlns:fx="http://javafx.com/fxml"
-    fx:controller="controller.InvoiceController">
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.InvoiceController"
+            style="-fx-background-color: #f8f9fa;">
 
     <top>
-        <Label text="Quản lý hóa đơn" />
+        <VBox style="-fx-background-color: #ffffff; -fx-padding: 14 20 14 20; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+            <Label text="QUẢN LÝ HÓA ĐƠN"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
+            <Label text="Lập và quản lý hóa đơn thanh toán dịch vụ sửa chữa"
+                   style="-fx-font-size: 13px; -fx-text-fill: #666666;" />
+        </VBox>
     </top>
 
     <center>
-
-        <TableView fx:id="invoiceTable">
-
-            <columns>
-
-                <TableColumn fx:id="idColumn"
-                    text="ID" />
-
-                <TableColumn fx:id="customerIdColumn"
-                    text="Mã khách hàng" />
-
-                <TableColumn fx:id="employeeIdColumn"
-                    text="Mã nhân viên" />
-
-                <TableColumn fx:id="licensePlateColumn"
-                    text="Biển số" />
-
-                <TableColumn fx:id="vehicleTypeColumn"
-                    text="Loại xe" />
-
-                <TableColumn fx:id="vehicleBrandColumn"
-                    text="Hãng xe" />
-
-                <TableColumn fx:id="totalAmountColumn"
-                    text="Tổng tiền" />
-
-                <TableColumn fx:id="issueDateColumn"
-                    text="Ngày lập" />
-
-                <TableColumn fx:id="paymentStatusColumn"
-                    text="Trạng thái thanh toán" />
-
-            </columns>
-
-        </TableView>
-
+        <VBox style="-fx-padding: 12 16 12 16;" spacing="8">
+            <TableView fx:id="invoiceTable"
+                       VBox.vgrow="ALWAYS"
+                       style="-fx-font-size: 13px;">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+                <columns>
+                    <TableColumn fx:id="idColumn"
+                                 text="ID"
+                                 prefWidth="50" />
+                    <TableColumn fx:id="customerIdColumn"
+                                 text="Mã KH"
+                                 prefWidth="70" />
+                    <TableColumn fx:id="employeeIdColumn"
+                                 text="Mã NV"
+                                 prefWidth="70" />
+                    <TableColumn fx:id="licensePlateColumn"
+                                 text="Biển số"
+                                 prefWidth="100" />
+                    <TableColumn fx:id="vehicleTypeColumn"
+                                 text="Loại xe"
+                                 prefWidth="90" />
+                    <TableColumn fx:id="vehicleBrandColumn"
+                                 text="Hãng xe"
+                                 prefWidth="90" />
+                    <TableColumn fx:id="totalAmountColumn"
+                                 text="Tổng tiền (VND)"
+                                 prefWidth="130" />
+                    <TableColumn fx:id="issueDateColumn"
+                                 text="Ngày lập"
+                                 prefWidth="110" />
+                    <TableColumn fx:id="paymentStatusColumn"
+                                 text="Trạng thái"
+                                 prefWidth="120" />
+                </columns>
+            </TableView>
+        </VBox>
     </center>
 
     <right>
+        <ScrollPane fitToWidth="true"
+                    prefWidth="350"
+                    style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 0 1;">
+            <VBox spacing="8"
+                  style="-fx-padding: 14 16 18 16;">
 
-        <VBox spacing="10">
+                <Label text="Thông tin hóa đơn"
+                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
 
-            <Label text="Thông tin hóa đơn" />
+                <VBox spacing="6">
+                    <TextField fx:id="customerIdField"
+                               promptText="Mã khách hàng"
+                               maxWidth="Infinity"
+                               prefHeight="30"
+                               style="-fx-font-size: 13px;" />
 
-            <TextField fx:id="customerIdField"
-                promptText="Mã khách hàng" />
+                    <TextField fx:id="licensePlateField"
+                               promptText="Biển số xe"
+                               maxWidth="Infinity"
+                               prefHeight="30"
+                               style="-fx-font-size: 13px;" />
 
-            <TextField fx:id="licensePlateField"
-                promptText="Biển số xe" />
+                    <ComboBox fx:id="vehicleTypeComboBox"
+                              promptText="Loại xe"
+                              maxWidth="Infinity"
+                              prefHeight="30"
+                              style="-fx-font-size: 13px;" />
 
-            <ComboBox fx:id="vehicleTypeComboBox"
-                promptText="Loại xe" />
+                    <ComboBox fx:id="vehicleBrandComboBox"
+                              promptText="Hãng xe"
+                              maxWidth="Infinity"
+                              prefHeight="30"
+                              style="-fx-font-size: 13px;" />
 
-            <ComboBox fx:id="vehicleBrandComboBox"
-                promptText="Hãng xe" />
+                    <Label text="Chọn dịch vụ sử dụng:"
+                           style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555555;" />
 
-            <Label text="Chọn dịch vụ" />
+                    <ScrollPane fitToWidth="true"
+                                prefHeight="95"
+                                style="-fx-border-color: #e0e0e0; -fx-border-radius: 4;">
+                        <content>
+                            <VBox fx:id="serviceCheckBoxContainer"
+                                  spacing="5"
+                                  style="-fx-padding: 5;" />
+                        </content>
+                    </ScrollPane>
 
-            <ScrollPane fitToWidth="true"
-                prefHeight="150">
+                    <ComboBox fx:id="paymentStatusComboBox"
+                              promptText="Trạng thái thanh toán"
+                              maxWidth="Infinity"
+                              prefHeight="30"
+                              style="-fx-font-size: 13px;" />
 
-                <content>
+                    <TextField fx:id="outputDirectoryField"
+                               text="exports"
+                               promptText="Thư mục xuất PDF"
+                               maxWidth="Infinity"
+                               prefHeight="30"
+                               style="-fx-font-size: 13px;" />
+                </VBox>
 
-                    <VBox fx:id="serviceCheckBoxContainer"
-                        spacing="5" />
+                <Separator />
 
-                </content>
+                <VBox spacing="6">
+                    <HBox spacing="6">
+                        <Button text="Thêm HĐ"
+                                onAction="#addInvoice"
+                                HBox.hgrow="ALWAYS"
+                                maxWidth="Infinity"
+                                prefHeight="32"
+                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
 
-            </ScrollPane>
+                        <Button text="Xóa"
+                                onAction="#deleteInvoice"
+                                HBox.hgrow="ALWAYS"
+                                maxWidth="Infinity"
+                                prefHeight="32"
+                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                    </HBox>
 
-            <ComboBox fx:id="paymentStatusComboBox"
-                promptText="Trạng thái thanh toán" />
+                    <HBox spacing="6">
+                        <Button text="Xuất PDF"
+                                onAction="#exportInvoicePdf"
+                                HBox.hgrow="ALWAYS"
+                                maxWidth="Infinity"
+                                prefHeight="32"
+                                style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand;" />
 
-            <TextField fx:id="outputDirectoryField"
-                text="exports"
-                promptText="Thư mục xuất PDF" />
+                        <Button text="Làm mới"
+                                onAction="#clearFields"
+                                HBox.hgrow="ALWAYS"
+                                maxWidth="Infinity"
+                                prefHeight="32"
+                                style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                    </HBox>
 
-            <Button text="Thêm"
-                onAction="#addInvoice" />
-
-            <Button text="Xóa"
-                onAction="#deleteInvoice" />
-
-            <Button text="Xuất PDF"
-                onAction="#exportInvoicePdf" />
-
-            <Button text="Làm mới"
-                onAction="#clearFields" />
-
-            <Button text="Quay lại"
-                onAction="#backToDashboard" />
-
-        </VBox>
-
+                    <Button text="Quay lại"
+                            onAction="#backToDashboard"
+                            maxWidth="Infinity"
+                            prefHeight="32"
+                            style="-fx-font-size: 13px; -fx-cursor: hand;" />
+                </VBox>
+            </VBox>
+        </ScrollPane>
     </right>
 
 </BorderPane>

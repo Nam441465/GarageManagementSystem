@@ -1,94 +1,170 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-    xmlns:fx="http://javafx.com/fxml"
-    fx:controller="controller.StatisticsController"
-    alignment="CENTER"
-    spacing="12"
-    prefHeight="380"
-    prefWidth="500"
-    style="-fx-padding: 24;">
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.StatisticsController"
+            style="-fx-background-color: #f0f4f8;">
 
-    <Label text="Thống kê gara"
-        style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <top>
+        <VBox spacing="6"
+              alignment="CENTER"
+              style="-fx-background-color: #1a237e; -fx-padding: 20 30 20 30;">
+            <Label text="BÁO CÁO THỐNG KÊ HOẠT ĐỘNG TOÀN DIỆN"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #ffffff;" />
+            <Label text="Tổng quan số liệu khách hàng, phương tiện, doanh thu và năng suất hoạt động"
+                   style="-fx-font-size: 14px; -fx-text-fill: #e8eaf6;" />
+        </VBox>
+    </top>
 
-    <GridPane hgap="20"
-        vgap="12">
+    <center>
+        <VBox style="-fx-padding: 25 30 25 30;"
+              spacing="20"
+              VBox.vgrow="ALWAYS">
 
-        <Label text="Khách hàng:"
-            GridPane.rowIndex="0"
-            GridPane.columnIndex="0" />
+            <GridPane hgap="25"
+                      vgap="25"
+                      maxWidth="Infinity"
+                      VBox.vgrow="ALWAYS">
 
-        <Label fx:id="customerCountLabel"
-            GridPane.rowIndex="0"
-            GridPane.columnIndex="1" />
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33.33" />
+                    <ColumnConstraints percentWidth="33.33" />
+                    <ColumnConstraints percentWidth="33.33" />
+                </columnConstraints>
 
+                <rowConstraints>
+                    <RowConstraints percentHeight="50" />
+                    <RowConstraints percentHeight="50" />
+                </rowConstraints>
 
-        <Label text="Xe:"
-            GridPane.rowIndex="1"
-            GridPane.columnIndex="0" />
+                <!-- Card 1: Khách hàng -->
+                <VBox alignment="CENTER"
+                      spacing="10"
+                      GridPane.columnIndex="0"
+                      GridPane.rowIndex="0"
+                      style="-fx-background-color: #ffffff; -fx-padding: 25; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #cfd8dc; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+                    <Label text="TỔNG SỐ KHÁCH HÀNG"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #546e7a;" />
+                    <Label fx:id="customerCountLabel"
+                           text="0"
+                           style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #1565c0;" />
+                </VBox>
 
-        <Label fx:id="vehicleCountLabel"
-            GridPane.rowIndex="1"
-            GridPane.columnIndex="1" />
+                <!-- Card 2: Xe -->
+                <VBox alignment="CENTER"
+                      spacing="10"
+                      GridPane.columnIndex="1"
+                      GridPane.rowIndex="0"
+                      style="-fx-background-color: #ffffff; -fx-padding: 25; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #cfd8dc; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+                    <Label text="TỔNG SỐ PHƯƠNG TIỆN"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #546e7a;" />
+                    <Label fx:id="vehicleCountLabel"
+                           text="0"
+                           style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #00838f;" />
+                </VBox>
 
+                <!-- Card 3: Dịch vụ -->
+                <VBox alignment="CENTER"
+                      spacing="10"
+                      GridPane.columnIndex="2"
+                      GridPane.rowIndex="0"
+                      style="-fx-background-color: #ffffff; -fx-padding: 25; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #cfd8dc; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+                    <Label text="DỊCH VỤ HIỆN CÓ"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #546e7a;" />
+                    <Label fx:id="serviceCountLabel"
+                           text="0"
+                           style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #6a1b9a;" />
+                </VBox>
 
-        <Label text="Dịch vụ:"
-            GridPane.rowIndex="2"
-            GridPane.columnIndex="0" />
+                <!-- Card 4: Nhân viên -->
+                <VBox alignment="CENTER"
+                      spacing="10"
+                      GridPane.columnIndex="0"
+                      GridPane.rowIndex="1"
+                      style="-fx-background-color: #ffffff; -fx-padding: 25; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #cfd8dc; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+                    <Label text="TỔNG SỐ NHÂN VIÊN"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #546e7a;" />
+                    <Label fx:id="employeeCountLabel"
+                           text="0"
+                           style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #ef6c00;" />
+                </VBox>
 
-        <Label fx:id="serviceCountLabel"
-            GridPane.rowIndex="2"
-            GridPane.columnIndex="1" />
+                <!-- Card 5: Hóa đơn -->
+                <VBox alignment="CENTER"
+                      spacing="10"
+                      GridPane.columnIndex="1"
+                      GridPane.rowIndex="1"
+                      style="-fx-background-color: #ffffff; -fx-padding: 25; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #cfd8dc; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+                    <Label text="HÓA ĐƠN ĐÃ LẬP"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #546e7a;" />
+                    <Label fx:id="invoiceCountLabel"
+                           text="0"
+                           style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #ad1457;" />
+                </VBox>
 
+                <!-- Card 6: Doanh thu -->
+                <VBox alignment="CENTER"
+                      spacing="10"
+                      GridPane.columnIndex="2"
+                      GridPane.rowIndex="1"
+                      style="-fx-background-color: #ffffff; -fx-padding: 25; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #2e7d32; -fx-effect: dropshadow(gaussian, rgba(46,125,50,0.12), 12, 0, 0, 4);">
+                    <Label text="TỔNG DOANH THU"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;" />
+                    <Label fx:id="revenueLabel"
+                           text="0 VND"
+                           style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;" />
+                </VBox>
 
-        <Label text="Nhân viên:"
-            GridPane.rowIndex="3"
-            GridPane.columnIndex="0" />
+            </GridPane>
 
-        <Label fx:id="employeeCountLabel"
-            GridPane.rowIndex="3"
-            GridPane.columnIndex="1" />
+        </VBox>
+    </center>
 
+    <bottom>
+        <HBox alignment="CENTER"
+              spacing="20"
+              style="-fx-background-color: #ffffff; -fx-padding: 16 30 16 30; -fx-border-color: #e0e0e0; -fx-border-width: 1 0 0 0;">
 
-        <Label text="Hóa đơn:"
-            GridPane.rowIndex="4"
-            GridPane.columnIndex="0" />
+            <Label text="Thư mục xuất PDF:"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
 
-        <Label fx:id="invoiceCountLabel"
-            GridPane.rowIndex="4"
-            GridPane.columnIndex="1" />
+            <TextField fx:id="outputDirectoryField"
+                       text="exports"
+                       promptText="Thư mục xuất PDF"
+                       prefWidth="200"
+                       prefHeight="38"
+                       style="-fx-font-size: 14px;" />
 
+            <Button text="XUẤT BÁO CÁO PDF"
+                    prefHeight="38"
+                    prefWidth="180"
+                    style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: white; -fx-background-radius: 6;"
+                    onAction="#exportPdf" />
 
-        <Label text="Tổng doanh thu:"
-            GridPane.rowIndex="5"
-            GridPane.columnIndex="0" />
+            <Button text="Làm mới số liệu"
+                    prefHeight="38"
+                    prefWidth="150"
+                    style="-fx-font-size: 14px; -fx-cursor: hand;"
+                    onAction="#refresh" />
 
-        <Label fx:id="revenueLabel"
-            GridPane.rowIndex="5"
-            GridPane.columnIndex="1" />
+            <Button text="Quay lại Dashboard"
+                    prefHeight="38"
+                    prefWidth="180"
+                    style="-fx-font-size: 14px; -fx-cursor: hand;"
+                    onAction="#backToDashboard" />
 
-    </GridPane>
+        </HBox>
+    </bottom>
 
-    <HBox alignment="CENTER"
-        spacing="10">
-
-        <TextField fx:id="outputDirectoryField"
-            text="exports"
-            promptText="Thư mục xuất PDF" />
-
-        <Button text="Xuất PDF"
-            onAction="#exportPdf" />
-
-        <Button text="Làm mới"
-            onAction="#refresh" />
-
-        <Button text="Quay lại"
-            onAction="#backToDashboard" />
-
-    </HBox>
-
-</VBox>
+</BorderPane>

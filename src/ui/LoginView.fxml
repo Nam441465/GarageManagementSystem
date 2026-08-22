@@ -1,39 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-    xmlns:fx="http://javafx.com/fxml"
-    fx:controller="controller.LoginController"
-    alignment="CENTER"
-    spacing="15"
-    prefWidth="400"
-    prefHeight="300">
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.LoginController"
+            style="-fx-background-color: #f0f4f8;">
 
-    <Label text="Hệ thống quản lý gara"
-        style="-fx-font-size: 20px;" />
+    <top>
+        <VBox alignment="CENTER"
+              spacing="8"
+              style="-fx-background-color: #1a237e; -fx-padding: 25 20 25 20;">
+            <Label text="HỆ THỐNG QUẢN LÝ GARA"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #ffffff;" />
+            <Label text="Cổng đăng nhập xác thực quyền truy cập hệ thống"
+                   style="-fx-font-size: 14px; -fx-text-fill: #e8eaf6;" />
+        </VBox>
+    </top>
 
-    <TextField fx:id="usernameField"
-        promptText="Tên đăng nhập"
-        prefWidth="250" />
+    <center>
+        <VBox alignment="CENTER"
+              spacing="20"
+              style="-fx-padding: 30;"
+              VBox.vgrow="ALWAYS">
 
-    <PasswordField fx:id="passwordField"
-        promptText="Mật khẩu"
-        prefWidth="250" />
+            <VBox alignment="CENTER"
+                  spacing="22"
+                  maxWidth="560"
+                  style="-fx-background-color: #ffffff; -fx-padding: 40; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #cfd8dc; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);"
+                  VBox.vgrow="ALWAYS">
 
-    <Button text="Đăng nhập"
-        prefWidth="150"
-        onAction="#handleLogin" />
+                <Label text="ĐĂNG NHẬP HỆ THỐNG"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" />
 
-    <Button text="Đăng ký nhân viên"
-        onAction="#showRegistration"
-        prefWidth="200" />
-    <Button text="Quay lại"
-        prefWidth="200"
-        onAction="#backToHome" />
+                <VBox spacing="14" maxWidth="Infinity">
+                    <Label text="Tên đăng nhập:"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #37474f;" />
+                    <TextField fx:id="usernameField"
+                               promptText="Nhập tên đăng nhập của bạn"
+                               maxWidth="Infinity"
+                               prefHeight="42"
+                               style="-fx-font-size: 14px;" />
 
-</VBox>
+                    <Label text="Mật khẩu:"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #37474f; -fx-padding: 6 0 0 0;" />
+                    <PasswordField fx:id="passwordField"
+                                   promptText="Nhập mật khẩu"
+                                   maxWidth="Infinity"
+                                   prefHeight="42"
+                                   style="-fx-font-size: 14px;" />
+                </VBox>
+
+                <VBox spacing="12" maxWidth="Infinity">
+                    <Button text="Đăng nhập"
+                            maxWidth="Infinity"
+                            prefHeight="46"
+                            style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-color: #1a237e; -fx-text-fill: white; -fx-background-radius: 6;"
+                            onAction="#handleLogin" />
+
+                    <HBox spacing="12" maxWidth="Infinity">
+                        <Button text="Đăng ký nhân viên"
+                                HBox.hgrow="ALWAYS"
+                                maxWidth="Infinity"
+                                prefHeight="40"
+                                style="-fx-font-size: 14px; -fx-cursor: hand;"
+                                onAction="#showRegistration" />
+
+                        <Button text="Quay lại Trang chủ"
+                                HBox.hgrow="ALWAYS"
+                                maxWidth="Infinity"
+                                prefHeight="40"
+                                style="-fx-font-size: 14px; -fx-cursor: hand;"
+                                onAction="#backToHome" />
+                    </HBox>
+                </VBox>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

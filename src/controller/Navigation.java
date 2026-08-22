@@ -5,7 +5,6 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public final class Navigation {
@@ -16,8 +15,7 @@ public final class Navigation {
     public static void changeScene(
             Node source,
             String fxmlPath,
-            double width,
-            double height) {
+            String title) {
 
         System.out.println("=== CHANGE SCENE ===");
         System.out.println("FXML path = " + fxmlPath);
@@ -35,9 +33,19 @@ public final class Navigation {
             Parent root = FXMLLoader.load(resource);
 
             Stage stage = (Stage) source.getScene().getWindow();
+            
+            if (title != null && !title.isEmpty()) {
+                stage.setTitle(title);
+            }
 
-            stage.setScene(new Scene(root));
-            maximize(stage);
+            Scene scene = stage.getScene();
+            if (scene == null) {
+                stage.setScene(new Scene(root));
+            } else {
+                scene.setRoot(root);
+            }
+
+            stage.setMaximized(true);
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -48,20 +56,23 @@ public final class Navigation {
         }
     }
 
+    public static void changeScene(
+            Node source,
+            String fxmlPath,
+            double width,
+            double height) {
+        changeScene(source, fxmlPath, null);
+    }
+
+    public static void changeScene(Node source, String fxmlPath) {
+        changeScene(source, fxmlPath, null);
+    }
+
     public static void maximize(Stage stage) {
+        stage.setMaximized(true);
         stage.show();
         Platform.runLater(() -> {
             stage.setMaximized(true);
-
-            Platform.runLater(() -> {
-                if (!stage.isMaximized()) {
-                    var bounds = Screen.getPrimary().getVisualBounds();
-                    stage.setX(bounds.getMinX());
-                    stage.setY(bounds.getMinY());
-                    stage.setWidth(bounds.getWidth());
-                    stage.setHeight(bounds.getHeight());
-                }
-            });
         });
     }
 }

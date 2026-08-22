@@ -5,6 +5,7 @@ import enums.VehicleType;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -49,7 +50,7 @@ public class CustomerLookupController {
 
                 serviceResultArea.setText(
                                 "Chọn loại xe và hãng xe,\n"
-                                                + "sau đó nhấn \"Tra cứu dịch vụ\".");
+                                                + "sau đó nhấn \"Tra cứu giá\".");
 
                 vehicleResultLabel.setText(
                                 "Nhập biển số xe để tra cứu.");
@@ -136,7 +137,13 @@ public class CustomerLookupController {
         public void searchVehicle() {
 
                 try {
-                        String licensePlate = licensePlateField.getText().trim();
+                        String rawPlate = licensePlateField.getText();
+                        if (rawPlate == null || rawPlate.trim().isEmpty()) {
+                                showError("Không thể tra cứu xe", "Vui lòng nhập biển số xe.");
+                                return;
+                        }
+
+                        String licensePlate = rawPlate.trim();
 
                         customerLookupService.validateLicensePlate(licensePlate);
 
@@ -150,31 +157,29 @@ public class CustomerLookupController {
 
                         result.append("===== THÔNG TIN XE =====\n\n");
 
-                        result.append("ID xe: ")
-                                        .append(vehicle.getId())
+                        result.append("• Biển số xe: ")
+                                        .append(vehicle.getLicensePlate() != null ? vehicle.getLicensePlate() : "")
                                         .append("\n");
 
-                        result.append("ID khách hàng: ")
-                                        .append(vehicle.getCustomerId())
-                                        .append("\n");
+                        if (vehicle.getVehicleBrand() != null) {
+                                result.append("• Hãng xe: ")
+                                                .append(vehicle.getVehicleBrand())
+                                                .append("\n");
+                        }
 
-                        result.append("Biển số: ")
-                                        .append(vehicle.getLicensePlate())
-                                        .append("\n");
+                        if (vehicle.getVehicleType() != null) {
+                                result.append("• Loại xe: ")
+                                                .append(vehicle.getVehicleType())
+                                                .append("\n");
+                        }
 
-                        result.append("Hãng xe: ")
-                                        .append(vehicle.getVehicleBrand())
-                                        .append("\n");
+                        if (vehicle.getModel() != null && !vehicle.getModel().isEmpty()) {
+                                result.append("• Thông tin: ")
+                                                .append(vehicle.getModel())
+                                                .append("\n");
+                        }
 
-                        result.append("Dòng xe: ")
-                                        .append(vehicle.getModel())
-                                        .append("\n");
-
-                        result.append("Loại xe: ")
-                                        .append(vehicle.getVehicleType())
-                                        .append("\n");
-
-                        result.append("Trạng thái: ")
+                        result.append("• Trạng thái: ")
                                         .append(status)
                                         .append("\n");
 
@@ -203,8 +208,7 @@ public class CustomerLookupController {
                 Navigation.changeScene(
                                 serviceResultArea,
                                 "/ui/HomeView.fxml",
-                                800,
-                                600);
+                                "Hệ thống quản lý gara");
         }
 
         private void showError(

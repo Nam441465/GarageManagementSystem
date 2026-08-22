@@ -2,13 +2,9 @@ package controller;
 
 import enums.UserRole;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import model.User;
 import service.EmployeeInviteService;
 import service.UserService;
@@ -46,10 +42,7 @@ public class RegisterController {
     @FXML
     public void goBack() {
         try {
-            Parent root = new FXMLLoader(getClass().getResource("/ui/LoginView.fxml")).load();
-            Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 300));
-            Navigation.maximize(stage);
+            Navigation.changeScene(usernameField, "/ui/LoginView.fxml", "Đăng nhập hệ thống");
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Không thể mở màn hình đăng nhập.").showAndWait();
         }

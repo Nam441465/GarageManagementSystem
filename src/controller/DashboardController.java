@@ -1,15 +1,8 @@
 package controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-
-import javafx.stage.Stage;
 
 import model.Session;
 import model.User;
@@ -71,77 +64,44 @@ public class DashboardController {
 
         if (user != null) {
 
-            welcomeLabel.setText(
-                    "Chào mừng: "
-                            + user.getUsername());
+            welcomeLabel.setText("Chào mừng: " + user.getUsername());
+            roleLabel.setText("Vai trò: " + user.getRole());
 
-            roleLabel.setText(
-                    "Vai trò: "
-                            + user.getRole());
             if (!authorizationService.isOwner()) {
-
                 employeeButton.setVisible(false);
                 employeeButton.setManaged(false);
                 inviteButton.setVisible(false);
                 inviteButton.setManaged(false);
                 statisticsButton.setVisible(false);
                 statisticsButton.setManaged(false);
-
-                System.out.println(
-                        "Employee login");
-
+                System.out.println("Employee login");
             } else {
-
-                System.out.println(
-                        "Owner login");
-
+                System.out.println("Owner login");
             }
-
         }
-
     }
 
     @FXML
     public void showCustomer() {
-
-        openWindow(
-                "/ui/CustomerView.fxml",
-                "Quản lý khách hàng");
-
+        openWindow("/ui/CustomerView.fxml", "Quản lý khách hàng");
     }
 
     @FXML
     public void showVehicle() {
-
-        openWindow(
-                "/ui/VehicleView.fxml",
-                "Quản lý xe");
-
+        openWindow("/ui/VehicleView.fxml", "Quản lý xe");
     }
 
     @FXML
     public void showService() {
-
-        openWindow(
-                "/ui/ServiceView.fxml",
-                "Quản lý dịch vụ");
-
+        openWindow("/ui/ServiceView.fxml", "Quản lý dịch vụ");
     }
 
     @FXML
     public void showAppointment() {
-
         if (authorizationService.isOwnerOrEmployee()) {
-
-            openWindow(
-                    "/ui/AppointmentManagementView.fxml",
-                    "Lịch hẹn đã đặt");
-
+            openWindow("/ui/AppointmentManagementView.fxml", "Lịch hẹn đã đặt");
         } else {
-
-            openWindow(
-                    "/ui/CustomerAppointmentView.fxml",
-                    "Đặt lịch hẹn");
+            openWindow("/ui/CustomerAppointmentView.fxml", "Đặt lịch hẹn");
         }
     }
 
@@ -162,20 +122,12 @@ public class DashboardController {
 
     @FXML
     public void showInvoice() {
-
-        openWindow(
-                "/ui/InvoiceView.fxml",
-                "Quản lý hóa đơn");
-
+        openWindow("/ui/InvoiceView.fxml", "Quản lý hóa đơn");
     }
 
     @FXML
     public void showEmployee() {
-
-        openWindow(
-                "/ui/EmployeeView.fxml",
-                "Quản lý nhân viên");
-
+        openWindow("/ui/EmployeeView.fxml", "Quản lý nhân viên");
     }
 
     @FXML
@@ -188,25 +140,12 @@ public class DashboardController {
         openWindow("/ui/StatisticsView.fxml", "Thống kê gara");
     }
 
-    private void openWindow(
-            String path,
-            String title) {
-
+    private void openWindow(String path, String title) {
         try {
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-            Parent root = loader.load();
-            Stage stage = (Stage) logoutButton.getScene().getWindow();
-            stage.setTitle(title);
-            stage.setScene(new Scene(root));
-            Navigation.maximize(stage);
-
+            Navigation.changeScene(logoutButton, path, title);
         } catch (Exception e) {
-
             e.printStackTrace();
-
         }
-
     }
 
     @FXML
@@ -216,36 +155,11 @@ public class DashboardController {
 
     @FXML
     public void logout() {
-
         Session.logout();
-
         try {
-
-            FXMLLoader loader = new FXMLLoader(
-                    getClass()
-                            .getResource(
-                                    "/ui/LoginView.fxml"));
-
-            Parent root = loader.load();
-
-            Stage stage = (Stage) logoutButton
-                    .getScene()
-                    .getWindow();
-
-            stage.setScene(
-                    new Scene(
-                            root,
-                            600,
-                            400));
-
-            Navigation.maximize(stage);
-
+            Navigation.changeScene(logoutButton, "/ui/LoginView.fxml", "Đăng nhập hệ thống");
         } catch (Exception e) {
-
             e.printStackTrace();
-
         }
-
     }
-
 }

@@ -1,5 +1,7 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -15,11 +17,14 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("ui/HomeView.fxml"));
 
-        Scene scene = new Scene(loader.load());
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
 
         stage.setTitle("Hệ thống quản lý gara");
         stage.setScene(scene);
-        controller.Navigation.maximize(stage);
+        stage.setMaximized(true);
+        stage.show();
+        Platform.runLater(() -> stage.setMaximized(true));
     }
 
     public static void main(String[] args) {

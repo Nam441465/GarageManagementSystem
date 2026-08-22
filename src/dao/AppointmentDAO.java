@@ -2,6 +2,7 @@ package dao;
 
 import model.Appointment;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,13 +46,19 @@ public class AppointmentDAO extends BaseDAO<Appointment> {
                     appointmentTimeTs.toLocalDateTime());
         }
 
-        appointment.setVehicleType(
-                enums.VehicleType.valueOf(
-                        rs.getString("vehicle_type")));
+        try {
+            String vt = rs.getString("vehicle_type");
+            if (vt != null) {
+                appointment.setVehicleType(enums.VehicleType.valueOf(vt));
+            }
+        } catch (Exception ignored) {}
 
-        appointment.setVehicleBrand(
-                enums.VehicleBrand.valueOf(
-                        rs.getString("vehicle_brand")));
+        try {
+            String vb = rs.getString("vehicle_brand");
+            if (vb != null) {
+                appointment.setVehicleBrand(enums.VehicleBrand.valueOf(vb));
+            }
+        } catch (Exception ignored) {}
 
         Timestamp createdAtTs = rs.getTimestamp("created_at");
 
@@ -150,11 +157,11 @@ public class AppointmentDAO extends BaseDAO<Appointment> {
 
         ps.setString(
                 6,
-                appointment.getVehicleType().name());
+                appointment.getVehicleType() != null ? appointment.getVehicleType().name() : null);
 
         ps.setString(
                 7,
-                appointment.getVehicleBrand().name());
+                appointment.getVehicleBrand() != null ? appointment.getVehicleBrand().name() : null);
 
         if (appointment.getCreatedAt() != null) {
             ps.setTimestamp(
@@ -206,11 +213,11 @@ public class AppointmentDAO extends BaseDAO<Appointment> {
 
         ps.setString(
                 6,
-                appointment.getVehicleType().name());
+                appointment.getVehicleType() != null ? appointment.getVehicleType().name() : null);
 
         ps.setString(
                 7,
-                appointment.getVehicleBrand().name());
+                appointment.getVehicleBrand() != null ? appointment.getVehicleBrand().name() : null);
 
         ps.setInt(
                 8,
@@ -255,6 +262,34 @@ public class AppointmentDAO extends BaseDAO<Appointment> {
         }
 
         return 0;
+    }
+
+    public Appointment findByLicensePlate(String licensePlate) {
+        String sql = """
+                SELECT *
+                FROM Appointment
+                WHERE UPPER(TRIM(license_plate)) = UPPER(TRIM(?))
+                ORDER BY id DESC
+                LIMIT 1
+                """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, licensePlate);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSet(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(
+                    "Error finding appointment by license plate", e);
+        }
+
+        return null;
     }
 
     public boolean addAppointment(Appointment appointment) {

@@ -1,20 +1,12 @@
 package controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 
-import javafx.stage.Stage;
-
 import model.User;
 import model.Session;
-
 import service.UserService;
 
 public class LoginController {
@@ -32,41 +24,23 @@ public class LoginController {
 
                 try {
                         String username = usernameField.getText().trim();
-
                         String password = passwordField.getText().trim();
 
                         User user = userService.login(username, password);
 
                         if (user == null) {
-
                                 System.out.println("Login failed");
-
                                 return;
                         }
 
                         Session.setCurrentUser(user);
 
                         System.out.println("Login success");
-                        System.out.println(
-                                        "Role: " + user.getRole());
+                        System.out.println("Role: " + user.getRole());
 
-                        FXMLLoader loader = new FXMLLoader(
-                                        getClass().getResource(
-                                                        "/ui/DashboardView.fxml"));
-
-                        Parent root = loader.load();
-
-                        Stage stage = (Stage) usernameField
-                                        .getScene()
-                                        .getWindow();
-
-                        stage.setScene(
-                                        new Scene(root));
-
-                        Navigation.maximize(stage);
+                        Navigation.changeScene(usernameField, "/ui/DashboardView.fxml", "Bảng điều khiển trung tâm");
 
                 } catch (Exception e) {
-
                         e.printStackTrace();
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Lỗi");
@@ -79,31 +53,13 @@ public class LoginController {
         @FXML
         public void customerLogin() {
                 try {
-                        FXMLLoader loader = new FXMLLoader(
-                                        getClass().getResource(
-                                                        "/ui/CustomerAppointmentView.fxml"));
-
-                        Parent root = loader.load();
-
-                        Stage stage = (Stage) usernameField
-                                        .getScene()
-                                        .getWindow();
-
-                        stage.setScene(
-                                        new Scene(root, 900, 650));
-
-                        Navigation.maximize(stage);
-
+                        Navigation.changeScene(usernameField, "/ui/CustomerAppointmentView.fxml", "Đặt lịch hẹn");
                 } catch (Exception e) {
                         e.printStackTrace();
-
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Lỗi");
                         alert.setHeaderText("Không thể mở màn hình đặt lịch");
-                        alert.setContentText(
-                                        e.getMessage() == null
-                                                        ? "Không thể mở màn hình đặt lịch."
-                                                        : e.getMessage());
+                        alert.setContentText(e.getMessage() == null ? "Không thể mở màn hình đặt lịch." : e.getMessage());
                         alert.showAndWait();
                 }
         }
@@ -111,22 +67,9 @@ public class LoginController {
         @FXML
         public void backToHome() {
                 try {
-                        FXMLLoader loader = new FXMLLoader(
-                                        getClass().getResource("/ui/HomeView.fxml"));
-
-                        Parent root = loader.load();
-
-                        Stage stage = (Stage) usernameField
-                                        .getScene()
-                                        .getWindow();
-
-                        stage.setScene(new Scene(root, 500, 500));
-                        stage.setTitle("Hệ thống quản lý gara");
-                        Navigation.maximize(stage);
-
+                        Navigation.changeScene(usernameField, "/ui/HomeView.fxml", "Hệ thống quản lý gara");
                 } catch (Exception e) {
                         e.printStackTrace();
-
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Lỗi");
                         alert.setHeaderText("Không thể quay lại trang chủ");
@@ -138,10 +81,7 @@ public class LoginController {
         @FXML
         public void showRegistration() {
                 try {
-                        Parent root = new FXMLLoader(getClass().getResource("/ui/EmployeeRegisterView.fxml")).load();
-                        Stage stage = (Stage) usernameField.getScene().getWindow();
-                        stage.setScene(new Scene(root, 420, 500));
-                        Navigation.maximize(stage);
+                        Navigation.changeScene(usernameField, "/ui/EmployeeRegisterView.fxml", "Đăng ký nhân viên");
                 } catch (Exception e) {
                         e.printStackTrace();
                         Alert alert = new Alert(Alert.AlertType.ERROR);

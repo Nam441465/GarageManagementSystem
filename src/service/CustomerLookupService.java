@@ -1,5 +1,8 @@
 package service;
 
+import dao.AppointmentDAO;
+import enums.VehicleStatus;
+import model.Appointment;
 import model.PriceList;
 import model.Service;
 import model.Vehicle;
@@ -13,12 +16,14 @@ public class CustomerLookupService {
     private final VehicleService vehicleService;
     private final PriceListService priceListService;
     private final ServiceService serviceService;
+    private final AppointmentDAO appointmentDAO;
 
     public CustomerLookupService() {
         this(
                 new VehicleService(),
                 new PriceListService(),
-                new ServiceService()
+                new ServiceService(),
+                new AppointmentDAO()
         );
     }
 
@@ -26,6 +31,14 @@ public class CustomerLookupService {
             VehicleService vehicleService,
             PriceListService priceListService,
             ServiceService serviceService) {
+        this(vehicleService, priceListService, serviceService, new AppointmentDAO());
+    }
+
+    public CustomerLookupService(
+            VehicleService vehicleService,
+            PriceListService priceListService,
+            ServiceService serviceService,
+            AppointmentDAO appointmentDAO) {
 
         this.vehicleService = Objects.requireNonNull(
                 vehicleService,
@@ -40,6 +53,11 @@ public class CustomerLookupService {
         this.serviceService = Objects.requireNonNull(
                 serviceService,
                 "serviceService is required"
+        );
+
+        this.appointmentDAO = Objects.requireNonNull(
+                appointmentDAO,
+                "appointmentDAO is required"
         );
     }
 
@@ -126,7 +144,7 @@ public class CustomerLookupService {
     }
 
     /**
-     * Tra cứu xe bằng biển số.
+     * Tra cứu xe bằng biển số (tìm trong bảng Vehicle hoặc Appointment).
      */
     public Vehicle findVehicleByLicensePlate(
             String licensePlate) {
@@ -138,17 +156,35 @@ public class CustomerLookupService {
                     "Vui lòng nhập biển số xe.");
         }
 
-        Vehicle vehicle =
-                vehicleService.findByLicensePlate(
-                        licensePlate.trim());
+        String plate = licensePlate.trim();
 
-        if (vehicle == null) {
-            throw new IllegalArgumentException(
-                    "Không tìm thấy xe với biển số: "
-                            + licensePlate);
+        // 1. Tìm trong bảng Vehicle
+        Vehicle vehicle = vehicleService.findByLicensePlate(plate);
+
+        if (vehicle != null) {
+            return vehicle;
         }
 
-        return vehicle;
+        // 2. Tìm trong bảng Appointment nếu chưa có trong Vehicle
+        Appointment appointment = appointmentDAO.findByLicensePlate(plate);
+        if (appointment != null) {
+            Vehicle tempVehicle = new Vehicle();
+            tempVehicle.setId(appointment.getId());
+            tempVehicle.setLicensePlate(appointment.getLicensePlate());
+            tempVehicle.setVehicleBrand(appointment.getVehicleBrand());
+            tempVehicle.setVehicleType(appointment.getVehicleType());
+            tempVehicle.setStatus(VehicleStatus.WAITING);
+            String modelDesc = "Lịch hẹn: " + appointment.getCustomerName();
+            if (appointment.getCustomerPhone() != null && !appointment.getCustomerPhone().isEmpty()) {
+                modelDesc += " (" + appointment.getCustomerPhone() + ")";
+            }
+            tempVehicle.setModel(modelDesc);
+            return tempVehicle;
+        }
+
+        throw new IllegalArgumentException(
+                "Không tìm thấy thông tin xe hoặc lịch hẹn với biển số: "
+                        + plate);
     }
 
     /**
@@ -168,15 +204,15 @@ public class CustomerLookupService {
 
         return switch (vehicle.getStatus()) {
             case COMPLETED ->
-                    "Đã làm xong";
+                    "Đã làm xong (Sẵn sàng bàn giao xe)";
             case IN_SERVICE ->
-                    "Đang làm";
+                    "Đang làm / Đang sửa chữa";
             case WAITING ->
-                    "Đang chờ";
+                    "Đang chờ tiếp nhận / xử lý tại gara";
             case DELIVERED ->
-                    "Đã giao xe";
+                    "Đã giao xe cho khách hàng";
             case AVAILABLE ->
-                    "Xe chưa được tiếp nhận";
+                    "Xe đã có thông tin trong hệ thống gara (Sẵn sàng tiếp nhận)";
         };
     }
 
