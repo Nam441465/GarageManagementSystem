@@ -1,9 +1,12 @@
 package service;
 
+import enums.UserRole;
 import model.Customer;
-import dao.CustomerDAO;
+import model.Session;
 
 import java.util.List;
+
+import dao.CustomerDAO;
 
 public class CustomerService {
 
@@ -52,6 +55,20 @@ public class CustomerService {
     }
 
     public void deleteCustomer(int id) {
+
+        if (id <= 0) {
+            throw new IllegalArgumentException("Invalid customer id");
+        }
+
+        // PHẢN TRÁCH: Authorization check moved from Controller to Service
+        if (Session.getCurrentUser() == null
+                || Session.getCurrentUser().getRole() != UserRole.OWNER) {
+
+            System.out.println(
+                    "Nhân viên không thể xóa khách hàng");
+            return;
+        }
+
         if (!customerDao.existsById(id)) {
             throw new IllegalArgumentException("Customer not found");
         }

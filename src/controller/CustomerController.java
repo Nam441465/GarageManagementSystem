@@ -1,6 +1,5 @@
 package controller;
 
-import enums.UserRole;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -14,7 +13,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 import model.Customer;
-import model.Session;
 
 import service.CustomerService;
 
@@ -148,15 +146,6 @@ public class CustomerController {
         @FXML
         public void deleteCustomer() {
 
-                if (!isOwner()) {
-
-                        System.out.println(
-                                        "Nhân viên không thể xóa khách hàng");
-
-                        return;
-
-                }
-
                 Customer customer = customerTable
                                 .getSelectionModel()
                                 .getSelectedItem();
@@ -171,14 +160,6 @@ public class CustomerController {
                                 customer.getId());
 
                 loadCustomers();
-
-        }
-
-        private boolean isOwner() {
-
-                return Session.getCurrentUser() != null
-                                &&
-                                Session.getCurrentUser().getRole() == UserRole.OWNER;
 
         }
 

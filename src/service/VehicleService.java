@@ -1,6 +1,7 @@
 package service;
 
 import dao.VehicleDAO;
+import enums.UserRole;
 import model.Vehicle;
 
 import java.util.List;
@@ -66,6 +67,15 @@ public class VehicleService {
 
         validateVehicle(vehicle);
 
+        // PHẢN TRÁCH: Authorization check moved from Controller to Service
+        if (model.Session.getCurrentUser() == null
+                || model.Session.getCurrentUser().getRole() != UserRole.OWNER) {
+
+            System.out.println(
+                    "Nhân viên không thể thêm xe");
+            return;
+        }
+
         if (vehicleDao.existsByLicensePlate(
                 vehicle.getLicensePlate())) {
 
@@ -100,6 +110,15 @@ public class VehicleService {
                     "License plate already exists");
         }
 
+        // PHẢN TRÁCH: Authorization check moved from Controller to Service
+        if (model.Session.getCurrentUser() == null
+                || model.Session.getCurrentUser().getRole() != UserRole.OWNER) {
+
+            System.out.println(
+                    "Nhân viên không thể cập nhật xe");
+            return;
+        }
+
         vehicleDao.updateVehicle(vehicle);
     }
 
@@ -113,6 +132,15 @@ public class VehicleService {
         if (!vehicleDao.existsById(id)) {
             throw new IllegalArgumentException(
                     "Vehicle not found");
+        }
+
+        // PHẢN TRÁCH: Authorization check moved from Controller to Service
+        if (model.Session.getCurrentUser() == null
+                || model.Session.getCurrentUser().getRole() != UserRole.OWNER) {
+
+            System.out.println(
+                    "Nhân viên không thể xóa xe");
+            return;
         }
 
         vehicleDao.deleteVehicle(id);

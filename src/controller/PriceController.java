@@ -298,113 +298,28 @@ public class PriceController {
     }
 
     private int serviceId() {
-
-        String text = serviceIdField
-                .getText()
-                .trim();
-
-        if (text.isEmpty()) {
-
-            throw new IllegalArgumentException(
-                    "Mã dịch vụ là bắt buộc.");
-        }
-
-        try {
-
-            int id = Integer.parseInt(text);
-
-            if (id <= 0) {
-
-                throw new IllegalArgumentException(
-                        "Mã dịch vụ phải lớn hơn 0.");
-            }
-
-            return id;
-
-        } catch (NumberFormatException exception) {
-
-            throw new IllegalArgumentException(
-                    "Mã dịch vụ phải là số nguyên.");
-        }
+        return priceListService.parseServiceId(serviceIdField.getText());
     }
 
     private String vehicleType() {
-
-        if (vehicleTypeComboBox.getValue() == null) {
-
-            throw new IllegalArgumentException(
-                    "Hãy chọn loại xe.");
-        }
-
-        return vehicleTypeComboBox
-                .getValue()
-                .name();
+        return priceListService.parseVehicleType(
+            vehicleTypeComboBox.getValue() != null ? vehicleTypeComboBox.getValue().name() : null
+        );
     }
 
     private String vehicleBrand() {
-
-        String brand = vehicleBrandComboBox
-                .getValue();
-
-        if (brand == null
-                || brand.trim().isEmpty()) {
-
-            throw new IllegalArgumentException(
-                    "Hãy chọn hãng xe.");
-        }
-
-        return brand;
+        return priceListService.parseVehicleBrand(vehicleBrandComboBox.getValue());
     }
 
     private BigDecimal amount() {
-
-        String text = priceField
-                .getText()
-                .trim();
-
-        if (text.isEmpty()) {
-
-            throw new IllegalArgumentException(
-                    "Giá là bắt buộc.");
-        }
-
-        try {
-
-            BigDecimal amount = new BigDecimal(text);
-
-            if (amount.signum() < 0) {
-
-                throw new IllegalArgumentException(
-                        "Giá không được âm.");
-            }
-
-            return amount;
-
-        } catch (NumberFormatException exception) {
-
-            throw new IllegalArgumentException(
-                    "Giá phải là số hợp lệ.");
-        }
+        return priceListService.parseAmount(priceField.getText());
     }
 
     private void validateDates() {
-
-        LocalDate from = effectiveFromPicker.getValue();
-
-        LocalDate to = effectiveToPicker.getValue();
-
-        if (from == null) {
-
-            throw new IllegalArgumentException(
-                    "Ngày hiệu lực là bắt buộc.");
-        }
-
-        if (to != null
-                && to.isBefore(from)) {
-
-            throw new IllegalArgumentException(
-                    "Ngày kết thúc phải sau ngày bắt đầu.");
-        }
+        priceListService.validateDateRange(
+            effectiveFromPicker.getValue(),
+            effectiveToPicker.getValue()
+        );
     }
 
     private void error(Exception exception) {

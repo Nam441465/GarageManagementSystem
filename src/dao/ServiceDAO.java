@@ -4,108 +4,92 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import database.DatabaseConnection;
 import model.Service;
 
-public class ServiceDAO {
+public class ServiceDAO extends BaseDAO<Service> {
 
-    public void addService(Service service) {
-        String sql = """
+    @Override
+    protected Service mapResultSet(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
+        String serviceName = rs.getString("service_name");
+        String description = rs.getString("description");
+
+        return new Service(id, serviceName, description);
+    }
+
+    @Override
+    protected String getTableName() {
+        return "Service";
+    }
+
+    @Override
+    protected String getIdColumn() {
+        return "id";
+    }
+
+    @Override
+    protected String getInsertSQL() {
+        return """
                 INSERT INTO Service(service_name, description)
                 VALUES (?, ?)
                 """;
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, service.getServiceName());
-            ps.setString(2, service.getDescription());
-
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error adding service", e);
-        }
     }
 
-    public void updateService(Service service) {
-        String sql = """
+    @Override
+    protected String getUpdateSQL() {
+        return """
                 UPDATE Service
                 SET service_name = ?,
                     description = ?
                 WHERE id = ?
                 """;
+    }
 
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+    @Override
+    protected String getDeleteSQL() {
+        return "DELETE FROM Service WHERE id = ?";
+    }
 
-            ps.setString(1, service.getServiceName());
-            ps.setString(2, service.getDescription());
-            ps.setInt(3, service.getId());
+    @Override
+    protected void setInsertParameters(PreparedStatement ps, Service service) throws SQLException {
+        ps.setString(1, service.getServiceName());
+        ps.setString(2, service.getDescription());
+    }
 
-            ps.executeUpdate();
+    @Override
+    protected void setUpdateParameters(PreparedStatement ps, Service service) throws SQLException {
+        ps.setString(1, service.getServiceName());
+        ps.setString(2, service.getDescription());
+        ps.setInt(3, service.getId());
+    }
 
-        } catch (SQLException e) {
+    public boolean addService(Service service) {
+        try {
+            super.add(service);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException("Error adding service", e);
+        }
+    }
+
+    public boolean updateService(Service service) {
+        try {
+            super.update(service);
+            return true;
+        } catch (Exception e) {
             throw new RuntimeException("Error updating service", e);
         }
     }
 
-    public void deleteService(int id) {
-        String sql = "DELETE FROM Service WHERE id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
+    public boolean deleteService(int id) {
+        try {
+            super.delete(id);
+            return true;
+        } catch (Exception e) {
             throw new RuntimeException("Error deleting service", e);
         }
-    }
-
-    public Service findById(int id) {
-        String sql = "SELECT * FROM Service WHERE id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToService(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error finding service by ID", e);
-        }
-
-        return null;
-    }
-
-    public List<Service> findAll() {
-        List<Service> list = new ArrayList<>();
-        String sql = "SELECT * FROM Service";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                list.add(mapResultSetToService(rs));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error finding all services", e);
-        }
-
-        return list;
     }
 
     public boolean existsById(int id) {
@@ -158,13 +142,5 @@ public class ServiceDAO {
         }
 
         return 0;
-    }
-
-    private Service mapResultSetToService(ResultSet rs) throws SQLException {
-        int id = rs.getInt("id");
-        String serviceName = rs.getString("service_name");
-        String description = rs.getString("description");
-
-        return new Service(id, serviceName, description);
     }
 }

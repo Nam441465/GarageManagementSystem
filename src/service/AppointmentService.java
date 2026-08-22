@@ -15,47 +15,47 @@ import java.util.Objects;
 
 public class AppointmentService {
 
-        private final AppointmentDAO appointmentDAO;
-        private final EmployeeDAO employeeDAO;
-        private final AppointmentItemDAO appointmentItemDAO;
+    private final AppointmentDAO appointmentDAO;
+    private final EmployeeDAO employeeDAO;
+    private final AppointmentItemDAO appointmentItemDAO;
 
-        public AppointmentService() {
-                this(
-                                new AppointmentDAO(),
-                                new EmployeeDAO(),
-                                new AppointmentItemDAO());
-        }
+    public AppointmentService() {
+        this(
+                new AppointmentDAO(),
+                new EmployeeDAO(),
+                new AppointmentItemDAO());
+    }
 
-        public AppointmentService(
-                        AppointmentDAO appointmentDAO,
-                        EmployeeDAO employeeDAO,
-                        AppointmentItemDAO appointmentItemDAO) {
+    public AppointmentService(
+            AppointmentDAO appointmentDAO,
+            EmployeeDAO employeeDAO,
+            AppointmentItemDAO appointmentItemDAO) {
 
-                this.appointmentDAO = Objects.requireNonNull(
-                                appointmentDAO,
-                                "appointmentDAO is required");
+        this.appointmentDAO = Objects.requireNonNull(
+                appointmentDAO,
+                "appointmentDAO is required");
 
-                this.employeeDAO = Objects.requireNonNull(
-                                employeeDAO,
-                                "employeeDAO is required");
+        this.employeeDAO = Objects.requireNonNull(
+                employeeDAO,
+                "employeeDAO is required");
 
-                this.appointmentItemDAO = Objects.requireNonNull(
-                                appointmentItemDAO,
-                                "appointmentItemDAO is required");
-        }
+        this.appointmentItemDAO = Objects.requireNonNull(
+                appointmentItemDAO,
+                "appointmentItemDAO is required");
+    }
 
-        public boolean createAppointment(
-                        Appointment appointment,
-                        List<AppointmentItem> items,
-                        LocalDate appointmentDate,
-                        LocalTime appointmentTime) {
+    public boolean createAppointment(
+            Appointment appointment,
+            List<AppointmentItem> items,
+            LocalDate appointmentDate,
+            LocalTime appointmentTime) {
 
-                validateAppointment(appointment);
-                validateServiceItems(items);
+        validateAppointment(appointment);
+        validateServiceItems(items);
 
         LocalDateTime dateTime = createAppointmentDateTime(
-                        appointmentDate,
-                        appointmentTime);
+                appointmentDate,
+                appointmentTime);
 
         appointment.setAppointmentDate(
                 appointmentDate.atStartOfDay());
@@ -64,237 +64,224 @@ public class AppointmentService {
                 appointmentDate.atTime(appointmentTime));
 
         if (!isTimeSlotAvailable(dateTime)) {
-                        throw new IllegalArgumentException(
-                                        "This appointment time is fully booked.");
-                }
-
-                boolean created = appointmentDAO.addAppointment(appointment);
-
-                if (!created) {
-                        throw new IllegalStateException(
-                                        "Cannot create appointment.");
-                }
-
-                for (AppointmentItem item : items) {
-
-                        validateServiceItem(item);
-
-                        item.setAppointmentId(
-                                        appointment.getId());
-
-                        boolean itemCreated = appointmentItemDAO
-                                        .addAppointmentItem(item);
-
-                        if (!itemCreated) {
-                                throw new IllegalStateException(
-                                                "Cannot create appointment service item.");
-                        }
-                }
-
-                return true;
+            throw new IllegalArgumentException(
+                    "This appointment time is fully booked.");
         }
 
-        public boolean isTimeSlotAvailable(
-                        LocalDateTime appointmentDateTime) {
+        boolean created = appointmentDAO.addAppointment(appointment);
 
-                if (appointmentDateTime == null) {
-                        throw new IllegalArgumentException(
-                                        "Appointment date and time are required.");
-                }
-
-                int employeeCount = employeeDAO.countEmployees();
-
-                int appointmentCount = appointmentDAO.countAppointmentsAtTime(
-                                appointmentDateTime.toLocalDate().atStartOfDay(),
-                                appointmentDateTime);
-
-                return employeeCount > appointmentCount;
+        if (!created) {
+            throw new IllegalStateException(
+                    "Cannot create appointment.");
         }
 
-        public int getEmployeeCount() {
+        for (AppointmentItem item : items) {
 
-                return employeeDAO.countEmployees();
+            validateServiceItem(item);
+
+            item.setAppointmentId(
+                    appointment.getId());
+
+            boolean itemCreated = appointmentItemDAO
+                    .addAppointmentItem(item);
+
+            if (!itemCreated) {
+                throw new IllegalStateException(
+                        "Cannot create appointment service item.");
+            }
         }
 
-        public int getAppointmentCountAtTime(
-                        LocalDateTime appointmentDateTime) {
+        return true;
+    }
 
-                if (appointmentDateTime == null) {
-                        throw new IllegalArgumentException(
-                                        "Appointment date and time are required.");
-                }
+    public boolean isTimeSlotAvailable(
+            LocalDateTime appointmentDateTime) {
 
-                return appointmentDAO.countAppointmentsAtTime(
-                                appointmentDateTime.toLocalDate().atStartOfDay(),
-                                appointmentDateTime);
+        if (appointmentDateTime == null) {
+            throw new IllegalArgumentException(
+                    "Appointment date and time are required.");
         }
 
-        public Appointment getAppointment(
-                        int appointmentId) {
+        int employeeCount = employeeDAO.countEmployees();
 
-                validateAppointmentId(appointmentId);
+        int appointmentCount = appointmentDAO.countAppointmentsAtTime(
+                appointmentDateTime.toLocalDate().atStartOfDay(),
+                appointmentDateTime);
 
-                Appointment appointment = appointmentDAO.findById(appointmentId);
+        return employeeCount > appointmentCount;
+    }
 
-                if (appointment == null) {
-                        throw new IllegalArgumentException(
-                                        "Appointment not found.");
-                }
+    public int getEmployeeCount() {
+        return employeeDAO.countEmployees();
+    }
 
-                return appointment;
+    public int getAppointmentCountAtTime(
+            LocalDateTime appointmentDateTime) {
+
+        if (appointmentDateTime == null) {
+            throw new IllegalArgumentException(
+                    "Appointment date and time are required.");
         }
 
-        public List<Appointment> getAllAppointments() {
+        return appointmentDAO.countAppointmentsAtTime(
+                appointmentDateTime.toLocalDate().atStartOfDay(),
+                appointmentDateTime);
+    }
 
-                List<Appointment> appointments = appointmentDAO.findAll();
+    public Appointment getAppointment(
+            int appointmentId) {
 
-                if (appointments == null) {
-                        throw new IllegalStateException(
-                                        "Cannot load appointments.");
-                }
+        validateAppointmentId(appointmentId);
 
-                return appointments;
+        Appointment appointment = appointmentDAO.findById(appointmentId);
+
+        if (appointment == null) {
+            throw new IllegalArgumentException(
+                    "Appointment not found.");
         }
 
-        public boolean updateAppointment(
-                        Appointment appointment) {
+        return appointment;
+    }
 
-                if (appointment == null) {
-                        throw new IllegalArgumentException(
-                                        "Appointment is required.");
-                }
+    public List<Appointment> getAllAppointments() {
 
-                validateAppointmentId(
-                                appointment.getId());
+        List<Appointment> appointments = appointmentDAO.findAll();
 
-                validateAppointment(appointment);
-
-                boolean updated = appointmentDAO.updateAppointment(
-                                appointment);
-
-                if (!updated) {
-                        throw new IllegalStateException(
-                                        "Cannot update appointment.");
-                }
-
-                return true;
+        if (appointments == null) {
+            throw new IllegalStateException(
+                    "Cannot load appointments.");
         }
 
-        public boolean deleteAppointment(
-                        int appointmentId) {
+        return appointments;
+    }
 
-                validateAppointmentId(appointmentId);
+    public boolean updateAppointment(
+            Appointment appointment) {
 
-                boolean deleted = appointmentDAO.deleteAppointment(
-                                appointmentId);
-
-                if (!deleted) {
-                        throw new IllegalStateException(
-                                        "Cannot delete appointment.");
-                }
-
-                return true;
+        if (appointment == null) {
+            throw new IllegalArgumentException(
+                    "Appointment is required.");
         }
 
-        private void validateAppointment(
-                        Appointment appointment) {
+        validateAppointmentId(
+                appointment.getId());
 
-                if (appointment == null) {
-                        throw new IllegalArgumentException(
-                                        "Appointment is required.");
-                }
+        validateAppointment(appointment);
 
-                if (appointment.getCustomerName() == null
-                                || appointment.getCustomerName().isBlank()) {
+        appointmentDAO.update(appointment);
 
-                        throw new IllegalArgumentException(
-                                        "Customer name is required.");
-                }
+        return true;
+    }
 
-                if (appointment.getCustomerPhone() == null
-                                || appointment.getCustomerPhone().isBlank()) {
+    public boolean deleteAppointment(
+            int appointmentId) {
 
-                        throw new IllegalArgumentException(
-                                        "Customer phone is required.");
-                }
+        validateAppointmentId(appointmentId);
 
-                if (appointment.getLicensePlate() == null
-                                || appointment.getLicensePlate().isBlank()) {
+        appointmentDAO.delete(appointmentId);
 
-                        throw new IllegalArgumentException(
-                                        "License plate is required.");
-                }
+        return true;
+    }
 
-                if (appointment.getVehicleBrand() == null) {
-                        throw new IllegalArgumentException(
-                                        "Vehicle brand must be selected.");
-                }
+    private void validateAppointment(
+            Appointment appointment) {
 
-                if (appointment.getVehicleType() == null) {
-                        throw new IllegalArgumentException(
-                                        "Vehicle type must be selected.");
-                }
+        if (appointment == null) {
+            throw new IllegalArgumentException(
+                    "Appointment is required.");
         }
 
-        private void validateServiceItems(
-                        List<AppointmentItem> items) {
+        if (appointment.getCustomerName() == null
+                || appointment.getCustomerName().isBlank()) {
 
-                if (items == null || items.isEmpty()) {
-                        throw new IllegalArgumentException(
-                                        "At least one service must be selected.");
-                }
-
-                for (AppointmentItem item : items) {
-                        validateServiceItem(item);
-                }
+            throw new IllegalArgumentException(
+                    "Customer name is required.");
         }
 
-        private void validateServiceItem(
-                        AppointmentItem item) {
+        if (appointment.getCustomerPhone() == null
+                || appointment.getCustomerPhone().isBlank()) {
 
-                if (item == null) {
-                        throw new IllegalArgumentException(
-                                        "Service item cannot be null.");
-                }
-
-                if (item.getServiceId() <= 0) {
-                        throw new IllegalArgumentException(
-                                        "Invalid service ID.");
-                }
+            throw new IllegalArgumentException(
+                    "Customer phone is required.");
         }
 
-        private LocalDateTime createAppointmentDateTime(
-                        LocalDate date,
-                        LocalTime time) {
+        if (appointment.getLicensePlate() == null
+                || appointment.getLicensePlate().isBlank()) {
 
-                if (date == null) {
-                        throw new IllegalArgumentException(
-                                        "Please select an appointment date.");
-                }
-
-                if (time == null) {
-                        throw new IllegalArgumentException(
-                                        "Please select an appointment time.");
-                }
-
-                LocalDateTime dateTime = LocalDateTime.of(date, time);
-
-                if (dateTime.isBefore(
-                                LocalDateTime.now())) {
-
-                        throw new IllegalArgumentException(
-                                        "Cannot book an appointment in the past.");
-                }
-
-                return dateTime;
+            throw new IllegalArgumentException(
+                    "License plate is required.");
         }
 
-        private void validateAppointmentId(
-                        int appointmentId) {
-
-                if (appointmentId <= 0) {
-                        throw new IllegalArgumentException(
-                                        "Invalid appointment ID.");
-                }
+        if (appointment.getVehicleBrand() == null) {
+            throw new IllegalArgumentException(
+                    "Vehicle brand must be selected.");
         }
+
+        if (appointment.getVehicleType() == null) {
+            throw new IllegalArgumentException(
+                    "Vehicle type must be selected.");
+        }
+    }
+
+    private void validateServiceItems(
+            List<AppointmentItem> items) {
+
+        if (items == null || items.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "At least one service must be selected.");
+        }
+
+        for (AppointmentItem item : items) {
+            validateServiceItem(item);
+        }
+    }
+
+    private void validateServiceItem(
+            AppointmentItem item) {
+
+        if (item == null) {
+            throw new IllegalArgumentException(
+                    "Service item cannot be null.");
+        }
+
+        if (item.getServiceId() <= 0) {
+            throw new IllegalArgumentException(
+                    "Invalid service ID.");
+        }
+    }
+
+    private LocalDateTime createAppointmentDateTime(
+            LocalDate date,
+            LocalTime time) {
+
+        if (date == null) {
+            throw new IllegalArgumentException(
+                    "Please select an appointment date.");
+        }
+
+        if (time == null) {
+            throw new IllegalArgumentException(
+                    "Please select an appointment time.");
+        }
+
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
+
+        if (dateTime.isBefore(
+                LocalDateTime.now())) {
+
+            throw new IllegalArgumentException(
+                    "Cannot book an appointment in the past.");
+        }
+
+        return dateTime;
+    }
+
+    private void validateAppointmentId(
+            int appointmentId) {
+
+        if (appointmentId <= 0) {
+            throw new IllegalArgumentException(
+                    "Invalid appointment ID.");
+        }
+    }
 }

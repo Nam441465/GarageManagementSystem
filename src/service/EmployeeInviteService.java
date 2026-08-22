@@ -45,6 +45,23 @@ public class EmployeeInviteService {
         return dao.findByCode(inviteCode.trim());
     }
 
+    public void validateInviteForRegistration(String inviteCode) {
+        if (inviteCode == null || inviteCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Mã mời không hợp lệ hoặc đã được sử dụng.");
+        }
+
+        inviteCode = inviteCode.trim();
+        EmployeeInvite existing = dao.findByCode(inviteCode);
+
+        if (existing == null) {
+            throw new IllegalArgumentException("Mã mời không hợp lệ hoặc đã được sử dụng.");
+        }
+
+        if (!InviteStatus.UNUSED.name().equalsIgnoreCase(existing.getStatus())) {
+            throw new IllegalArgumentException("Mã mời không hợp lệ hoặc đã được sử dụng.");
+        }
+    }
+
     public boolean useInvite(String inviteCode) {
         if (inviteCode == null || inviteCode.trim().isEmpty()) {
             return false;
@@ -70,6 +87,6 @@ public class EmployeeInviteService {
     }
 
     public boolean deleteInvite(int id) {
-        return id > 0 && dao.delete(id);
+        return id > 0 && dao.deleteInvite(id);
     }
 }

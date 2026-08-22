@@ -110,11 +110,7 @@ public class StatisticsController {
 
             String outputDirectory = outputDirectoryField.getText().trim();
 
-            if (outputDirectory.isBlank()) {
-
-                throw new IllegalArgumentException(
-                        "Output directory is required.");
-            }
+            validateOutputDirectory(outputDirectory);
 
             boolean exported = reportGenerator.generate(
                     outputDirectory);
@@ -146,6 +142,12 @@ public class StatisticsController {
             AlertUtil.showError(
                     "Statistics Report",
                     exception.getMessage());
+        }
+    }
+
+    private void validateOutputDirectory(String outputDirectory) {
+        if (outputDirectory == null || outputDirectory.isEmpty()) {
+            throw new IllegalArgumentException("Output directory is required.");
         }
     }
 

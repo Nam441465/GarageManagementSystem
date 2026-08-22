@@ -30,35 +30,25 @@ public class LoginController {
         @FXML
         public void handleLogin() {
 
-                String username = usernameField.getText().trim();
-
-                String password = passwordField.getText().trim();
-
-                if (username.isEmpty()
-                                || password.isEmpty()) {
-
-                        System.out.println(
-                                        "Tên đăng nhập hoặc mật khẩu đang để trống");
-
-                        return;
-                }
-
-                User user = userService.login(username, password);
-
-                if (user == null) {
-
-                        System.out.println("Login failed");
-
-                        return;
-                }
-
-                Session.setCurrentUser(user);
-
-                System.out.println("Login success");
-                System.out.println(
-                                "Role: " + user.getRole());
-
                 try {
+                        String username = usernameField.getText().trim();
+
+                        String password = passwordField.getText().trim();
+
+                        User user = userService.login(username, password);
+
+                        if (user == null) {
+
+                                System.out.println("Login failed");
+
+                                return;
+                        }
+
+                        Session.setCurrentUser(user);
+
+                        System.out.println("Login success");
+                        System.out.println(
+                                        "Role: " + user.getRole());
 
                         FXMLLoader loader = new FXMLLoader(
                                         getClass().getResource(
@@ -73,7 +63,7 @@ public class LoginController {
                         stage.setScene(
                                         new Scene(root));
 
-                        stage.show();
+                        Navigation.maximize(stage);
 
                 } catch (Exception e) {
 
@@ -102,7 +92,7 @@ public class LoginController {
                         stage.setScene(
                                         new Scene(root, 900, 650));
 
-                        stage.show();
+                        Navigation.maximize(stage);
 
                 } catch (Exception e) {
                         e.printStackTrace();
@@ -132,7 +122,7 @@ public class LoginController {
 
                         stage.setScene(new Scene(root, 500, 500));
                         stage.setTitle("Hệ thống quản lý gara");
-                        stage.show();
+                        Navigation.maximize(stage);
 
                 } catch (Exception e) {
                         e.printStackTrace();
@@ -151,6 +141,7 @@ public class LoginController {
                         Parent root = new FXMLLoader(getClass().getResource("/ui/EmployeeRegisterView.fxml")).load();
                         Stage stage = (Stage) usernameField.getScene().getWindow();
                         stage.setScene(new Scene(root, 420, 500));
+                        Navigation.maximize(stage);
                 } catch (Exception e) {
                         e.printStackTrace();
                         Alert alert = new Alert(Alert.AlertType.ERROR);

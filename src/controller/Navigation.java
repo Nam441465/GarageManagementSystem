@@ -1,12 +1,15 @@
 package controller;
 
 import javafx.fxml.FXMLLoader;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public final class Navigation {
+
     private Navigation() {
     }
 
@@ -33,8 +36,8 @@ public final class Navigation {
 
             Stage stage = (Stage) source.getScene().getWindow();
 
-            stage.setScene(new Scene(root, width, height));
-            stage.centerOnScreen();
+            stage.setScene(new Scene(root));
+            maximize(stage);
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -43,5 +46,22 @@ public final class Navigation {
                     "Không thể mở màn hình: " + fxmlPath,
                     exception);
         }
+    }
+
+    public static void maximize(Stage stage) {
+        stage.show();
+        Platform.runLater(() -> {
+            stage.setMaximized(true);
+
+            Platform.runLater(() -> {
+                if (!stage.isMaximized()) {
+                    var bounds = Screen.getPrimary().getVisualBounds();
+                    stage.setX(bounds.getMinX());
+                    stage.setY(bounds.getMinY());
+                    stage.setWidth(bounds.getWidth());
+                    stage.setHeight(bounds.getHeight());
+                }
+            });
+        });
     }
 }

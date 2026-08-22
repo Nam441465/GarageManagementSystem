@@ -193,25 +193,9 @@ public class InventoryController {
 
     private Part readPart(Part part) {
 
-        BigDecimal price;
+        BigDecimal price = inventoryService.parseUnitPrice(unitPriceField.getText().trim());
 
-        try {
-            price = new BigDecimal(
-                    unitPriceField.getText().trim());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(
-                    "Đơn giá phải là số hợp lệ.");
-        }
-
-        int stock;
-
-        try {
-            stock = Integer.parseInt(
-                    stockField.getText().trim());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(
-                    "Số lượng tồn kho phải là số nguyên hợp lệ.");
-        }
+        int stock = inventoryService.parseStockQuantity(stockField.getText().trim());
 
         part.setPartName(
                 nameField.getText().trim());

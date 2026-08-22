@@ -4,18 +4,28 @@ import dao.EmployeeDAO;
 
 import model.Employee;
 
+
+
 import java.util.List;
 
 public class EmployeeService {
 
     private final EmployeeDAO dao;
+    private final AuthorizationService authorizationService;
 
     public EmployeeService() {
-        this(new EmployeeDAO());
+        this(new EmployeeDAO(), new AuthorizationService());
     }
 
-    public EmployeeService(EmployeeDAO dao) {
-        this.dao = java.util.Objects.requireNonNull(dao, "employeeDAO is required");
+    public EmployeeService(
+            EmployeeDAO dao,
+            AuthorizationService authorizationService) {
+
+        this.dao = java.util.Objects.requireNonNull(
+                dao, "employeeDAO is required");
+
+        this.authorizationService = java.util.Objects.requireNonNull(
+                authorizationService, "authorizationService is required");
     }
 
     private void validate(Employee employee) {
@@ -48,6 +58,7 @@ public class EmployeeService {
     public void addEmployee(Employee employee) {
 
         validate(employee);
+        authorizationService.requireOwner();
 
         dao.addEmployee(employee);
     }
@@ -55,6 +66,7 @@ public class EmployeeService {
     public void updateEmployee(Employee employee) {
 
         validate(employee);
+        authorizationService.requireOwner();
 
         if (employee.getId() <= 0 || dao.findById(employee.getId()) == null) {
             throw new IllegalArgumentException("Employee not found");
@@ -65,9 +77,11 @@ public class EmployeeService {
 
     public void deleteEmployee(int id) {
 
+        authorizationService.requireOwner();
         if (id <= 0 || dao.findById(id) == null) {
             throw new IllegalArgumentException("Employee not found");
         }
+        
         dao.deleteEmployee(id);
     }
 

@@ -64,15 +64,9 @@ public class CustomerLookupController {
 
                         VehicleBrand vehicleBrand = vehicleBrandComboBox.getValue();
 
-                        if (vehicleType == null) {
-                                throw new IllegalArgumentException(
-                                                "Vui lòng chọn loại xe.");
-                        }
-
-                        if (vehicleBrand == null) {
-                                throw new IllegalArgumentException(
-                                                "Vui lòng chọn hãng xe.");
-                        }
+                        customerLookupService.validateVehicleTypeAndBrand(
+                                vehicleType != null ? vehicleType.name() : null,
+                                vehicleBrand != null ? vehicleBrand.name() : null);
 
                         List<CustomerLookupService.ServicePriceResult> results = customerLookupService
                                         .findServicesByVehicle(
@@ -144,10 +138,7 @@ public class CustomerLookupController {
                 try {
                         String licensePlate = licensePlateField.getText().trim();
 
-                        if (licensePlate.isEmpty()) {
-                                throw new IllegalArgumentException(
-                                                "Vui lòng nhập biển số xe.");
-                        }
+                        customerLookupService.validateLicensePlate(licensePlate);
 
                         Vehicle vehicle = customerLookupService
                                         .findVehicleByLicensePlate(licensePlate);

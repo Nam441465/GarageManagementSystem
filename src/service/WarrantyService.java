@@ -18,8 +18,27 @@ public class WarrantyService {
         this.warrantyDAO = java.util.Objects.requireNonNull(warrantyDAO, "warrantyDAO is required");
     }
 
+    private void validateWarrantyData(int invoiceId, String warrantyCode, LocalDate startDate, LocalDate endDate, String coverage) {
+        if (invoiceId <= 0) {
+            throw new IllegalArgumentException("Mã hóa đơn phải lớn hơn 0.");
+        }
+
+        if (warrantyCode == null || warrantyCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Mã bảo hành là bắt buộc.");
+        }
+
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Ngày bắt đầu và kết thúc là bắt buộc.");
+        }
+
+        if (endDate.isBefore(startDate)) {
+            throw new IllegalArgumentException("Ngày kết thúc phải sau ngày bắt đầu.");
+        }
+    }
+
     public boolean createWarranty(int invoiceId, String warrantyCode, LocalDate startDate, LocalDate endDate,
             String coverage) {
+        validateWarrantyData(invoiceId, warrantyCode, startDate, endDate, coverage);
         Warranty warranty = new Warranty(invoiceId, warrantyCode, startDate, endDate, coverage, "ACTIVE");
         return warrantyDAO.addWarranty(warranty);
     }
@@ -41,6 +60,9 @@ public class WarrantyService {
     }
 
     public boolean updateWarranty(Warranty warranty) {
+        if (warranty != null) {
+            validateWarrantyData(warranty.getInvoiceId(), warranty.getWarrantyCode(), warranty.getStartDate(), warranty.getEndDate(), warranty.getCoverage());
+        }
         return warrantyDAO.updateWarranty(warranty);
     }
 

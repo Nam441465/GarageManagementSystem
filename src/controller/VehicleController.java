@@ -1,24 +1,21 @@
 package controller;
 
-import enums.UserRole;
 import enums.VehicleBrand;
 import enums.VehicleStatus;
 import enums.VehicleType;
-
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import javafx.fxml.FXML;
+import javafx.fxml.FXML; 
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-import model.Session;
 import model.Vehicle;
 
 import service.VehicleService;
@@ -76,9 +73,6 @@ public class VehicleController {
 
                 vehicleList = FXCollections.observableArrayList();
 
-                /*
-                 * Initialize ComboBox
-                 */
                 brandComboBox.setItems(
                                 FXCollections.observableArrayList(
                                                 VehicleBrand.values()));
@@ -91,9 +85,6 @@ public class VehicleController {
                                 FXCollections.observableArrayList(
                                                 VehicleStatus.values()));
 
-                /*
-                 * Table columns
-                 */
                 idColumn.setCellValueFactory(
                                 data -> new SimpleIntegerProperty(
                                                 data.getValue().getId()).asObject());
@@ -128,14 +119,8 @@ public class VehicleController {
                                 data -> new SimpleStringProperty(
                                                 data.getValue().getModel()));
 
-                /*
-                 * Load vehicles
-                 */
                 loadVehicles();
 
-                /*
-                 * When selecting a vehicle
-                 */
                 vehicleTable.getSelectionModel()
                                 .selectedItemProperty()
                                 .addListener((obs, oldVehicle, vehicle) -> {
@@ -242,18 +227,6 @@ public class VehicleController {
 
         @FXML
         public void deleteVehicle() {
-
-                if (Session.getCurrentUser() == null) {
-                        return;
-                }
-
-                if (Session.getCurrentUser().getRole() != UserRole.OWNER) {
-
-                        System.out.println(
-                                        "Nhân viên không thể xóa xe");
-
-                        return;
-                }
 
                 Vehicle vehicle = vehicleTable
                                 .getSelectionModel()

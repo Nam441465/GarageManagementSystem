@@ -1,10 +1,11 @@
 package service;
 
+import dao.ServiceDAO;
+import enums.UserRole;
+import model.Service;
+
 import java.util.List;
 import java.util.Objects;
-
-import dao.ServiceDAO;
-import model.Service;
 
 public class ServiceService {
 
@@ -20,7 +21,7 @@ public class ServiceService {
                 "serviceDAO is required");
     }
 
-    public void addService(Service service) {
+    private void validate(Service service) {
 
         if (service == null) {
             throw new IllegalArgumentException(
@@ -32,6 +33,30 @@ public class ServiceService {
 
             throw new IllegalArgumentException(
                     "Service name cannot be empty");
+        }
+
+        if (serviceDAO.existsByName(
+                service.getServiceName().trim())) {
+
+            throw new IllegalArgumentException(
+                    "Service name already exists");
+        }
+
+        service.setServiceName(
+                service.getServiceName().trim());
+    }
+
+    public void addService(Service service) {
+
+        validate(service);
+
+        // PHẢN TRÁCH: Authorization check moved from Controller to Service
+        if (model.Session.getCurrentUser() == null
+                || model.Session.getCurrentUser().getRole() != UserRole.OWNER) {
+
+            System.out.println(
+                    "Nhân viên không thể thêm dịch vụ");
+            return;
         }
 
         if (serviceDAO.existsByName(
@@ -84,6 +109,15 @@ public class ServiceService {
                     "Service name already exists");
         }
 
+        // PHẢN TRÁCH: Authorization check moved from Controller to Service
+        if (model.Session.getCurrentUser() == null
+                || model.Session.getCurrentUser().getRole() != UserRole.OWNER) {
+
+            System.out.println(
+                    "Nhân viên không thể cập nhật dịch vụ");
+            return;
+        }
+
         service.setServiceName(newName);
 
         serviceDAO.updateService(service);
@@ -101,6 +135,15 @@ public class ServiceService {
                     "Service not found");
         }
 
+        // PHẢN TRÁCH: Authorization check moved from Controller to Service
+        if (model.Session.getCurrentUser() == null
+                || model.Session.getCurrentUser().getRole() != UserRole.OWNER) {
+
+            System.out.println(
+                    "Nhân viên không thể xóa dịch vụ");
+            return;
+        }
+
         serviceDAO.deleteService(id);
     }
 
@@ -115,6 +158,7 @@ public class ServiceService {
     }
 
     public List<Service> findAll() {
+
         return serviceDAO.findAll();
     }
 

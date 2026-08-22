@@ -7,10 +7,79 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppointmentItemDAO {
+public class AppointmentItemDAO extends BaseDAO<AppointmentItem> {
+
+    @Override
+    protected AppointmentItem mapResultSet(ResultSet rs) throws SQLException {
+        AppointmentItem item = new AppointmentItem();
+        item.setId(rs.getInt("id"));
+        item.setAppointmentId(rs.getInt("appointment_id"));
+        item.setServiceId(rs.getInt("service_id"));
+        item.setUnitPrice(rs.getBigDecimal("unit_price"));
+        return item;
+    }
+
+    @Override
+    protected String getTableName() {
+        return "AppointmentServiceItem";
+    }
+
+    @Override
+    protected String getIdColumn() {
+        return "id";
+    }
+
+    @Override
+    protected String getInsertSQL() {
+        return """
+                INSERT INTO AppointmentServiceItem (
+                    appointment_id,
+                    service_id,
+                    unit_price
+                )
+                VALUES (?, ?, ?)
+                """;
+    }
+
+    @Override
+    protected String getUpdateSQL() {
+        return """
+                UPDATE AppointmentServiceItem
+                SET service_id = ?,
+                    unit_price = ?
+                WHERE id = ?
+                """;
+    }
+
+    @Override
+    protected String getDeleteSQL() {
+        return """
+                DELETE FROM AppointmentServiceItem
+                WHERE id = ?
+                """;
+    }
+
+    @Override
+    protected void setInsertParameters(
+            PreparedStatement ps,
+            AppointmentItem item) throws SQLException {
+
+        ps.setInt(1, item.getAppointmentId());
+        ps.setInt(2, item.getServiceId());
+        ps.setBigDecimal(3, item.getUnitPrice());
+    }
+
+    @Override
+    protected void setUpdateParameters(
+            PreparedStatement ps,
+            AppointmentItem item) throws SQLException {
+
+        ps.setInt(1, item.getServiceId());
+        ps.setBigDecimal(2, item.getUnitPrice());
+        ps.setInt(3, item.getId());
+    }
 
     public boolean addAppointmentItem(AppointmentItem item) {
-
         try (Connection conn = DatabaseConnection.getConnection()) {
             return addAppointmentItem(conn, item);
 
@@ -24,22 +93,11 @@ public class AppointmentItemDAO {
             Connection conn,
             AppointmentItem item) throws SQLException {
 
-        String sql = """
-                INSERT INTO AppointmentServiceItem (
-                    appointment_id,
-                    service_id,
-                    unit_price
-                )
-                VALUES (?, ?, ?)
-                """;
-
         try (PreparedStatement ps = conn.prepareStatement(
-                sql,
+                getInsertSQL(),
                 Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setInt(1, item.getAppointmentId());
-            ps.setInt(2, item.getServiceId());
-            ps.setBigDecimal(3, item.getUnitPrice());
+            setInsertParameters(ps, item);
 
             int affectedRows = ps.executeUpdate();
 
@@ -48,7 +106,6 @@ public class AppointmentItemDAO {
             }
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
-
                 if (rs.next()) {
                     item.setId(rs.getInt(1));
                 }
@@ -59,20 +116,12 @@ public class AppointmentItemDAO {
     }
 
     public boolean updateAppointmentItem(AppointmentItem item) {
-
-        String sql = """
-                UPDATE AppointmentServiceItem
-                SET service_id = ?,
-                    unit_price = ?
-                WHERE id = ?
-                """;
+        String sql = getUpdateSQL();
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, item.getServiceId());
-            ps.setBigDecimal(2, item.getUnitPrice());
-            ps.setInt(3, item.getId());
+            setUpdateParameters(ps, item);
 
             return ps.executeUpdate() > 0;
 
@@ -83,9 +132,7 @@ public class AppointmentItemDAO {
     }
 
     public boolean deleteAppointmentItem(int id) {
-
-        String sql =
-                "DELETE FROM AppointmentServiceItem WHERE id = ?";
+        String sql = getDeleteSQL();
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -101,7 +148,6 @@ public class AppointmentItemDAO {
     }
 
     public boolean deleteByAppointmentId(int appointmentId) {
-
         try (Connection conn = DatabaseConnection.getConnection()) {
             return deleteByAppointmentId(conn, appointmentId);
 
@@ -116,8 +162,7 @@ public class AppointmentItemDAO {
             Connection conn,
             int appointmentId) throws SQLException {
 
-        String sql =
-                "DELETE FROM AppointmentServiceItem WHERE appointment_id = ?";
+        String sql = "DELETE FROM AppointmentServiceItem WHERE appointment_id = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -127,38 +172,12 @@ public class AppointmentItemDAO {
         }
     }
 
-    public AppointmentItem findById(int id) {
-
-        String sql =
-                "SELECT * FROM AppointmentServiceItem WHERE id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-
-            try (ResultSet rs = ps.executeQuery()) {
-
-                if (rs.next()) {
-                    return mapAppointmentItem(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Error finding appointment item by ID", e);
-        }
-
-        return null;
-    }
-
     public List<AppointmentItem> findByAppointmentId(
             int appointmentId) {
 
         List<AppointmentItem> list = new ArrayList<>();
 
-        String sql =
-                "SELECT * FROM AppointmentServiceItem WHERE appointment_id = ?";
+        String sql = "SELECT * FROM AppointmentServiceItem WHERE appointment_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -168,7 +187,7 @@ public class AppointmentItemDAO {
             try (ResultSet rs = ps.executeQuery()) {
 
                 while (rs.next()) {
-                    list.add(mapAppointmentItem(rs));
+                    list.add(mapResultSet(rs));
                 }
             }
 
@@ -179,44 +198,5 @@ public class AppointmentItemDAO {
         }
 
         return list;
-    }
-
-    public List<AppointmentItem> findAll() {
-
-        List<AppointmentItem> list = new ArrayList<>();
-
-        String sql =
-                "SELECT * FROM AppointmentServiceItem ORDER BY id";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                list.add(mapAppointmentItem(rs));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Error finding all appointment items", e);
-        }
-
-        return list;
-    }
-
-    private AppointmentItem mapAppointmentItem(
-            ResultSet rs) throws SQLException {
-
-        AppointmentItem item = new AppointmentItem();
-
-        item.setId(rs.getInt("id"));
-        item.setAppointmentId(
-                rs.getInt("appointment_id"));
-        item.setServiceId(
-                rs.getInt("service_id"));
-        item.setUnitPrice(
-                rs.getBigDecimal("unit_price"));
-
-        return item;
     }
 }

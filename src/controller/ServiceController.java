@@ -1,6 +1,5 @@
 package controller;
 
-import enums.UserRole;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -13,7 +12,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 import model.Service;
-import model.Session;
 
 import service.ServiceService;
 
@@ -89,14 +87,6 @@ public class ServiceController {
         @FXML
         public void addService() {
 
-                if (!isOwner()) {
-
-                        System.out.println(
-                                        "Nhân viên không thể thêm dịch vụ");
-
-                        return;
-                }
-
                 Service service = new Service();
 
                 service.setServiceName(
@@ -114,14 +104,6 @@ public class ServiceController {
 
         @FXML
         public void updateService() {
-
-                if (!isOwner()) {
-
-                        System.out.println(
-                                        "Nhân viên không thể cập nhật dịch vụ");
-
-                        return;
-                }
 
                 Service service = serviceTable
                                 .getSelectionModel()
@@ -147,14 +129,6 @@ public class ServiceController {
         @FXML
         public void deleteService() {
 
-                if (!isOwner()) {
-
-                        System.out.println(
-                                        "Nhân viên không thể xóa dịch vụ");
-
-                        return;
-                }
-
                 Service service = serviceTable
                                 .getSelectionModel()
                                 .getSelectedItem();
@@ -169,12 +143,6 @@ public class ServiceController {
                 loadServices();
 
                 clearFields();
-        }
-
-        private boolean isOwner() {
-
-                return Session.getCurrentUser() != null
-                                && Session.getCurrentUser().getRole() == UserRole.OWNER;
         }
 
         private void clearFields() {

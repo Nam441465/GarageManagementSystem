@@ -46,7 +46,7 @@ public class HomeController {
 
             stage.setScene(new Scene(root, width, height));
             stage.centerOnScreen();
-            stage.show();
+            Navigation.maximize(stage);
 
         } catch (Exception e) {
             e.printStackTrace();

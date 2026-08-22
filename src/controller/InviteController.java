@@ -3,7 +3,6 @@ package controller;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import enums.UserRole;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,7 +13,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import model.EmployeeInvite;
-import model.Session;
+import service.AuthorizationService;
 import service.EmployeeInviteService;
 
 public class InviteController {
@@ -31,10 +30,11 @@ public class InviteController {
     @FXML
     private TableColumn<EmployeeInvite, LocalDateTime> createdDateColumn;
     private final EmployeeInviteService inviteService = new EmployeeInviteService();
+    private final AuthorizationService authorizationService = new AuthorizationService();
 
     @FXML
     public void initialize() {
-        if (!isOwner()) {
+        if (!authorizationService.isOwner()) {
             showError("Từ chối truy cập", "Chỉ chủ gara mới có thể quản lý mã mời nhân viên.");
             return;
         }
@@ -90,10 +90,6 @@ public class InviteController {
 
     private void loadInvites() {
         inviteTable.setItems(FXCollections.observableArrayList(inviteService.findAll()));
-    }
-
-    private boolean isOwner() {
-        return Session.getCurrentUser() != null && Session.getCurrentUser().getRole() == UserRole.OWNER;
     }
 
     private void showError(String title, String message) {

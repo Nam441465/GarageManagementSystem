@@ -12,54 +12,100 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PriceListDAO {
+public class PriceListDAO extends BaseDAO<PriceList> {
+
+    @Override
+    protected PriceList mapResultSet(ResultSet rs) throws SQLException {
+        Date effectiveFromDate = rs.getDate("effective_from");
+        LocalDate effectiveFrom = effectiveFromDate != null ? effectiveFromDate.toLocalDate() : null;
+
+        Date effectiveToDate = rs.getDate("effective_to");
+        LocalDate effectiveTo = effectiveToDate != null ? effectiveToDate.toLocalDate() : null;
+
+        return new PriceList(
+                rs.getInt("id"),
+                rs.getInt("service_id"),
+                rs.getString("vehicle_type"),
+                rs.getString("vehicle_brand"),
+                rs.getBigDecimal("price"),
+                effectiveFrom,
+                effectiveTo,
+                rs.getString("note"));
+    }
+
+    @Override
+    protected String getTableName() {
+        return "PriceList";
+    }
+
+    @Override
+    protected String getIdColumn() {
+        return "id";
+    }
+
+    @Override
+    protected String getInsertSQL() {
+        return "INSERT INTO PriceList (service_id, vehicle_type, vehicle_brand, price, effective_from, effective_to, note) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    }
+
+    @Override
+    protected String getUpdateSQL() {
+        return "UPDATE PriceList SET service_id = ?, vehicle_type = ?, vehicle_brand = ?, price = ?, effective_from = ?, effective_to = ?, note = ? WHERE id = ?";
+    }
+
+    @Override
+    protected String getDeleteSQL() {
+        return "DELETE FROM PriceList WHERE id = ?";
+    }
+
+    @Override
+    protected void setInsertParameters(PreparedStatement ps, PriceList obj) throws SQLException {
+        ps.setInt(1, obj.getServiceId());
+        ps.setString(2, obj.getVehicleType());
+        ps.setString(3, obj.getVehicleBrand());
+        ps.setBigDecimal(4, obj.getPrice());
+        ps.setDate(5, obj.getEffectiveFrom() != null ? Date.valueOf(obj.getEffectiveFrom()) : null);
+        ps.setObject(6, obj.getEffectiveTo() != null ? Date.valueOf(obj.getEffectiveTo()) : null);
+        ps.setString(7, obj.getNote());
+    }
+
+    @Override
+    protected void setUpdateParameters(PreparedStatement ps, PriceList obj) throws SQLException {
+        ps.setInt(1, obj.getServiceId());
+        ps.setString(2, obj.getVehicleType());
+        ps.setString(3, obj.getVehicleBrand());
+        ps.setBigDecimal(4, obj.getPrice());
+        ps.setDate(5, obj.getEffectiveFrom() != null ? Date.valueOf(obj.getEffectiveFrom()) : null);
+        ps.setObject(6, obj.getEffectiveTo() != null ? Date.valueOf(obj.getEffectiveTo()) : null);
+        ps.setString(7, obj.getNote());
+        ps.setInt(8, obj.getId());
+    }
 
     public boolean addPriceList(PriceList obj) {
-        String sql = "INSERT INTO PriceList (service_id, vehicle_type, vehicle_brand, price, effective_from, effective_to, note) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, obj.getServiceId());
-            ps.setString(2, obj.getVehicleType());
-            ps.setString(3, obj.getVehicleBrand());
-            ps.setBigDecimal(4, obj.getPrice());
-            ps.setDate(5, obj.getEffectiveFrom() != null ? Date.valueOf(obj.getEffectiveFrom()) : null);
-            ps.setObject(6, obj.getEffectiveTo() != null ? Date.valueOf(obj.getEffectiveTo()) : null);
-            ps.setString(7, obj.getNote());
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
+        try {
+            super.add(obj);
+            return true;
+        } catch (Exception e) {
             throw new RuntimeException("Error adding price list", e);
         }
     }
 
-    public PriceList findById(int id) {
-        String sql = "SELECT * FROM PriceList WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToObject(rs);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Error finding price list by ID", e);
+    public boolean updatePriceList(PriceList obj) {
+        try {
+            super.update(obj);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating price list", e);
         }
-        return null;
     }
 
-    public List<PriceList> findAll() {
-        List<PriceList> list = new ArrayList<>();
-        String sql = "SELECT * FROM PriceList";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                list.add(mapResultSetToObject(rs));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Error finding all price lists", e);
+    public boolean deletePriceList(int id) {
+        try {
+            super.delete(id);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting price list", e);
         }
-        return list;
     }
 
     public List<PriceList> findByServiceId(int serviceId) {
@@ -70,7 +116,7 @@ public class PriceListDAO {
             ps.setInt(1, serviceId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    list.add(mapResultSetToObject(rs));
+                    list.add(mapResultSet(rs));
                 }
             }
         } catch (SQLException e) {
@@ -105,7 +151,7 @@ public class PriceListDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return mapResultSetToObject(rs);
+                    return mapResultSet(rs);
                 }
             }
 
@@ -116,52 +162,5 @@ public class PriceListDAO {
         }
 
         return null;
-    }
-
-    public boolean updatePriceList(PriceList obj) {
-        String sql = "UPDATE PriceList SET service_id = ?, vehicle_type = ?, vehicle_brand = ?, price = ?, effective_from = ?, effective_to = ?, note = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, obj.getServiceId());
-            ps.setString(2, obj.getVehicleType());
-            ps.setString(3, obj.getVehicleBrand());
-            ps.setBigDecimal(4, obj.getPrice());
-            ps.setDate(5, obj.getEffectiveFrom() != null ? Date.valueOf(obj.getEffectiveFrom()) : null);
-            ps.setObject(6, obj.getEffectiveTo() != null ? Date.valueOf(obj.getEffectiveTo()) : null);
-            ps.setString(7, obj.getNote());
-            ps.setInt(8, obj.getId());
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException("Error updating price list", e);
-        }
-    }
-
-    public boolean deletePriceList(int id) {
-        String sql = "DELETE FROM PriceList WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException("Error deleting price list", e);
-        }
-    }
-
-    private PriceList mapResultSetToObject(ResultSet rs) throws SQLException {
-        Date effectiveFromDate = rs.getDate("effective_from");
-        LocalDate effectiveFrom = effectiveFromDate != null ? effectiveFromDate.toLocalDate() : null;
-
-        Date effectiveToDate = rs.getDate("effective_to");
-        LocalDate effectiveTo = effectiveToDate != null ? effectiveToDate.toLocalDate() : null;
-
-        return new PriceList(
-                rs.getInt("id"),
-                rs.getInt("service_id"),
-                rs.getString("vehicle_type"),
-                rs.getString("vehicle_brand"),
-                rs.getBigDecimal("price"),
-                effectiveFrom,
-                effectiveTo,
-                rs.getString("note"));
     }
 }

@@ -9,7 +9,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.EmployeeInvite;
 import model.User;
 import service.EmployeeInviteService;
 import service.UserService;
@@ -28,9 +27,7 @@ public class RegisterController {
     public void register() {
         try {
             String code = inviteCodeField.getText().trim();
-            EmployeeInvite invite = inviteService.findByCode(code);
-            if (invite == null || !"UNUSED".equalsIgnoreCase(invite.getStatus()))
-                throw new IllegalArgumentException("Mã mời không hợp lệ hoặc đã được sử dụng.");
+            inviteService.validateInviteForRegistration(code);
             User user = new User();
             user.setRole(UserRole.EMPLOYEE);
             user.setUsername(usernameField.getText().trim());
@@ -52,6 +49,7 @@ public class RegisterController {
             Parent root = new FXMLLoader(getClass().getResource("/ui/LoginView.fxml")).load();
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root, 400, 300));
+            Navigation.maximize(stage);
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Không thể mở màn hình đăng nhập.").showAndWait();
         }

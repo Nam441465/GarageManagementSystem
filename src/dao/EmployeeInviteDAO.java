@@ -8,25 +8,68 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
-public class EmployeeInviteDAO {
+public class EmployeeInviteDAO extends BaseDAO<EmployeeInvite> {
+
+    @Override
+    protected EmployeeInvite mapResultSet(ResultSet rs) throws SQLException {
+        EmployeeInvite invite = new EmployeeInvite(
+                rs.getInt("id"),
+                rs.getString("invite_code"),
+                rs.getString("status"));
+
+        Timestamp createdTimestamp = rs.getTimestamp("created_date");
+        if (createdTimestamp != null) {
+            invite.setCreatedDate(createdTimestamp.toLocalDateTime());
+        }
+
+        return invite;
+    }
+
+    @Override
+    protected String getTableName() {
+        return "EmployeeInvite";
+    }
+
+    @Override
+    protected String getIdColumn() {
+        return "id";
+    }
+
+    @Override
+    protected String getInsertSQL() {
+        return "INSERT INTO EmployeeInvite(invite_code, status) VALUES (?, ?)";
+    }
+
+    @Override
+    protected String getUpdateSQL() {
+        return "UPDATE EmployeeInvite SET invite_code = ?, status = ? WHERE id = ?";
+    }
+
+    @Override
+    protected String getDeleteSQL() {
+        return "DELETE FROM EmployeeInvite WHERE id = ?";
+    }
+
+    @Override
+    protected void setInsertParameters(PreparedStatement ps, EmployeeInvite invite) throws SQLException {
+        ps.setString(1, invite.getInviteCode());
+        ps.setString(2, invite.getStatus());
+    }
+
+    @Override
+    protected void setUpdateParameters(PreparedStatement ps, EmployeeInvite invite) throws SQLException {
+        ps.setString(1, invite.getInviteCode());
+        ps.setString(2, invite.getStatus());
+        ps.setInt(3, invite.getId());
+    }
 
     public boolean addInvite(EmployeeInvite invite) {
-        String sql = "INSERT INTO EmployeeInvite(invite_code, status) VALUES (?, ?)";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, invite.getInviteCode());
-            ps.setString(2, invite.getStatus());
-
-            int rows = ps.executeUpdate();
-            return rows > 0;
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error adding employee invite", e);
+        try {
+            super.add(invite);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
@@ -40,7 +83,7 @@ public class EmployeeInviteDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return mapEmployeeInvite(rs);
+                    return mapResultSet(rs);
                 }
             }
 
@@ -68,52 +111,12 @@ public class EmployeeInviteDAO {
         }
     }
 
-    public List<EmployeeInvite> findAll() {
-        List<EmployeeInvite> list = new ArrayList<>();
-        String sql = "SELECT * FROM EmployeeInvite";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                list.add(mapEmployeeInvite(rs));
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error finding all employee invites", e);
+    public boolean deleteInvite(int id) {
+        try {
+            super.delete(id);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-
-        return list;
-    }
-
-    public boolean delete(int id) {
-        String sql = "DELETE FROM EmployeeInvite WHERE id=?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-
-            int rows = ps.executeUpdate();
-            return rows > 0;
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error deleting employee invite", e);
-        }
-    }
-
-    private EmployeeInvite mapEmployeeInvite(ResultSet rs) throws SQLException {
-        EmployeeInvite invite = new EmployeeInvite(
-                rs.getInt("id"),
-                rs.getString("invite_code"),
-                rs.getString("status"));
-
-        Timestamp createdTimestamp = rs.getTimestamp("created_date");
-        if (createdTimestamp != null) {
-            invite.setCreatedDate(createdTimestamp.toLocalDateTime());
-        }
-
-        return invite;
     }
 }

@@ -33,6 +33,66 @@ public class PriceListService {
                                 "serviceDAO is required");
         }
 
+        // ==================== UI Input Parsing & Validation ====================
+
+        public int parseServiceId(String text) {
+                if (text == null || text.trim().isEmpty()) {
+                        throw new IllegalArgumentException("Mã dịch vụ là bắt buộc.");
+                }
+
+                try {
+                        int id = Integer.parseInt(text.trim());
+                        if (id <= 0) {
+                                throw new IllegalArgumentException("Mã dịch vụ phải lớn hơn 0.");
+                        }
+                        return id;
+                } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException("Mã dịch vụ phải là số nguyên.");
+                }
+        }
+
+        public String parseVehicleType(String vehicleType) {
+                if (vehicleType == null) {
+                        throw new IllegalArgumentException("Hãy chọn loại xe.");
+                }
+                return vehicleType;
+        }
+
+        public String parseVehicleBrand(String vehicleBrand) {
+                if (vehicleBrand == null || vehicleBrand.trim().isEmpty()) {
+                        throw new IllegalArgumentException("Hãy chọn hãng xe.");
+                }
+                return vehicleBrand;
+        }
+
+        public BigDecimal parseAmount(String text) {
+                if (text == null || text.trim().isEmpty()) {
+                        throw new IllegalArgumentException("Giá là bắt buộc.");
+                }
+
+                try {
+                        BigDecimal amount = new BigDecimal(text.trim());
+                        if (amount.signum() < 0) {
+                                throw new IllegalArgumentException("Giá không được âm.");
+                        }
+                        return amount;
+                } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException("Giá phải là số hợp lệ.");
+                }
+        }
+
+        public void validateDateRange(LocalDate from, LocalDate to) {
+                if (from == null) {
+                        throw new IllegalArgumentException("Ngày hiệu lực là bắt buộc.");
+                }
+
+                if (to != null && to.isBefore(from)) {
+                        throw new IllegalArgumentException("Ngày kết thúc phải sau ngày bắt đầu.");
+                }
+        }
+
+        // ==================== Business Logic ====================
+
         public boolean addPrice(
                         int serviceId,
                         String vehicleType,

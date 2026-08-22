@@ -17,4 +17,29 @@ public class AuthorizationService {
                     "Owner permission required.");
         }
     }
+
+    public boolean isEmployee() {
+        return Session.getCurrentUser() != null
+                && Session.getCurrentUser().getRole() == UserRole.EMPLOYEE;
+    }
+
+    public void requireEmployee() {
+        if (!isEmployee()) {
+            throw new PermissionDeniedException(
+                    "Employee permission required.");
+        }
+    }
+
+    public boolean isOwnerOrEmployee() {
+        return Session.getCurrentUser() != null &&
+                (Session.getCurrentUser().getRole() == UserRole.OWNER ||
+                 Session.getCurrentUser().getRole() == UserRole.EMPLOYEE);
+    }
+
+    public void requireOwnerOrEmployee() {
+        if (!isOwnerOrEmployee()) {
+            throw new PermissionDeniedException(
+                    "Owner or Employee permission required.");
+        }
+    }
 }

@@ -3,6 +3,7 @@ package service;
 import dao.PartDAO;
 import model.Part;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,6 +20,26 @@ public class InventoryService {
                 partDAO,
                 "partDAO is required");
     }
+
+    // ==================== UI Input Parsing & Validation ====================
+
+    public BigDecimal parseUnitPrice(String text) {
+        try {
+            return new BigDecimal(text.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Đơn giá phải là số hợp lệ.");
+        }
+    }
+
+    public int parseStockQuantity(String text) {
+        try {
+            return Integer.parseInt(text.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Số lượng tồn kho phải là số nguyên hợp lệ.");
+        }
+    }
+
+    // ==================== Business Logic ====================
 
     public List<Part> getAllParts() {
         return partDAO.findAll();

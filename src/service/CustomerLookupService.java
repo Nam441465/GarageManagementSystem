@@ -43,6 +43,24 @@ public class CustomerLookupService {
         );
     }
 
+    public void validateVehicleTypeAndBrand(String vehicleType, String vehicleBrand) {
+        if (vehicleType == null) {
+            throw new IllegalArgumentException("Vui lòng chọn loại xe.");
+        }
+
+        if (vehicleBrand == null) {
+            throw new IllegalArgumentException("Vui lòng chọn hãng xe.");
+        }
+    }
+
+    public void validateLicensePlate(String licensePlate) {
+        if (licensePlate == null || licensePlate.trim().isEmpty()) {
+            throw new IllegalArgumentException("Vui lòng nhập biển số xe.");
+        }
+    }
+
+    // ==================== Business Logic ====================
+
     /**
      * Tra cứu tất cả dịch vụ có giá phù hợp
      * với loại xe và hãng xe.

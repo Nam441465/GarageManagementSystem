@@ -1,6 +1,5 @@
 package controller;
 
-import enums.UserRole;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 
@@ -14,6 +13,7 @@ import javafx.stage.Stage;
 
 import model.Session;
 import model.User;
+import service.AuthorizationService;
 
 public class DashboardController {
 
@@ -62,6 +62,8 @@ public class DashboardController {
     @FXML
     private Label roleLabel;
 
+    private final AuthorizationService authorizationService = new AuthorizationService();
+
     @FXML
     public void initialize() {
 
@@ -76,9 +78,7 @@ public class DashboardController {
             roleLabel.setText(
                     "Vai trò: "
                             + user.getRole());
-            if (user.getRole() == UserRole.OWNER) {
-                System.out.println("Owner login");
-            } else {
+            if (!authorizationService.isOwner()) {
 
                 employeeButton.setVisible(false);
                 employeeButton.setManaged(false);
@@ -90,9 +90,7 @@ public class DashboardController {
                 System.out.println(
                         "Employee login");
 
-            }
-
-            if (user.getRole() == UserRole.OWNER) {
+            } else {
 
                 System.out.println(
                         "Owner login");
@@ -133,14 +131,7 @@ public class DashboardController {
     @FXML
     public void showAppointment() {
 
-        User user = Session.getCurrentUser();
-
-        if (user == null) {
-            return;
-        }
-
-        if (user.getRole() == UserRole.OWNER
-                || user.getRole() == UserRole.EMPLOYEE) {
+        if (authorizationService.isOwnerOrEmployee()) {
 
             openWindow(
                     "/ui/AppointmentManagementView.fxml",
@@ -207,8 +198,8 @@ public class DashboardController {
             Parent root = loader.load();
             Stage stage = (Stage) logoutButton.getScene().getWindow();
             stage.setTitle(title);
-            stage.setScene(new Scene(root, 900, 550));
-            stage.centerOnScreen();
+            stage.setScene(new Scene(root));
+            Navigation.maximize(stage);
 
         } catch (Exception e) {
 
@@ -247,7 +238,7 @@ public class DashboardController {
                             600,
                             400));
 
-            stage.show();
+            Navigation.maximize(stage);
 
         } catch (Exception e) {
 
